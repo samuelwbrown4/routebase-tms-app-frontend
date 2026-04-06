@@ -1,0 +1,45 @@
+
+
+.sign-in-input-wrapper{
+    width: 70%;
+    border: 1px solid #3FA9F5;
+    box-shadow: 0 0 8px 2px #f6a802;
+    border-radius: 4px;
+    
+    
+}
+
+.sign-in-input{
+    width: 100%;
+    background-color: #bad7ed;
+   
+}
+
+.sign-in-input::placeholder{
+    color: #0B1F3A;
+    font-style: italic;
+}
+
+#sign-in-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+   width: 100%;
+}
+
+#sign-in-header{
+    margin-top: 1.5rem;
+    
+}
+
+#here-link{
+    color: #f6a802;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+
+
+
+

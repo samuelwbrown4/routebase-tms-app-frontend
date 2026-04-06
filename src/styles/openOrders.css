@@ -1,0 +1,90 @@
+.table {
+    color: white;
+    width: 100%;
+    font-size: .7rem;
+
+}
+
+.table-container {
+    /*background-color: #0b2c42b8;*/
+    background-color: rgba(138, 135, 135, 0.248);
+    border-radius: 6px;
+   
+
+}
+
+.row:hover {
+    background-color: rgba(246, 168, 2, 0.85);
+    color: #0b1f3a;
+    cursor: pointer;
+
+}
+
+.row{
+    border-color: #f6a9027b ;
+}
+
+.header-row {
+    border-color: #f6a9027b;
+    font-weight: bold;
+}
+
+#header{
+    color: white;
+    margin-top: 0rem;
+}
+
+.filter-btn{
+    background-color: transparent;
+    color: white;
+    border: #06c4ef;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+
+}
+
+.search-input{
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+   
+}
+
+.selected-row{
+    background-color: rgba(246, 168, 2, 0.85);
+    color: #0b1f3a;
+}
+
+.potential-load-div{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    color: white;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+#build-btn{
+    background-color: transparent;
+    color: #6bbf59;
+    border: 1px solid #6bbf59;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#unselect-all-btn {
+    background-color: transparent;
+    color: rgb(200, 93, 93);
+    border: 1px solid rgb(200, 93, 93);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+
+.unselect-all-btn-wrapper{
+    border: 1px solid rgb(200, 93, 93);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+}
