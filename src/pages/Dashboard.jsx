@@ -7,9 +7,9 @@ function Dashboard({auth , user}){
 
     const [undeliveredShipments , setUndeliveredShipments] = useState([]);
 
-    /*useEffect(()=>{
+    useEffect(()=>{
         getUndeliveredShipments()
-    })*/
+    }, [])
 
     async function getUndeliveredShipments(){
         try{
@@ -20,13 +20,14 @@ function Dashboard({auth , user}){
                 }
             });
 
-            const result = response.json()
+            const result = await response.json();
+            console.log('result:', result)
 
-            if(!result.undeliveredShipments){
+            if(!result.countUndelivered.count){
                 return alert('Error finding undelivered shipments')
             }
 
-            setUndeliveredShipments(result.undeliveredShipments)
+            setUndeliveredShipments(result.countUndelivered.count)
         }catch(error){
             console.log(error)
             alert(`Error: ${error}`)

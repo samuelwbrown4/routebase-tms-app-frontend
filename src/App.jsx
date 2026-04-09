@@ -8,6 +8,7 @@ import AppShellLayout from './components/AppShellLayout';
 import OpenOrders from './pages/OpenOrders';
 import Dashboard from './pages/Dashboard';
 import BuildShipments from './pages/BuildShipments';
+import UpdateShipments from './pages/UpdateShipments';
 import {jwtDecode} from 'jwt-decode';
 
 function App() {
@@ -19,12 +20,12 @@ function App() {
     <MantineProvider>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='sign-in' element={<SignIn setAuth={setAuth}/>}/>
-          <Route element={auth ? <AppShellLayout user={user}/> : <Navigate to="/sign-in"/>}>
+          <Route path='/' element={<SignIn setAuth={setAuth} user={user}/>}/>
+          <Route element={auth ? <AppShellLayout user={user}/> : <Navigate to="/"/>}>
             <Route path='/dashboard' element={<Dashboard auth={auth} user={user}/>}/>
             <Route path='/open-orders' element={<OpenOrders auth={auth} user={user}/>}/>
             <Route path='/build-shipments' element={<BuildShipments auth={auth} user={user}/>}/>
+            <Route path='/update-shipments' element={<UpdateShipments auth={auth} user={user} />}/>
           </Route>
         </Routes>
       </BrowserRouter>

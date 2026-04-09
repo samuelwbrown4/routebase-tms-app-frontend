@@ -1,7 +1,8 @@
 function UndeliveredShipments({undeliveredShipments , user}){
     return(
-        <div>
-            Undelivered Shipments
+        <div style={{width: '100%'}}>
+            <h2>Undelivered Shipments</h2>
+            {undeliveredShipments}
         </div>
     )
 }

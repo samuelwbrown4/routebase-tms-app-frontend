@@ -5,7 +5,7 @@ import atIcon from '../assets/at.svg'
 import '../styles/signIn.css'
 
 
-function SignIn({ setAuth }) {
+function SignIn({ setAuth , user }) {
 
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -24,7 +24,7 @@ function SignIn({ setAuth }) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    email: email, password: pass
+                    email: email, password: pass, client: radio
                 })
             })
 
@@ -35,7 +35,7 @@ function SignIn({ setAuth }) {
             }
             localStorage.setItem('auth', JSON.stringify(result.token));
             setAuth(result.token);
-            navigate('/dashboard');
+            navigate(radio === 'shipper' ? '/dashboard' : '/update-shipments');
         } catch (error) {
             console.log(error)
             alert('Failed to reach backend service. Contact Administrator.')

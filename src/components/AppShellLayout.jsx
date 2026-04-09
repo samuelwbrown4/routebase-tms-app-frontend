@@ -32,16 +32,24 @@ function AppShellLayout({ user }) {
                 </div>
             </AppShell.Header>
             <AppShell.Navbar className='shell-navbar'>
-                <div id='links-container'>
+                {user.client === 'shipper' && <div id='links-container'>
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/dashboard'><Image id='dashboard-icon' src={dashboardIcon} h={20} w='auto' /><span>Dashboard</span></Link>
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Open Orders</span></Link>
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Tracking</span></Link>
-                </div>
+                </div>}
+                {user.client === 'carrier' && <div id='links-container'>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/update-shipments'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Update Shipments</span></Link>
+
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Open Orders</span></Link>
+
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Tracking</span></Link>
+                </div>}
 
 
-                <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/sign-in'><Image id='sign-out-icon' src={signOutIcon} h={20} w='auto' /><span>Sign Out</span></Link>
+
+                <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/'><Image id='sign-out-icon' src={signOutIcon} h={20} w='auto' /><span>Sign Out</span></Link>
             </AppShell.Navbar>
             <AppShell.Main className='app-shell-main'>
                 <Outlet />
