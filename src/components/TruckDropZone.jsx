@@ -3,7 +3,7 @@ import { Button, Image, Select , CloseButton } from '@mantine/core'
 import { DatePickerInput } from '@mantine/dates';
 import '../styles/offTruckOrders.css'
 
-function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentTypes, setMode, modeList, mode, carrier, setCarrier, equipmentType, setEquipmentType, pickDate, setPickDate, dropDate, setDropDate, totalWeight, setTotalWeight , createShipment }) {
+function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentTypes, setMode, modeList, mode, carrier, setCarrier, equipmentType, setEquipmentType, pickDate, setPickDate, dropDate, setDropDate, totalWeight, setTotalWeight , createShipment , distance}) {
 
     const { isOver, setNodeRef } = useDroppable({
         id: 'truck-zone'
@@ -69,6 +69,7 @@ function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentT
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ width: '100%' }}>Total Weight: </span>
                         <span style={{ width: '100%' }}>{`${totalWeight} lbs.`}</span>
+                        <span>{`Distance ${distance}`}</span>
                     </div>
                     
                 </div>
