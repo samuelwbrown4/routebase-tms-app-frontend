@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import OffTruckOrdersTable from '../components/OffTruckOrdersTable';
 import TruckDropZone from '../components/TruckDropZone';
+import '../styles/buildShipments.css'
 
 function BuildShipments({ auth, user }) {
 
@@ -23,6 +24,7 @@ function BuildShipments({ auth, user }) {
     const [dropDate, setDropDate] = useState(undefined);
     const [totalWeight, setTotalWeight] = useState(0);
     const [distance, setDistance] = useState(0);
+    const [rates, setRates] = useState([]);
 
 
     useEffect(() => {
@@ -40,8 +42,12 @@ function BuildShipments({ auth, user }) {
 
     useEffect(() => {
         fetchDistance()
-        console.log('distance' , distance)
+        console.log('distance', distance)
     }, [onTruckOrders]);
+
+    useEffect(()=>{
+        fetchRates();
+    }, [distance])
 
     async function fetchCarrierList() {
         try {
@@ -172,6 +178,56 @@ function BuildShipments({ auth, user }) {
         }
     }
 
+    async function fetchRates() {
+        if(!distance > 0){
+            return
+        }
+        try {
+            const response = await fetch(`${API_URL}/api/shipper-user/users/${user.id}/rates`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
+                },
+                body: JSON.stringify({
+                    distance: distance
+                })
+            })
+
+            const result = await response.json();
+
+            if(!result.rates){
+                return alert(result.message)
+            }
+
+            console.log(result.rates)
+
+            calculateRates(result.rates)
+        }catch (error) {
+            console.log(error)
+            alert(`Error: ${error}`)
+        }
+    }
+
+    function calculateRates(ratesArray){
+        const availableRates = []
+        
+        ratesArray.forEach(function(rate){
+            let rateObject = {
+                carrier: rate.carrier,
+                rate: parseFloat(rate.flat_rate) + (parseFloat(distance) * parseFloat(rate.per_mile_rate)) + (parseFloat(rate.flat_rate) * parseFloat(rate.fuel_surcharge_percentage) / 100) 
+            }
+
+            availableRates.push(rateObject)
+        })
+
+        availableRates.sort((a,b)=> a.rate - b.rate);
+
+        console.log('Available rates: ' , availableRates)
+
+        setRates(availableRates);
+    }
+
     function handleDragEnd(event) {
         const { active, over } = event
 
@@ -199,7 +255,12 @@ function BuildShipments({ auth, user }) {
 
     return (
         <DndContext onDragEnd={handleDragEnd}>
-            <h1 id='header'>Build Shipment</h1>
+            <div id='header-div'>
+                <h1>Build Shipment</h1>
+                {(rates.length) > 0 && (
+                    <h4>Low Cost Carrier: {rates[0].carrier} {`($${rates?.[0].rate.toFixed(2)})`}</h4>)}
+            </div>
+            
             <TruckDropZone
                 onTruckOrders={onTruckOrders}
                 removeFromTruck={removeFromTruck}

@@ -9,6 +9,8 @@ import OpenOrders from './pages/OpenOrders';
 import Dashboard from './pages/Dashboard';
 import BuildShipments from './pages/BuildShipments';
 import UpdateShipments from './pages/UpdateShipments';
+import ManageCarriers from './pages/ManageCarriers';
+import ManageRatePkgs from './pages/ManageRatePkgs';
 import {jwtDecode} from 'jwt-decode';
 
 function App() {
@@ -25,7 +27,9 @@ function App() {
             <Route path='/dashboard' element={<Dashboard auth={auth} user={user}/>}/>
             <Route path='/open-orders' element={<OpenOrders auth={auth} user={user}/>}/>
             <Route path='/build-shipments' element={<BuildShipments auth={auth} user={user}/>}/>
+            <Route path='/manage-carriers' element={<ManageCarriers auth={auth} user={user} />}/>
             <Route path='/update-shipments' element={<UpdateShipments auth={auth} user={user} />}/>
+            <Route path='/carrier/packages' element={<ManageRatePkgs auth={auth} user={user} />}/>
           </Route>
         </Routes>
       </BrowserRouter>
