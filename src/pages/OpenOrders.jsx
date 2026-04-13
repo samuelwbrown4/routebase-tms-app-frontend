@@ -64,7 +64,7 @@ function OpenOrders({ auth }) {
 
     async function getOpenOrders() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper-user/open-orders`, {
+            let response = await fetch(`${API_URL}/api/shipper/orders`, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -85,7 +85,7 @@ function OpenOrders({ auth }) {
 
     async function getOrderLineItems(orderId) {
         try {
-            let response = await fetch(`${API_URL}/api/shipper-user/get-line-items/${orderId}`, {
+            let response = await fetch(`${API_URL}/api/shipper/orders/${orderId}/line-items`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -94,8 +94,10 @@ function OpenOrders({ auth }) {
 
             let result = await response.json();
 
+            console.log('lineitems' , result)
+
             if (!result.lineItems) {
-                return alert('No like items found')
+                return alert('No line items found')
             };
 
             setSelectedOrderDetails(result.lineItems);

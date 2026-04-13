@@ -13,7 +13,7 @@ function Dashboard({auth , user}){
 
     async function getUndeliveredShipments(){
         try{
-            const response = await fetch(`${API_URL}/api/shipper-user/get-undelivered` , {
+            const response = await fetch(`${API_URL}/api/shipper/shipments/undelivered` , {
                 headers: {
                     'Content-Type' : 'application/json' ,
                     'Authorization' : `Bearer ${auth}`
@@ -23,11 +23,11 @@ function Dashboard({auth , user}){
             const result = await response.json();
             console.log('result:', result)
 
-            if(!result.countUndelivered.count){
+            if(!result.undeliveredShipments.count){
                 return alert('Error finding undelivered shipments')
             }
 
-            setUndeliveredShipments(result.countUndelivered.count)
+            setUndeliveredShipments(result.undeliveredShipments.count)
         }catch(error){
             console.log(error)
             alert(`Error: ${error}`)

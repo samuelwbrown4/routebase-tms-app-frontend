@@ -51,7 +51,7 @@ function BuildShipments({ auth, user }) {
 
     async function fetchCarrierList() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper-user/get-all-carriers`, {
+            let response = await fetch(`${API_URL}/api/shipper/carriers`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -73,7 +73,7 @@ function BuildShipments({ auth, user }) {
 
     async function fetchEquipmentTypes() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper-user/get-equipment-types`, {
+            let response = await fetch(`${API_URL}/api/shipper/equipment-types`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -102,7 +102,7 @@ function BuildShipments({ auth, user }) {
         console.log('pickDate:', pickDate)
         console.log('dropDate:', dropDate)
         try {
-            let response = await fetch(`${API_URL}/api/shipper-user/create-shipment`, {
+            let response = await fetch(`${API_URL}/api/shipper/shipments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ function BuildShipments({ auth, user }) {
             const destLat = onTruckOrders?.[0].destination_lat;
             const destLong = onTruckOrders?.[0].destination_long;
 
-            const response = await fetch(`${API_URL}/api/shipper-user/get-distance`, {
+            const response = await fetch(`${API_URL}/api/shipper/proxy/distance`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -183,7 +183,7 @@ function BuildShipments({ auth, user }) {
             return
         }
         try {
-            const response = await fetch(`${API_URL}/api/shipper-user/users/${user.id}/rates`, {
+            const response = await fetch(`${API_URL}/api/shipper/rates/${user.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

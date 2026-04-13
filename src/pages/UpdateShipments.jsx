@@ -29,7 +29,7 @@ function UpdateShipments({ auth, user }) {
 
     async function fetchCarrierUndelivered() {
         try {
-            const response = await fetch(`${API_URL}/api/carrier-user/shipments/${user.id}`, {
+            const response = await fetch(`${API_URL}/api/carrier/shipments/${user.id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -38,11 +38,11 @@ function UpdateShipments({ auth, user }) {
 
             const result = await response.json();
 
-            if (!result.undeliveredShipments) {
+            if (!result.shipments) {
                 alert(`${result.err}`)
             }
 
-            setShipmentsList(result.undeliveredShipments)
+            setShipmentsList(result.shipments)
 
         } catch (error) {
             console.log(error)
@@ -55,7 +55,7 @@ function UpdateShipments({ auth, user }) {
             if (!pickupDate && !deliveryDate) {
                 return alert('No changes made. Please select a date to update')
             }
-            const response = await fetch(`${API_URL}/api/carrier-user/shipment-update/${selectedShipment.id}`, {
+            const response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
