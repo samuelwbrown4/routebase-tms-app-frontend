@@ -1,0 +1,34 @@
+.package-card{
+    background-color: #2d3748;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: white;
+    width: 35%;
+    text-align: center;
+    border: 1px solid #f6a802;
+    box-shadow: 0 0 10px rgba(246, 168, 2, 0.3), 0 0 20px rgba(246, 168, 2, 0.1);
+}
+
+.package-card-div{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.date-picker-wrapper{
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.date-picker{
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    min-width: 120px;
+}

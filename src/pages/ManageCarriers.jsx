@@ -1,6 +1,7 @@
-import {Table , Button , Input} from '@mantine/core';
+import {Table , Button , Input , Indicator , Image} from '@mantine/core';
 import {useState , useEffect} from 'react';
 import '../styles/manageCarriers.css'
+import scrollIcon from '../assets/scroll.svg'
 
 function ManageCarriers({auth , user}){
 
@@ -8,10 +9,12 @@ function ManageCarriers({auth , user}){
 
     const [contracts , setContracts] = useState([])
     const [filteredContracts , setFilteredContracts] = useState([])
+    const [proposedContracts , setProposedContracts] = useState([])
     const [rates , setRates] = useState([])
 
     useEffect(()=>{
-        fetchContracts();
+        fetchContracts('active');
+        fetchContracts('pending')
     },[])
 
     useEffect(()=>{
@@ -20,9 +23,9 @@ function ManageCarriers({auth , user}){
     },[contracts])
 
     //fetch all carriers
-    async function fetchContracts(){
+    async function fetchContracts(status){
         try{
-            let response = await fetch(`${API_URL}/api/shipper-user/users/${user.id}/contracts` , {
+            let response = await fetch(`${API_URL}/api/shipper/user/${user.id}/contracts?status=${status}` , {
                 headers: {
                     'Content-Type' : 'application/json',
                     'Authorization' : `Bearer ${auth}`
@@ -34,8 +37,9 @@ function ManageCarriers({auth , user}){
             if(!result.contracts){
                 alert(result.message)
             }
-            
-            setContracts(result.contracts)
+            status === 'active' ?
+            setContracts(result.contracts) :
+            setProposedContracts(result.contracts);
         }catch(error){
             console.log(error)
             alert(`Error: ${error}`)
@@ -44,7 +48,15 @@ function ManageCarriers({auth , user}){
 
     return (
         <div id='manage-carriers-container'>
-            <h1>Manage Contracts</h1>
+            <div style={{display: 'flex' , justifyContent: 'space-between', alignItems: 'center'}}>
+                <h1>Manage Contracts</h1>
+                <div>
+                    <Indicator inline label={proposedContracts?.length} size={16} color='red'>
+                        <Image src={scrollIcon} h={30} w={'auto'} />
+                    </Indicator>
+                </div>
+            </div>
+            
             <Table>
                 <Table.Thead>
                     <Table.Tr>
