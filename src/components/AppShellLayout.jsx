@@ -8,6 +8,7 @@ import ordersIcon from '../assets/credit-card.svg';
 import shipmentIcon from '../assets/truck-trailer.svg';
 import dashboardIcon from '../assets/speedometer.svg';
 import scrollIcon from '../assets/scroll.svg';
+import adminIcon from '../assets/identification-card.svg';
 
 function AppShellLayout({ user }) {
     const [opened, { toggle }] = useDisclosure();
@@ -41,6 +42,8 @@ function AppShellLayout({ user }) {
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Tracking</span></Link>
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/manage-carriers'><Image id='scroll-icon' src={scrollIcon} h={20} w='auto' /><span>Manage Carriers</span></Link>
+
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/admin'><Image id='scroll-icon' src={adminIcon} h={20} w='auto' /><span>Admin</span></Link>
                 </div>}
                 {user.client === 'carrier' && <div id='links-container'>
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/update-shipments'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Update Shipments</span></Link>
@@ -52,7 +55,7 @@ function AppShellLayout({ user }) {
 
 
 
-                <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/'><Image id='sign-out-icon' src={signOutIcon} h={20} w='auto' /><span>Sign Out</span></Link>
+                <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/' onClick={() => { localStorage.removeItem('auth'); setAuth(null); }}><Image id='sign-out-icon' src={signOutIcon} h={20} w='auto' /><span>Sign Out</span></Link>
             </AppShell.Navbar>
             <AppShell.Main className='app-shell-main'>
                 <Outlet />

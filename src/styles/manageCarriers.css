@@ -1,3 +1,11 @@
 #manage-carriers-container{
     color: white;
 }
+
+#contracts-button{
+    cursor: pointer;
+}
+
+.approve-deny-btn{
+    cursor: pointer;
+}

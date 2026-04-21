@@ -91,7 +91,7 @@ function ManageRatePkgs({ auth, user }) {
                     perMileRate2: Number(perMileRate2),
                     fuelSurcharge2: Number(fuelSurcharge2),
                     minDistance3: 750,
-                    maxDistance2: 1199.99,
+                    maxDistance3: 1199.99,
                     flatRate3: Number(flatRate3),
                     perMileRate3: Number(perMileRate3),
                     fuelSurcharge3: Number(fuelSurcharge3),

@@ -1,9 +1,10 @@
-import { useLocation } from 'react-router';
+import { useLocation , useNavigate} from 'react-router';
 import { useState, useEffect } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import OffTruckOrdersTable from '../components/OffTruckOrdersTable';
 import TruckDropZone from '../components/TruckDropZone';
 import '../styles/buildShipments.css'
+import { notifications } from '@mantine/notifications';
 
 function BuildShipments({ auth, user }) {
 
@@ -26,6 +27,8 @@ function BuildShipments({ auth, user }) {
     const [distance, setDistance] = useState(0);
     const [rates, setRates] = useState([]);
 
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         fetchCarrierList()
@@ -47,7 +50,14 @@ function BuildShipments({ auth, user }) {
 
     useEffect(()=>{
         fetchRates();
-    }, [distance])
+    }, [distance]);
+
+    useEffect(() => {
+        navigate('/build-shipments', {
+            state: { potentialLoads: offTruckOrders },
+            replace: true
+        })
+}, [offTruckOrders])
 
     async function fetchCarrierList() {
         try {
@@ -129,8 +139,14 @@ function BuildShipments({ auth, user }) {
             }
 
             setOnTruckOrders([])
+            setRates([])
 
-            alert('Shipment created successfully')
+            notifications.show({
+                title: 'Shipment Created',
+                message: `Shipment #${result.shipment.shipment_number} created`,
+                autoClose: 5000,
+                position: 'top-center'
+            })
 
         } catch (error) {
             console.log(error)
