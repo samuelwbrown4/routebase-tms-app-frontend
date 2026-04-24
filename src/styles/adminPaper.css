@@ -7,3 +7,12 @@
 .admin-paper {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+#back-btn:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+#back-btn {
+    transition: transform 0.2s ease;
+}

@@ -13,6 +13,7 @@ import UpdateShipments from './pages/UpdateShipments';
 import ManageCarriers from './pages/ManageCarriers';
 import ManageRatePkgs from './pages/ManageRatePkgs';
 import ShipperAdmin from './pages/ShipperAdmin';
+import CreateUser from './pages/CreateUser';
 import {jwtDecode} from 'jwt-decode';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
             <Route path='/manage-carriers' element={<ManageCarriers auth={auth} user={user} />}/>
             <Route path='/admin' element={<ShipperAdmin auth={auth} user={user} />}/>
             <Route path='/update-shipments' element={<UpdateShipments auth={auth} user={user} />}/>
+            <Route path='/admin/create-user' element={<CreateUser auth={auth} user={user}/>} />
             <Route path='/carrier/packages' element={<ManageRatePkgs auth={auth} user={user} />}/>
           </Route>
         </Routes>
