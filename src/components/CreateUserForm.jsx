@@ -1,6 +1,6 @@
-import {Select , Input , Radio , Group} from '@mantine/core'
+import {Select , Input , Radio , Group , Button} from '@mantine/core'
 
-function CreateUserForm({locationDetails , locationId , setLocationId , locationName , firstName , setFirstName , lastName , setLastName , email , setEmail , phone , setPhone , isAdmin , setIsAdmin}){
+function CreateUserForm({locationDetails , locationId , setLocationId , locationName , firstName , setFirstName , lastName , setLastName , email , setEmail , phone , setPhone , role , setRole , handleUserCreation}){
 
 
     return (
@@ -22,12 +22,15 @@ function CreateUserForm({locationDetails , locationId , setLocationId , location
                 <Input value={phone} onChange={(e)=>setPhone(e.target.value)} placeholder='Phone No.'/>
             </div>
             <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
-                <Radio.Group withAsterisk value={isAdmin} onChange={setIsAdmin}>
+                <Radio.Group withAsterisk value={role} onChange={setRole}>
                     <Group mt="xs">
                         <Radio value="admin" label="Admin" style={{color: 'white'}}/>
                         <Radio value="user" label="User" style={{color: 'white'}}/>
                     </Group>
                  </Radio.Group>
+            </div>
+            <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
+                <Button onClick={handleUserCreation}>Create User</Button>
             </div>
         </div>
     )

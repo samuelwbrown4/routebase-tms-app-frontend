@@ -12,12 +12,13 @@ function CreateUser({user , auth}){
 
     const [locationDetails , setLocationDetails] = useState([]);
     const [locationId , setLocationId] = useState(undefined);
+    const [erpId , setErpId] = useState(undefined)
     const [locationName , setLocationName] = useState(undefined);
     const [firstName , setFirstName] = useState('');
     const [lastName , setLastName] = useState('');
     const [email , setEmail] = useState('');
     const [phone , setPhone] = useState('');
-    const [isAdmin , setIsAdmin] = useState('user')
+    const [role , setRole] = useState('user')
 
     useEffect(()=>{
         getAdminDetails()
@@ -34,6 +35,7 @@ function CreateUser({user , auth}){
         }
 
         setLocationName(matchLoc.name)
+        setErpId(matchLoc.erp_id)
     },[locationId , locationDetails])
 
     async function getAdminDetails(){
@@ -57,6 +59,35 @@ function CreateUser({user , auth}){
         }
     }
 
+    async function handleUserCreation(){
+        if(!locationId || !erpId){
+            return alert('Must select a location for user!')
+        }
+        if(firstName === '' || lastName === '' || email === '' || phone === ''){
+            return alert('Must fill in all fields!')
+        }
+        try{
+            let response = await fetch(`${API_URL}/api/shipper/shipper-users` , {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${auth}`
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    locationId,
+                    email,
+                    phone,
+                    role,
+                    erpId
+                })
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div style={{display: 'flex' , flexDirection: 'column'}}>
             <div style={{display: 'flex'  , gap: '1.5rem'}}>
@@ -64,7 +95,7 @@ function CreateUser({user , auth}){
                 <h1 className="header">Create User</h1>
             </div>
             <div>
-                <CreateUserForm locationDetails={locationDetails} locationId={locationId} setLocationId={setLocationId} locationName={locationName} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} email={email} setEmail={setEmail} phone={phone} setPhone={setPhone} isAdmin={isAdmin} setIsAdmin={setIsAdmin}/>
+                <CreateUserForm locationDetails={locationDetails} locationId={locationId} setLocationId={setLocationId} locationName={locationName} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} email={email} setEmail={setEmail} phone={phone} setPhone={setPhone} role={role} setRole={setRole} handleUserCreation={handleUserCreation}/>
             </div>
         </div>
     )

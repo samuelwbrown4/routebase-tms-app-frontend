@@ -5,6 +5,7 @@ import '@mantine/notifications/styles.css';
 import {BrowserRouter , Routes , Route , Navigate} from 'react-router';
 import { useState } from 'react';
 import SignIn from './pages/SignIn';
+import SetPassword from './pages/SetPassword';
 import AppShellLayout from './components/AppShellLayout';
 import OpenOrders from './pages/OpenOrders';
 import Dashboard from './pages/Dashboard';
@@ -27,6 +28,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<SignIn setAuth={setAuth} user={user}/>}/>
+          <Route path='/user/create-password' element={<SetPassword/>} />
           <Route element={auth ? <AppShellLayout user={user} setAuth={setAuth}/> : <Navigate to="/"/>}>
             <Route path='/dashboard' element={<Dashboard auth={auth} user={user}/>}/>
             <Route path='/open-orders' element={<OpenOrders auth={auth} user={user}/>}/>
