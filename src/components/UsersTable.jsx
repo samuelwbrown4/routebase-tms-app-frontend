@@ -17,12 +17,12 @@ function UsersTable({ userDetails }) {
             </Table.Thead>
             <Table.Tbody>
                 {userDetails.map(user => (
-                    <Table.Tr key={user.id}>
+                    <Table.Tr key={user.user_id}>
                         <Table.Td>{user.first_name}</Table.Td>
                         <Table.Td>{user.last_name}</Table.Td>
                         <Table.Td>{user.email}</Table.Td>
                         <Table.Td>{user.phone_number}</Table.Td>
-                        <Table.Td>{user.name}</Table.Td>
+                        <Table.Td>{user.location_name}</Table.Td>
                         <Table.Td>{user.role.toUpperCase()}</Table.Td>
                         <Table.Td><Button>Edit</Button></Table.Td>
                     </Table.Tr>
