@@ -1,0 +1,28 @@
+import AdminPaper from "../components/AdminPaper";
+import {useNavigate} from 'react-router-dom';
+import addUserIcon from '../assets/user-plus.svg';
+import { Image } from "@mantine/core";
+import viewEditIcon from '../assets/note-pencil.svg';
+import backIcon from '../assets/arrow-square-left.svg';
+
+function UserAdminOptions() {
+
+    const navigate = useNavigate()
+
+    return (
+        <div>
+            <div style={{display: 'flex'  , gap: '1.5rem'}}>
+                            <Image src={backIcon} h={35} w={35} style={{marginTop: '.5rem'}} id="back-btn" onClick={()=>navigate('/admin')}/>
+                            <h1 className="header">Admin / Users</h1>
+                        </div>
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '12rem' }}>
+                <AdminPaper title={<Image style={{display: 'inline-block'}} src={viewEditIcon} h={50} w={'auto'}/>} text={'View/Edit'}  nav={()=>navigate('/admin/users/view')}/>
+                <AdminPaper nav={()=>navigate('/admin/users/create-user')} title={<Image style={{display: 'inline-block'}} src={addUserIcon} h={50} w={'auto'}/>} text={'Add User'} />
+                
+            </div>
+        </div>
+
+    )
+}
+
+export default UserAdminOptions;

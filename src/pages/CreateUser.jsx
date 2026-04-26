@@ -91,8 +91,8 @@ function CreateUser({user , auth}){
     return (
         <div style={{display: 'flex' , flexDirection: 'column'}}>
             <div style={{display: 'flex'  , gap: '1.5rem'}}>
-                <Image src={backIcon} h={35} w={35} style={{marginTop: '.5rem'}} id="back-btn" onClick={()=>navigate('/admin')}/>
-                <h1 className="header">Create User</h1>
+                <Image src={backIcon} h={35} w={35} style={{marginTop: '.5rem'}} id="back-btn" onClick={()=>navigate('/admin/users')}/>
+                <h1 className="header">Admin / Users / Create User</h1>
             </div>
             <div>
                 <CreateUserForm locationDetails={locationDetails} locationId={locationId} setLocationId={setLocationId} locationName={locationName} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} email={email} setEmail={setEmail} phone={phone} setPhone={setPhone} role={role} setRole={setRole} handleUserCreation={handleUserCreation}/>
