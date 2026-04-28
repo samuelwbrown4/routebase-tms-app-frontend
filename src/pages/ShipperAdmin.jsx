@@ -13,7 +13,7 @@ function ShipperAdmin() {
             <h1 className="header" style={{color: 'white'}}>Admin</h1>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '12rem' }}>
                 <AdminPaper nav={()=>navigate('/admin/users')} title={<Image style={{display: 'inline-block'}} src={usersIcon} h={50} w={'auto'}/>} text={'Users'} />
-                <AdminPaper title={<Image style={{display: 'inline-block'}} src={customerIcon} h={50} w={'auto'} />} text={'Customers'} />
+                <AdminPaper nav={()=>navigate('/admin/customers')} title={<Image style={{display: 'inline-block'}} src={customerIcon} h={50} w={'auto'} />} text={'Customers'} />
                 <AdminPaper title={'title'} text={'text'} />
             </div>
         </div>

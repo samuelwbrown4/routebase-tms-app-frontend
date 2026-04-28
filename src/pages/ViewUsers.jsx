@@ -2,12 +2,15 @@ import UsersTable from '../components/UsersTable';
 import backIcon from '../assets/arrow-square-left.svg'
 import {useEffect , useState} from 'react';
 import {Image} from '@mantine/core'
+import {useNavigate} from 'react-router-dom'
 
 function ViewUsers({auth , user}){
 
     const API_URL = import.meta.env.VITE_API_URL
 
     const [userDetails , setUserDetails] = useState([])
+
+    const navigate = useNavigate()
 
     useEffect(()=>{
         getAllUsers()
