@@ -17,7 +17,7 @@ function CustomerAdminOptions() {
                         </div>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '12rem' }}>
                 <AdminPaper title={<Image style={{display: 'inline-block'}} src={viewEditIcon} h={50} w={'auto'}/>} text={'View/Edit'}  nav={()=>navigate('/admin/customers/view')}/>
-                <AdminPaper nav={()=>navigate('/admin/users/add-customer-location')} title={<Image style={{display: 'inline-block'}} src={addLocationIcon} h={50} w={'auto'}/>} text={'Add Customer Location'} />
+                <AdminPaper nav={()=>navigate('/admin/customers/create-customer-location')} title={<Image style={{display: 'inline-block'}} src={addLocationIcon} h={50} w={'auto'}/>} text={'Add Customer Location'} />
                 
             </div>
         </div>
