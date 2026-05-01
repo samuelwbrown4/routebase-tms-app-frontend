@@ -138,11 +138,12 @@ function ShipmentTracking({ user, auth }) {
             </Table>}
 
             <div style={{display:'flex'}}>
+
                 <RouteMap displayedShipment={displayedShipment} />
-                <div style={{width: '30%' , display: 'flex' , flexDirection: 'column' , textAlign: 'center'}}>
+                <div style={{width: '30%' , display: 'flex' , flexDirection: 'column' , textAlign: 'center' , alignItems: 'center'}}>
                     <h4><u>Routed Shipments</u></h4>
                     {routedShipments.map(r => (
-                        <div className={`routed-shipment ${r.id === displayedShipment?.id ? 'displayed-shipment' : ''}`} key={r.id} style={{textAlign: 'center' , marginLeft: '1rem' , borderBottom: '1px solid gray' , cursor: 'pointer'}} onClick={()=>getShipmentGeometry(r.id)}><span>{r.shipment_number}</span></div>
+                        <div className={`routed-shipment ${r.id === displayedShipment?.id ? 'displayed-shipment' : ''}`} key={r.id} style={{justifyContent: 'center', textAlign: 'center' , marginLeft: '1rem' , borderBottom: '1px solid gray' , cursor: 'pointer'}} onClick={()=>getShipmentGeometry(r.id)}><span>{r.shipment_number}</span></div>
                     ))}
                 </div>
             </div>

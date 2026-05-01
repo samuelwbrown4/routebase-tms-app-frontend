@@ -1,9 +1,28 @@
-.routed-shipment:hover{
-    background-color: beige;
-    color: black;
+.routed-shipment {
+    width: 70%;
+    background-color: #1a1b1e;
+    border-radius: 15px;
+    padding: 0.4rem 1rem;
+    margin: 0.3rem 1rem;
+    transition: all 0.2s ease;
+    border: 1px solid #2e303a;
 }
 
-.displayed-shipment{
-    background-color: rgba(245, 245, 220, 0.576);
+.routed-shipment:hover{
+    background-color: #2e303a;
+    color: white;
+    transform: scale(1.05);
+    border: 1px solid #f6bd02;
+}
+
+.displayed-shipment {
+    background-color: #f6bd02;
+    color: black;
+    font-weight: bold;
+    border: 1px solid #f6bd02;
+}
+
+.displayed-shipment:hover {
+    background-color: #f6bd029a;
     color: black;
 }

@@ -1,3 +1,12 @@
 #dashboard{
     color: white
 }
+
+.dashboard-card{
+    cursor: pointer;
+}
+
+.dashboard-card:hover{
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}

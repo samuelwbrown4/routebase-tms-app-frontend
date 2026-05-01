@@ -3,6 +3,8 @@ import UndeliveredShipments from "../components/UndeliveredShipments";
 import UnplannedOrders from "../components/UnplannedOrders";
 import UnplannedLateOrders from "../components/UnplannedLateOrders";
 import { BarChart } from '@mantine/charts';
+import {useNavigate} from 'react-router-dom';
+import '../styles/dashboard.css'
 
 
 function Dashboard({ auth, user }) {
@@ -13,6 +15,8 @@ function Dashboard({ auth, user }) {
     const [unplannedOrders , setUnplannedOrders] = useState([])
     const [unplannedLateOrders , setUnplannedLateOrders] = useState([])
     const [orders, setOrders] = useState([])
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         getUndeliveredShipments()
@@ -101,7 +105,7 @@ function Dashboard({ auth, user }) {
 
     async function getUndeliveredShipments() {
         try {
-            const response = await fetch(`${API_URL}/api/shipper/shipments/undelivered`, {
+            const response = await fetch(`${API_URL}/api/shipper/shipments?status=delivered`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -127,9 +131,9 @@ function Dashboard({ auth, user }) {
                 <h1 className='header'>Dashboard</h1>
             </div>
             <div style={{ display: 'flex', color: 'white', width: '100%', height: '50%', flex: 1 , justifyContent: 'space-around' }}>
-                <div><UndeliveredShipments undeliveredShipments={undeliveredShipments} user={user} /></div>
-                <div><UnplannedOrders unplannedOrders={unplannedOrders} /></div>
-                <div><UnplannedLateOrders unplannedLateOrders={unplannedLateOrders} /></div>
+                <div className='dashboard-card' onClick={()=>navigate('/shipment-tracking')}><UndeliveredShipments undeliveredShipments={undeliveredShipments} user={user} /></div>
+                <div className='dashboard-card' onClick={()=>navigate('/open-orders')}><UnplannedOrders unplannedOrders={unplannedOrders} /></div>
+                <div className='dashboard-card' onClick={()=>navigate('/open-orders')}><UnplannedLateOrders unplannedLateOrders={unplannedLateOrders} /></div>
               
             </div>
             <div style={{ display: 'flex', color: 'white', height: '50%', width: '100%', flex: 1 , justifyContent: 'center'}}>
