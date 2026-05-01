@@ -1,0 +1,9 @@
+.routed-shipment:hover{
+    background-color: beige;
+    color: black;
+}
+
+.displayed-shipment{
+    background-color: rgba(245, 245, 220, 0.576);
+    color: black;
+}

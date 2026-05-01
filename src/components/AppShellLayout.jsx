@@ -39,7 +39,7 @@ function AppShellLayout({ user }) {
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Open Orders</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Tracking</span></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Tracking</span></Link>
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/manage-carriers'><Image id='scroll-icon' src={scrollIcon} h={20} w='auto' /><span>Manage Carriers</span></Link>
 
@@ -50,7 +50,9 @@ function AppShellLayout({ user }) {
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/carrier/packages'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Rate Packages</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Tracking</span></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Routing</span></Link>
+
+                    
                 </div>}
 
 

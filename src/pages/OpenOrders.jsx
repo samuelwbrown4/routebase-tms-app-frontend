@@ -1,4 +1,4 @@
-import { Table, Button, Image, Collapse, Input, Drawer } from "@mantine/core";
+import { Table, Button, Image, Collapse, Input, Drawer , Skeleton } from "@mantine/core";
 import { Fragment } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useState } from "react";
@@ -24,6 +24,8 @@ function OpenOrders({ auth }) {
     const [opened, { open, close }] = useDisclosure(false);
 
     const [potentialLoads , setPotentialLoads] = useState([])
+
+    const [loading , setLoading] = useState(true)
 
     const navigate = useNavigate();
 
@@ -77,6 +79,7 @@ function OpenOrders({ auth }) {
             }
 
             setOrders(result.orders)
+            setLoading(false)
 
         } catch (error) {
             alert('Error retrieving open order data! Contact administrator.')
@@ -101,7 +104,6 @@ function OpenOrders({ auth }) {
             };
 
             setSelectedOrderDetails(result.lineItems);
-
 
         } catch (error) {
             alert('Error retrieving order line item details! Contact administrator.')
@@ -135,7 +137,7 @@ function OpenOrders({ auth }) {
 
             </div>
             <div className='table-container'>
-
+            <Skeleton visible={loading}>
                 <Table className='table'>
                     <Table.Thead>
                         <Table.Tr className='header-row' >
@@ -159,8 +161,8 @@ function OpenOrders({ auth }) {
                                         <Table.Td>{order.order_number}</Table.Td>
                                         <Table.Td>{order.origin}</Table.Td>
                                         <Table.Td>{order.origin_address}</Table.Td>
-                                        <Table.Td>{order.order_city}</Table.Td>
-                                        <Table.Td>{order.order_state}</Table.Td>
+                                        <Table.Td>{order.origin_city}</Table.Td>
+                                        <Table.Td>{order.origin_state}</Table.Td>
                                         <Table.Td>{order.destination}</Table.Td>
                                         <Table.Td>{order.destination_address}</Table.Td>
                                         <Table.Td>{order.destination_city}</Table.Td>
@@ -170,10 +172,34 @@ function OpenOrders({ auth }) {
                                     </Table.Tr>
                                     <Table.Tr>
                                         <Table.Td colSpan={10} style={{ padding: 0, border: 'none' }}>
-                                            <Collapse in={expandedOrder === order.id}>
+                                            <Collapse in={expandedOrder === order.id}>  
                                                 <div style={{ padding: '1rem', backgroundColor: '#0d2147' }}>
-                                                    line items go here
+                                                    <Table>
+                                                        <Table.Thead>
+                                                            <Table.Tr>
+                                                                <Table.Th>No.</Table.Th>
+                                                                <Table.Th>Mat #</Table.Th>
+                                                                <Table.Th>Desc</Table.Th>
+                                                                <Table.Th>Qty</Table.Th>
+                                                                <Table.Th>Total Weight</Table.Th>
+                                                                <Table.Th>Frt Class</Table.Th>
+                                                            </Table.Tr>
+                                                        </Table.Thead>
+                                                        <Table.Tbody>
+                                                            {selectedOrderDetails.map((li , idx)=>(
+                                                                <Table.Tr key={li.material_number}>
+                                                                    <Table.Td>{idx + 1}</Table.Td>
+                                                                    <Table.Td>{li.material_number}</Table.Td>
+                                                                    <Table.Td>{li.description}</Table.Td>
+                                                                    <Table.Td>{li.quantity}</Table.Td>
+                                                                    <Table.Td>{`${li.total_weight_lbs} lbs`}</Table.Td>
+                                                                    <Table.Td>{li.freight_class}</Table.Td>
+                                                                </Table.Tr>
+                                                            ))}
+                                                        </Table.Tbody>
+                                                    </Table>
                                                 </div>
+                                                
                                             </Collapse>
                                         </Table.Td>
                                     </Table.Tr>
@@ -182,6 +208,7 @@ function OpenOrders({ auth }) {
                         })}
                     </Table.Tbody>
                 </Table>
+                </Skeleton>
             </div>
         </div>
     )

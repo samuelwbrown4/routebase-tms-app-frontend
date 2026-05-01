@@ -20,6 +20,7 @@ import ViewUsers from './pages/ViewUsers';
 import CustomerAdminOptions from './pages/CustomerAdminOptions';
 import ViewCustomerLocations from './pages/ViewCustomerLocations';
 import CreateCustomerLocation from './pages/CreateCustomerLocation';
+import ShipmentTracking from './pages/ShipmentTracking';
 import {jwtDecode} from 'jwt-decode';
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
             <Route path='/dashboard' element={<Dashboard auth={auth} user={user}/>}/>
             <Route path='/open-orders' element={<OpenOrders auth={auth} user={user}/>}/>
             <Route path='/build-shipments' element={<BuildShipments auth={auth} user={user}/>}/>
+            <Route path='/shipment-tracking' element={<ShipmentTracking auth={auth} user={user}/>}/>
             <Route path='/manage-carriers' element={<ManageCarriers auth={auth} user={user} />}/>
             <Route path='/admin' element={<ShipperAdmin auth={auth} user={user} />}/>
             <Route path='/update-shipments' element={<UpdateShipments auth={auth} user={user} />}/>
