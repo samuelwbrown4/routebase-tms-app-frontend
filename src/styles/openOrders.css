@@ -13,6 +13,10 @@
 
 }
 
+Th{
+    cursor: pointer;
+}
+
 .row:hover {
     background-color: rgba(246, 168, 2, 0.85);
     color: #0b1f3a;

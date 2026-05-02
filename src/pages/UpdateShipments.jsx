@@ -56,7 +56,7 @@ function UpdateShipments({ auth, user }) {
                 return alert('No changes made. Please select a date to update')
             }
             const response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
-                method: 'POST',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -208,7 +208,7 @@ function UpdateShipments({ auth, user }) {
                 <Table.Tbody>
                     {filteredShipments?.map(shipment => (
                         <Table.Tr key={shipment.id} onClick={() => setSelectedShipment(shipment)}>
-                            <Table.Td>{shipment.shipment_number}</Table.Td>
+                            <Table.Td>{shipment.near_destination ? <span onClick={console.log('near destination click')}>❗</span> : ''}{shipment.shipment_number}</Table.Td>
                             <Table.Td>{shipment.origin}</Table.Td>
                             <Table.Td>{shipment.origin_city}</Table.Td>
                             <Table.Td>{shipment.origin_state}</Table.Td>

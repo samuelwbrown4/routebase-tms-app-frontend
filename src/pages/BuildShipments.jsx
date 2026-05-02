@@ -273,6 +273,14 @@ function BuildShipments({ auth, user }) {
         <DndContext onDragEnd={handleDragEnd}>
             <div id='header-div'>
                 <h1>Build Shipment</h1>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <span style={{display: 'block'}}>Total Weight: </span>
+                        <span style={{display: 'block'}}>{`${totalWeight} lbs.`}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <span style={{display: 'block'}}>Distance: </span>
+                        <span style={{display: 'block'}}>{`${distance} mi.`}</span>
+                    </div>
                 {(rates.length) > 0 && (
                     <h4>Low Cost Carrier: {rates[0].carrier} {`($${rates?.[0].rate.toFixed(2)})`}</h4>)}
             </div>

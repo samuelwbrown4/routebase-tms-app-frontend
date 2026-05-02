@@ -55,7 +55,7 @@ function Dashboard({ auth, user }) {
 
     async function getOpenOrders() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/orders`, {
+            let response = await fetch(`${API_URL}/api/shipper/orders/${user.id}?status=unplanned`, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

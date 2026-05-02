@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup , Polyline } from 'react-leaflet
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import finishIcon from '../assets/checkered-flag.svg'
-
+import truckIcon from '../assets/truck-trailer.svg'
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
@@ -13,6 +13,13 @@ const originIcon = L.icon({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
   iconAnchor: [12, 41],
+  popupAnchor: [1, -34]    // where popup opens relative to icon
+});
+
+const inTransitIcon = L.icon({
+  iconUrl: truckIcon,
+  iconSize: [32, 32],
+  iconAnchor: [3, 25],
   popupAnchor: [1, -34]    // where popup opens relative to icon
 });
 
@@ -51,6 +58,9 @@ export default function RouteMap({displayedShipment}) {
                     <Marker position={displayedShipment.route_geometry[0]} icon={originIcon}>
                         <Popup>Origin</Popup>
                     </Marker>
+                    {displayedShipment.status === 'in_transit' && displayedShipment.current_position && (<Marker position={displayedShipment.current_position} icon={inTransitIcon}>
+                        <Popup>Origin</Popup>
+                    </Marker>)}
                     <Marker position={displayedShipment.route_geometry[displayedShipment.route_geometry.length - 1]} icon={destIcon}>
                         <Popup>Destination</Popup>
                     </Marker>
