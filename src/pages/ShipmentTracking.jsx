@@ -33,7 +33,8 @@ function ShipmentTracking({ user, auth }) {
         try {
             let response = await fetch(`${API_URL}/api/${user.client === 'carrier' ? 'carrier' : 'shipper'}/shipments/${user.id}?status=${status}`, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${auth}`
                 }
             });
 
@@ -88,7 +89,8 @@ function ShipmentTracking({ user, auth }) {
         try{
             let response = await fetch(`${API_URL}/api/carrier/shipments/geometry/${shipmentId}`,{
                 headers: {
-                    'Content-Type' : 'application/json'
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${auth}`
                 }
             });
 

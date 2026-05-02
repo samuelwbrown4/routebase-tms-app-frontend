@@ -1,77 +1,77 @@
 import CreateUserForm from "../components/CreateUserForm";
-import {Image} from '@mantine/core';
+import { Image } from '@mantine/core';
 import backIcon from '../assets/arrow-square-left.svg'
-import {useNavigate} from 'react-router-dom';
-import {useEffect , useState} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-function CreateUser({user , auth}){
+function CreateUser({ user, auth }) {
 
     const navigate = useNavigate()
 
     const API_URL = import.meta.env.VITE_API_URL;
 
-    const [locationDetails , setLocationDetails] = useState([]);
-    const [locationId , setLocationId] = useState(undefined);
-    const [erpId , setErpId] = useState(undefined)
-    const [locationName , setLocationName] = useState(undefined);
-    const [firstName , setFirstName] = useState('');
-    const [lastName , setLastName] = useState('');
-    const [email , setEmail] = useState('');
-    const [phone , setPhone] = useState('');
-    const [role , setRole] = useState('user')
+    const [locationDetails, setLocationDetails] = useState([]);
+    const [locationId, setLocationId] = useState(undefined);
+    const [erpId, setErpId] = useState(undefined)
+    const [locationName, setLocationName] = useState(undefined);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [role, setRole] = useState('user')
 
-    useEffect(()=>{
+    useEffect(() => {
         getAdminDetails()
-    },[])
+    }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(locationDetails)
-    },[locationDetails])
+    }, [locationDetails])
 
-    useEffect(()=>{
+    useEffect(() => {
         let matchLoc = locationDetails.find(location => location.id === locationId);
-        if(!matchLoc){
+        if (!matchLoc) {
             return
         }
 
         setLocationName(matchLoc.name)
         setErpId(matchLoc.erp_id)
-    },[locationId , locationDetails])
+    }, [locationId, locationDetails])
 
-    async function getAdminDetails(){
-        try{
-            let response = await fetch(`${API_URL}/api/shipper/locations/${user.id}` , {
+    async function getAdminDetails() {
+        try {
+            let response = await fetch(`${API_URL}/api/shipper/locations/${user.id}`, {
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 }
             });
 
             let result = await response.json();
 
-            if(!result.locations){
+            if (!result.locations) {
                 alert(result.error)
             }
 
             setLocationDetails(result.locations)
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
 
-    async function handleUserCreation(){
-        if(!locationId || !erpId){
+    async function handleUserCreation() {
+        if (!locationId || !erpId) {
             return alert('Must select a location for user!')
         }
-        if(firstName === '' || lastName === '' || email === '' || phone === ''){
+        if (firstName === '' || lastName === '' || email === '' || phone === '') {
             return alert('Must fill in all fields!')
         }
-        try{
-            let response = await fetch(`${API_URL}/api/shipper/shipper-users` , {
+        try {
+            let response = await fetch(`${API_URL}/api/shipper/shipper-users`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
                     firstName,
@@ -82,20 +82,36 @@ function CreateUser({user , auth}){
                     role,
                     erpId
                 })
-            })
+            });
+
+            let result = response.json();
+
+
         } catch (error) {
             console.log(error)
         }
     }
 
+    function handleNewUserSubmit() {
+        handleUserCreation();
+        setLocationId(undefined)
+        setErpId(undefined)
+        setEmail('')
+        setFirstName('')
+        setLastName('')
+        setPhone('')
+        setRole('user')
+
+    }
+
     return (
-        <div style={{display: 'flex' , flexDirection: 'column'}}>
-            <div style={{display: 'flex'  , gap: '1.5rem'}}>
-                <Image src={backIcon} h={35} w={35} style={{marginTop: '.5rem'}} id="back-btn" onClick={()=>navigate('/admin/users')}/>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', gap: '1.5rem' }}>
+                <Image src={backIcon} h={35} w={35} style={{ marginTop: '.5rem' }} id="back-btn" onClick={() => navigate('/admin/users')} />
                 <h1 className="header">Admin / Users / Create User</h1>
             </div>
             <div>
-                <CreateUserForm locationDetails={locationDetails} locationId={locationId} setLocationId={setLocationId} locationName={locationName} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} email={email} setEmail={setEmail} phone={phone} setPhone={setPhone} role={role} setRole={setRole} handleUserCreation={handleUserCreation}/>
+                <CreateUserForm locationDetails={locationDetails} locationId={locationId} setLocationId={setLocationId} locationName={locationName} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} email={email} setEmail={setEmail} phone={phone} setPhone={setPhone} role={role} setRole={setRole} handleNewUserSubmit={handleNewUserSubmit} />
             </div>
         </div>
     )

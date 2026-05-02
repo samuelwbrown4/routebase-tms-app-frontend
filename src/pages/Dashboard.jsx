@@ -57,7 +57,8 @@ function Dashboard({ auth, user }) {
         try {
             let response = await fetch(`${API_URL}/api/shipper/orders/${user.id}?status=unplanned`, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${auth}`
                 }
             })
 

@@ -80,7 +80,8 @@ function CreateCustomerLocation({user , auth}) {
         try{
             let response = await fetch(`${API_URL}/api/shipper/customers/${user.id}` , {
                 headers: {
-                    'Content-Type' : 'application/json'
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${auth}`
                 }
             });
 

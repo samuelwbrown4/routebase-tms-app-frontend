@@ -1,6 +1,6 @@
 import {Select , Input , Radio , Group , Button} from '@mantine/core'
 
-function CreateUserForm({locationDetails , locationId , setLocationId , locationName , firstName , setFirstName , lastName , setLastName , email , setEmail , phone , setPhone , role , setRole , handleUserCreation}){
+function CreateUserForm({locationDetails , locationId , setLocationId , locationName , firstName , setFirstName , lastName , setLastName , email , setEmail , phone , setPhone , role , setRole , handleNewUserSubmit}){
 
 
     return (
@@ -30,7 +30,7 @@ function CreateUserForm({locationDetails , locationId , setLocationId , location
                  </Radio.Group>
             </div>
             <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
-                <Button onClick={handleUserCreation}>Create User</Button>
+                <Button onClick={handleNewUserSubmit}>Create User</Button>
             </div>
         </div>
     )
