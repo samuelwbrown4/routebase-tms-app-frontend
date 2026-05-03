@@ -1,7 +1,7 @@
 import RouteMap from "../components/RouteMap";
 import { notifications } from '@mantine/notifications';
 import { useEffect, useState } from 'react';
-import { Table, Button, Notification } from '@mantine/core'
+import { Table, Button, Notification, Loader} from '@mantine/core'
 import '../styles/routingTracking.css'
 
 function ShipmentTracking({ user, auth }) {
@@ -11,6 +11,8 @@ function ShipmentTracking({ user, auth }) {
     const [routableShipments, setRoutableShipments] = useState([])
     const [routedShipments, setRoutedShipments] = useState([])
     const [displayedShipment , setDisplayedShipment] = useState(undefined)
+
+    const [loadingId , setLoadingId] = useState(null)
 
     useEffect(() => {
         if(user.client === 'carrier'){
@@ -55,6 +57,7 @@ function ShipmentTracking({ user, auth }) {
 
     async function routeShipment(shipment, eventType = 'routed') {
         try {
+            setLoadingId(shipment.id)
             let response = await fetch(`${API_URL}/api/carrier/shipments/${shipment.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -71,15 +74,11 @@ function ShipmentTracking({ user, auth }) {
             if (result.message) {
                 getShipments('planned');
                 getShipments(['routed', 'in_transit'])
-
-                return (
-                    <Notification title="Success">
-                        {`Shipment ${shipment.shipment_number} routed successfully`}
-                    </Notification>
-                );
+            }else{ 
+                alert(result.error)
             }
 
-            else (alert(result.error))
+            setLoadingId(null)
         } catch (error) {
             console.log(error)
         }
@@ -133,7 +132,7 @@ function ShipmentTracking({ user, auth }) {
                             <Table.Td>{r.destination_state}</Table.Td>
                             <Table.Td>{new Date(r.requested_pickup_date).toLocaleDateString()}</Table.Td>
                             <Table.Td>{new Date(r.requested_delivery_date).toLocaleDateString()}</Table.Td>
-                            <Table.Td><Button onClick={() => routeShipment(r)}>Route</Button></Table.Td>
+                            <Table.Td><Button style={{backgroundColor: "#f6bd02" , color: 'black'}}onClick={() => routeShipment(r)} loading={loadingId === r.id} loaderProps={{type: 'dots' , color: 'black'}}>Route</Button></Table.Td>
                         </Table.Tr>
                     ))}
                 </Table.Tbody>

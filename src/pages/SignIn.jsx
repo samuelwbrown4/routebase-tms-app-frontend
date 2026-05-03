@@ -2,6 +2,7 @@ import { AppShell, Input, Image, Button, Radio, Group } from '@mantine/core';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import atIcon from '../assets/at.svg'
+import passwordIcon from '../assets/password.svg';
 import '../styles/signIn.css'
 
 
@@ -33,7 +34,7 @@ function SignIn({ setAuth , user }) {
             if (!result.token) {
                 return alert(`Error: ${result.error}`)
             }
-            localStorage.setItem('auth', JSON.stringify(result.token));
+            localStorage.setItem('auth', result.token);
             setAuth(result.token);
             navigate(radio === 'shipper' ? '/dashboard' : '/update-shipments');
         } catch (error) {
@@ -62,7 +63,7 @@ function SignIn({ setAuth , user }) {
                             </Radio.Group>
                       
                         <Input placeholder='email' leftSection={<Image h={16} w={16} src={atIcon} />} classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={email} onChange={(e) => setEmail(e.target.value)} />
-                        <Input placeholder='password' classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={pass} onChange={(e) => setPass(e.target.value)} />
+                        <Input type='password' placeholder='password' leftSection={<Image h={16} w={16} src={passwordIcon}/>} classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={pass} onChange={(e) => setPass(e.target.value)} />
                         <Button type='submit'>Sign In</Button>
                     </form>
                     <span>Don't have an account? Request one from an administrator <Link id='here-link'>here.</Link></span>

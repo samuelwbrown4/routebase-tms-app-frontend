@@ -10,3 +10,50 @@
     margin-top: 0rem;
 }
 
+.mantine-Drawer-close {
+  color: white;
+}
+
+.mantine-Drawer-close:hover {
+  background-color: black !important;
+  transform: scale(1.1);
+  transition: transform 100ms ease;
+}
+
+.update-shipment-row{
+    cursor: pointer;
+}
+
+.update-shipment-row:hover{
+    background-color: #333;
+}
+
+.selected-shipment-row{
+    background-color: #f6bd02;
+    color: #0b1f3a;
+}
+
+.selected-shipment-row:hover{
+    background-color: rgba(246, 168, 2, 0.85);
+    color: #0b1f3a;
+}
+
+.update-button {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease, visibility 300ms ease , transform 200ms ease;
+}
+
+.update-button.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.update-button.visible:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1.05);
+}
+
+
+

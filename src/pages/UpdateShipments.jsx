@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Drawer, Textarea, Select } from '@mantine/core';
+import { Table, Button, Drawer, Textarea, Select, Image } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
+import { notifications } from '@mantine/notifications';
+import calendarIcon from '../assets/calendar.svg';
+import caretDownIcon from '../assets/caret-down.svg';
 
 import '../styles/updateShipments.css';
 
@@ -55,6 +58,7 @@ function UpdateShipments({ auth, user }) {
             if (!pickupDate && !deliveryDate) {
                 return alert('No changes made. Please select a date to update')
             }
+            close();
             const response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -74,9 +78,14 @@ function UpdateShipments({ auth, user }) {
                 return alert(result.error)
             }
 
-            setSelectedShipment(null);
+            notifications.show({
+                title: 'Success!',
+                message: pickupDate ? `Successfully saved pickup date of ${new Date(pickupDate).toLocaleDateString()}` : `Successfully saved delivery date of ${new Date(deliveryDate).toLocaleDateString()}`,
+                position: 'top-center'
+            })
+            fetchCarrierUndelivered()
 
-            return alert(result.message);
+           
 
 
         } catch (error) {
@@ -96,21 +105,14 @@ function UpdateShipments({ auth, user }) {
     //add message logic
     return (
         <div>
-            <Drawer position='top' closeOnClickOutside='true' opened={opened} onClose={close} title='Update Shipment'>
+            <Drawer styles={{ body: { backgroundColor: '#2c2c2c' }, content: { backgroundColor: '#2c2c2c', color: 'white' }, header: { backgroundColor: '#2c2c2c' } }} position='top' closeOnClickOutside='true' opened={opened} onClose={close} title={`Update Shipment: #${selectedShipment?.shipment_number} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 CURRENT STATUS: ${selectedShipment?.status.toUpperCase().replaceAll('_', ' ')} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 ${selectedShipment?.origin} ➔ ${selectedShipment?.destination}`}>
                 <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '3rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <h4>{`Shipment #: ${selectedShipment?.shipment_number}`}</h4>
-                        <h4>{`Current Status: ${selectedShipment?.status.toUpperCase()}`}</h4>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <span>{selectedShipment?.origin} ➔ {selectedShipment?.destination}</span>
-
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '3rem' }}>
                         <span>Requested Pickup Date: {new Date(selectedShipment?.requested_pickup_date).toLocaleDateString()} {!selectedShipment?.actual_pickup_date ?
-                            <div>
-                                <Button onClick={() => setPickInput(true)}>Mark as picked up</Button>
+                            <div style={{ display: 'flex', gap: '2rem' }}>
+                                <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => setPickInput(true)}>Mark as picked up</Button>
                                 {pickInput && <DateInput
+                                    rightSection={<Image src={calendarIcon} />}
                                     value={pickupDate}
                                     onChange={setPickupDate}
                                     fullWidth='false'
@@ -126,6 +128,12 @@ function UpdateShipments({ auth, user }) {
                                             width: 24,
                                             height: 24,
                                         },
+                                        input: {
+                                            backgroundColor: '#3d3d3d', borderColor: '#555', height: '100%'
+                                        },
+                                        wrapper: {
+                                            height: '100%'
+                                        }
                                     }}
 
                                 />}
@@ -133,14 +141,15 @@ function UpdateShipments({ auth, user }) {
                             </div> :
                             <div style={{ display: 'flex', gap: '2rem' }}>
                                 <span>Actual Pickup Date: {`${new Date(selectedShipment?.actual_pickup_date).toLocaleDateString()}`}</span>
-                                <Button>Edit</Button>
+                                <Button style={{ backgroundColor: "#f6bd02", color: 'black' }}>Edit</Button>
                             </div>}
                         </span>
                         {selectedShipment?.actual_pickup_date &&
                             <span>Requested Delivery Date: {new Date(selectedShipment?.requested_delivery_date).toLocaleDateString()} {!selectedShipment?.actual_delivery_date ?
-                                <div>
-                                    <Button onClick={() => setDeliveryInput(true)}>Mark as delivered</Button>
+                                <div style={{ display: 'flex', gap: '2rem' }}>
+                                    <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => setDeliveryInput(!deliveryInput)}>{deliveryInput ? 'Hide' : 'Mark as delivered'}</Button>
                                     {deliveryInput && <DateInput
+                                        rightSection={<Image src={calendarIcon} />}
                                         value={deliveryDate}
                                         onChange={setDeliveryDate}
                                         fullWidth='false'
@@ -156,6 +165,12 @@ function UpdateShipments({ auth, user }) {
                                                 width: 24,
                                                 height: 24,
                                             },
+                                            input: {
+                                                backgroundColor: '#3d3d3d', borderColor: '#555', height: '100%'
+                                            },
+                                            wrapper: {
+                                                height: '100%'
+                                            }
                                         }}
 
                                     />}
@@ -163,16 +178,16 @@ function UpdateShipments({ auth, user }) {
                                 </div> :
                                 <div style={{ display: 'flex', gap: '2rem' }}>
                                     <span>Actual delivery date: {`${selectedShipment?.actual_delivery_date}`}</span>
-                                    <Button>Edit</Button>
+                                    <Button style={{ backgroundColor: "#f6bd02", color: 'black' }}>Edit</Button>
                                 </div>
                             }
                             </span>}
                     </div>
                     <div>
-                        <Textarea label="Add comment" description="(optional)" />
+                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555' } }} label="Add comment" description="(optional)" />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'right' }}>
-                        <Button onClick={() => handleUpdateShipment()}>Confirm</Button>
+                        <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => handleUpdateShipment()}>Confirm</Button>
                     </div>
 
                 </div>
@@ -180,12 +195,20 @@ function UpdateShipments({ auth, user }) {
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginLeft: '1rem', marginRight: '1rem' }}>
                 <h1 className='header'>Update Shipments</h1>
-                <Select
-                    label='Status'
-                    data={[{ label: 'All', value: 'all' }, { label: 'Planned', value: 'planned' }, { label: 'In transit', value: 'in_transit' }]}
-                    defaultValue='all'
-                    onChange={(_value, option) => handleStatusFilter(_value)} />
-                {selectedShipment && (<Button onClick={() => open()}>Update</Button>)}
+                <div style={{ display: 'flex', gap: '2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <span style={{ display: 'block', color: 'white' }}><b>Status: </b></span>
+                        <Select
+                            rightSection={<Image h={20} w={'auto'} src={caretDownIcon} />}
+                            styles={{ input: { backgroundColor: 'black', color: 'white', borderColor: "white" } }}
+                            data={[{ label: 'All', value: '' }, { label: 'Planned', value: 'planned' }, { label: 'In transit', value: 'in_transit' }]}
+                            defaultValue=''
+                            onChange={(_value, option) => handleStatusFilter(_value)} />
+                    </div>
+
+                    <Button className={`update-button ${selectedShipment ? 'visible' : ''}`} variant="outline" color="white" onClick={() => open()}>Update</Button>
+                </div>
+
             </div>
 
             <Table className='table'>
@@ -207,8 +230,8 @@ function UpdateShipments({ auth, user }) {
                 </Table.Thead>
                 <Table.Tbody>
                     {filteredShipments?.map(shipment => (
-                        <Table.Tr key={shipment.id} onClick={() => setSelectedShipment(shipment)}>
-                            <Table.Td>{shipment.near_destination ? <span onClick={console.log('near destination click')}>❗</span> : ''}{shipment.shipment_number}</Table.Td>
+                        <Table.Tr key={shipment.id} onClick={selectedShipment?.id === shipment.id ? () => setSelectedShipment(null) : () => setSelectedShipment(shipment)} className={`update-shipment-row  ${shipment.id === selectedShipment?.id ? 'selected-shipment-row' : ''}`}>
+                            <Table.Td>{shipment.near_destination ? <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => console.log('near destination click')}>❗</span> : ''}{shipment.shipment_number}</Table.Td>
                             <Table.Td>{shipment.origin}</Table.Td>
                             <Table.Td>{shipment.origin_city}</Table.Td>
                             <Table.Td>{shipment.origin_state}</Table.Td>
@@ -219,7 +242,7 @@ function UpdateShipments({ auth, user }) {
                             <Table.Td>{shipment.destination_zip}</Table.Td>
                             <Table.Td>{new Date(shipment.requested_pickup_date).toLocaleDateString()}</Table.Td>
                             <Table.Td>{new Date(shipment.requested_delivery_date).toLocaleDateString()}</Table.Td>
-                            <Table.Td>{shipment.status.toUpperCase()}</Table.Td>
+                            <Table.Td>{shipment.status.toUpperCase().replaceAll('_', ' ')}</Table.Td>
                         </Table.Tr>
                     ))}
                 </Table.Tbody>

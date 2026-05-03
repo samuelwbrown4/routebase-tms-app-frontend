@@ -5,6 +5,7 @@ import OffTruckOrdersTable from '../components/OffTruckOrdersTable';
 import TruckDropZone from '../components/TruckDropZone';
 import '../styles/buildShipments.css'
 import { notifications } from '@mantine/notifications';
+import { Loader } from '@mantine/core';
 
 function BuildShipments({ auth, user }) {
 
@@ -26,6 +27,9 @@ function BuildShipments({ auth, user }) {
     const [totalWeight, setTotalWeight] = useState(0);
     const [distance, setDistance] = useState(0);
     const [rates, setRates] = useState([]);
+
+    const [distanceLoading , setDistanceLoading] = useState(false)
+    const [ratesLoading , setRatesLoading] = useState(false)
 
     const navigate = useNavigate();
 
@@ -49,8 +53,8 @@ function BuildShipments({ auth, user }) {
     }, [onTruckOrders]);
 
     useEffect(()=>{
-        fetchRates();
-    }, [distance]);
+        setRates([])
+    },[distance])
 
     useEffect(() => {
         navigate('/build-shipments', {
@@ -159,6 +163,8 @@ function BuildShipments({ auth, user }) {
             return setDistance(0);
         }
         try {
+            setDistanceLoading(true)
+            setRatesLoading(true);
             const originLat = onTruckOrders?.[0].origin_lat;
             const originLong = onTruckOrders?.[0].origin_long;
             const destLat = onTruckOrders?.[0].destination_lat;
@@ -187,6 +193,10 @@ function BuildShipments({ auth, user }) {
             }
 
             setDistance(result.distance);
+            setDistanceLoading(false)
+
+            fetchRates(result.distance)
+            
 
         } catch (error) {
             console.log(error)
@@ -194,11 +204,14 @@ function BuildShipments({ auth, user }) {
         }
     }
 
-    async function fetchRates() {
-        if(!distance > 0){
-            return
+    async function fetchRates(dist) {
+        if(!(dist > 0)){
+            return setRates([])
         }
         try {
+            setRates([])
+            
+
             const response = await fetch(`${API_URL}/api/shipper/rates/${user.id}`, {
                 method: 'POST',
                 headers: {
@@ -206,7 +219,7 @@ function BuildShipments({ auth, user }) {
                     'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
-                    distance: distance
+                    distance: dist
                 })
             })
 
@@ -218,20 +231,22 @@ function BuildShipments({ auth, user }) {
 
             console.log(result.rates)
 
-            calculateRates(result.rates)
+            calculateRates(result.rates , dist)
+            setRatesLoading(false);
         }catch (error) {
             console.log(error)
             alert(`Error: ${error}`)
+            setRatesLoading(false)
         }
     }
 
-    function calculateRates(ratesArray){
+    function calculateRates(ratesArray , dist){
         const availableRates = []
         
         ratesArray.forEach(function(rate){
             let rateObject = {
                 carrier: rate.carrier,
-                rate: parseFloat(rate.flat_rate) + (parseFloat(distance) * parseFloat(rate.per_mile_rate)) + (parseFloat(rate.flat_rate) * parseFloat(rate.fuel_surcharge_percentage) / 100) 
+                rate: parseFloat(rate.flat_rate) + (parseFloat(dist) * parseFloat(rate.per_mile_rate)) + (parseFloat(rate.flat_rate) * parseFloat(rate.fuel_surcharge_percentage) / 100) 
             }
 
             availableRates.push(rateObject)
@@ -279,10 +294,13 @@ function BuildShipments({ auth, user }) {
                     </div>
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                         <span style={{display: 'block'}}>Distance: </span>
-                        <span style={{display: 'block'}}>{`${distance} mi.`}</span>
+                        {distanceLoading && <Loader type='dots' color='yellow'/>}
+                        <span style={{display: 'block'}}>{distance > 0 ? `${distance} mi.` : ''}</span>
                     </div>
-                {(rates.length) > 0 && (
-                    <h4>Low Cost Carrier: {rates[0].carrier} {`($${rates?.[0].rate.toFixed(2)})`}</h4>)}
+                
+                    <span>Low Cost Carrier:</span> 
+                    {ratesLoading && <Loader type='dots' color='yellow' />}
+                    <span> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
             </div>
             
             <TruckDropZone
@@ -305,6 +323,7 @@ function BuildShipments({ auth, user }) {
                 setDropDate={setDropDate}
                 createShipment={createShipment}
                 distance={distance}
+                distanceLoading={distanceLoading}
             />
             <OffTruckOrdersTable offTruckOrders={offTruckOrders} />
         </DndContext>
