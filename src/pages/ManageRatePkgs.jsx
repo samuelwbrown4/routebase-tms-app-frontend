@@ -48,7 +48,7 @@ function ManageRatePkgs({ auth, user }) {
 
     async function fetchPkgs() {
         try {
-            const response = await fetch(`${API_URL}/api/carrier/packages/${user.id}`, {
+            const response = await fetch(`${API_URL}/api/carrier/packages`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -72,7 +72,7 @@ function ManageRatePkgs({ auth, user }) {
 
     async function createRatePackage() {
         try {
-            let response = await fetch(`${API_URL}/api/carrier/packages/${user.id}`, {
+            let response = await fetch(`${API_URL}/api/carrier/packages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ function ManageRatePkgs({ auth, user }) {
 
     async function createContract(){
         try{
-            let response = await fetch(`${API_URL}/api/carrier/contracts/${user.id}` , {
+            let response = await fetch(`${API_URL}/api/carrier/contracts` , {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',

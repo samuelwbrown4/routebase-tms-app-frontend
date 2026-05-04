@@ -55,7 +55,7 @@ function Dashboard({ auth, user }) {
 
     async function getOpenOrders() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/orders/${user.id}?status=unplanned`, {
+            let response = await fetch(`${API_URL}/api/shipper/orders?status=unplanned`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization' : `Bearer ${auth}`
@@ -77,7 +77,7 @@ function Dashboard({ auth, user }) {
 
     async function getOrdersByStatus(status){
         try{
-            let response = await fetch(`${API_URL}/api/shipper/orders/${user.id}?status=${status}` , {
+            let response = await fetch(`${API_URL}/api/shipper/orders?status=${status}` , {
                 headers: {
                     'Content-Type' : 'application/json',
                     'Authorization' : `Bearer ${auth}`

@@ -40,7 +40,7 @@ function ManageCarriers({ auth, user }) {
     //fetch all carriers
     async function fetchContracts(status) {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/user/${user.id}/contracts?status=${status}`, {
+            let response = await fetch(`${API_URL}/api/shipper/contracts?status=${status}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`

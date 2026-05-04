@@ -212,7 +212,7 @@ function BuildShipments({ auth, user }) {
             setRates([])
             
 
-            const response = await fetch(`${API_URL}/api/shipper/rates/${user.id}`, {
+            const response = await fetch(`${API_URL}/api/shipper/rates`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

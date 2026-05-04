@@ -22,7 +22,7 @@ function ViewCustomerLocations({auth , user}){
 
     async function getAllCustomerLocations(){
         try{
-            let response = await fetch(`${API_URL}/api/shipper/customer-locations/${user.id}` , {
+            let response = await fetch(`${API_URL}/api/shipper/customer-locations` , {
                 headers: {
                     'Content-Type' : 'application/json',
                     'Authorization' : `Bearer ${auth}`

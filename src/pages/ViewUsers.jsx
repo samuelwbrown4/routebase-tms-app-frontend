@@ -22,7 +22,7 @@ function ViewUsers({auth , user}){
 
     async function getAllUsers(){
         try{
-            let response = await fetch(`${API_URL}/api/shipper/users/${user.id}` , {
+            let response = await fetch(`${API_URL}/api/shipper/users` , {
                 headers: {
                     'Content-Type' : 'application/json',
                     'Authorization' : `Bearer ${auth}`

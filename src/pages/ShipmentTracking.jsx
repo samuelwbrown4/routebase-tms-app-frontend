@@ -29,11 +29,11 @@ function ShipmentTracking({ user, auth }) {
 
     useEffect(()=>{
         console.log(displayedShipment)
-    },[displayedShipment])
+    },[displayedShipment]) 
 
     async function getShipments(status) {
         try {
-            let response = await fetch(`${API_URL}/api/${user.client === 'carrier' ? 'carrier' : 'shipper'}/shipments/${user.id}?status=${status}`, {
+            let response = await fetch(`${API_URL}/api/${user.client === 'carrier' ? 'carrier' : 'shipper'}/shipments?status=${status}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization' : `Bearer ${auth}`

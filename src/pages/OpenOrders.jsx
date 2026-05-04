@@ -86,7 +86,7 @@ function OpenOrders({ auth, user }) {
 
     async function getOpenOrders() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/orders/${user.id}?status=unplanned`, {
+            let response = await fetch(`${API_URL}/api/shipper/orders?status=unplanned`, { 
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization' : `Bearer ${auth}`

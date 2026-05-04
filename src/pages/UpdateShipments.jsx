@@ -32,7 +32,7 @@ function UpdateShipments({ auth, user }) {
 
     async function fetchCarrierUndelivered() {
         try {
-            const response = await fetch(`${API_URL}/api/carrier/shipments/${user.id}?status=planned,routed,in_transit`, {
+            const response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`

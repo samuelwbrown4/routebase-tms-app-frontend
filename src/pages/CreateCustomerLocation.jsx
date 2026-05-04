@@ -78,7 +78,7 @@ function CreateCustomerLocation({user , auth}) {
     //get all customers by userid
     async function getExistingCustomers(){
         try{
-            let response = await fetch(`${API_URL}/api/shipper/customers/${user.id}` , {
+            let response = await fetch(`${API_URL}/api/shipper/customers` , {
                 headers: {
                     'Content-Type' : 'application/json',
                     'Authorization' : `Bearer ${auth}`
@@ -117,7 +117,7 @@ function CreateCustomerLocation({user , auth}) {
 
     async function createNewCustomerLocation(){
         try{
-            let response = await fetch(`${API_URL}/api/shipper/customer-locations/${user.id}?existingCustomer=${existing ? 'true' : 'false'}`, {
+            let response = await fetch(`${API_URL}/api/shipper/customer-locations?existingCustomer=${existing ? 'true' : 'false'}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',

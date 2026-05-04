@@ -40,7 +40,7 @@ function CreateUser({ user, auth }) {
 
     async function getAdminDetails() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/locations/${user.id}`, {
+            let response = await fetch(`${API_URL}/api/shipper/locations`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
