@@ -9,6 +9,8 @@ import shipmentIcon from '../assets/truck-trailer.svg';
 import dashboardIcon from '../assets/speedometer.svg';
 import scrollIcon from '../assets/scroll.svg';
 import adminIcon from '../assets/identification-card.svg';
+import chatsIcon from '../assets/chats.svg';
+import routeIcon from '../assets/path.svg';
 
 function AppShellLayout({ user }) {
     const [opened, { toggle }] = useDisclosure();
@@ -44,13 +46,17 @@ function AppShellLayout({ user }) {
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/manage-carriers'><Image id='scroll-icon' src={scrollIcon} h={20} w='auto' /><span>Manage Carriers</span></Link>
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/admin'><Image id='scroll-icon' src={adminIcon} h={20} w='auto' /><span>Admin</span></Link>
+
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span></Link>
                 </div>}
                 {user.client === 'carrier' && <div id='links-container'>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={routeIcon} h={20} w='auto' /><span>Shipment Routing</span></Link>
+
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/update-shipments'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Update Shipments</span></Link>
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/carrier/packages'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Rate Packages</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Routing</span></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span></Link>
 
                     
                 </div>}

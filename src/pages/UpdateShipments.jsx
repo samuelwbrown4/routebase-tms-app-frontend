@@ -20,6 +20,7 @@ function UpdateShipments({ auth, user }) {
     const [deliveryDate, setDeliveryDate] = useState(undefined);
     const [pickInput, setPickInput] = useState(false);
     const [deliveryInput, setDeliveryInput] = useState(false);
+    const [message , setMessage] = useState(null)
 
 
     useEffect(() => {
@@ -55,8 +56,15 @@ function UpdateShipments({ auth, user }) {
     //add update logic
     async function handleUpdateShipment() {
         try {
+            if(message){
+                handleSubmitMessage()
+            }
             if (!pickupDate && !deliveryDate) {
-                return alert('No changes made. Please select a date to update')
+                notifications.show({
+                    title: 'No status update made',
+                    message: 'Pickup date/Delivery date not provided'
+                })
+                return 
             }
             close();
             const response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
@@ -89,6 +97,45 @@ function UpdateShipments({ auth, user }) {
 
 
         } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function handleSubmitMessage(){
+        try{
+            let response = await fetch(`${API_URL}/api/shared/conversations?shipmentNumber=${selectedShipment.shipment_number}` , {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json' , 
+                    'Authorization' : `Bearer ${auth}`
+                },
+                body: JSON.stringify({
+                    text: message
+                })
+            });
+
+            let result = await response.json();
+
+            if(result.message){
+                notifications.show({
+                    title: 'Success!',
+                    message: 'New message created',
+                    position: 'top-center'
+                });
+                return;
+            } else if(result.conversation){
+                notifications.show({
+                    title: 'Success!',
+                    message: 'New conversation created, message sent',
+                    position: 'top-center'
+                });
+                return;
+            }
+
+            //query to see if any conversations exist for shipment
+            //if not, create new one and add message
+            //if so, just add message
+        }catch(error){
             console.log(error)
         }
     }
@@ -184,7 +231,7 @@ function UpdateShipments({ auth, user }) {
                             </span>}
                     </div>
                     <div>
-                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555' } }} label="Add comment" description="(optional)" />
+                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555' , color: 'white' } }} label="Add comment" description="(optional)" value={message} onChange={(e)=>setMessage(e.target.value)} />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'right' }}>
                         <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => handleUpdateShipment()}>Confirm</Button>

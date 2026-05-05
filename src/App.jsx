@@ -21,6 +21,7 @@ import CustomerAdminOptions from './pages/CustomerAdminOptions';
 import ViewCustomerLocations from './pages/ViewCustomerLocations';
 import CreateCustomerLocation from './pages/CreateCustomerLocation';
 import ShipmentTracking from './pages/ShipmentTracking';
+import Conversations from './pages/Conversations';
 import {jwtDecode} from 'jwt-decode';
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
             <Route path='/admin/users/create-user' element={<CreateUser auth={auth} user={user}/>} />
             <Route path='/admin/customers/create-customer-location' element={<CreateCustomerLocation auth={auth} user={user}/>} />
             <Route path='/carrier/packages' element={<ManageRatePkgs auth={auth} user={user} />}/>
+            <Route path='/conversations' element={<Conversations auth={auth} user={user}/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
