@@ -1,42 +1,151 @@
-import {useState , useEffect} from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Image, Modal, Input, Button } from '@mantine/core';
+import sendIcon from '../assets/paper-plane-right.svg';
+import '../styles/conversations.css'
 
-function Conversations({auth , user}){
+function Conversations({ auth, user }) {
     const API_URL = import.meta.env.VITE_API_URL
 
-    const [conversations , setConversations] = useState([])
+    const [conversations, setConversations] = useState([])
+    const [messageText, setMessageText] = useState('')
+    const [selectedConversation, setSelectedConversation] = useState(null)
+    const [visibleModal, setVisibleModal] = useState(false)
 
-    useEffect(()=>{
+    const msgsEndRef = useRef(null)
+
+    useEffect(() => {
+        if (visibleModal && selectedConversation?.messages) {
+            setTimeout(() => {
+                if (msgsEndRef.current) {
+                    msgsEndRef.current.scrollTop = msgsEndRef.current.scrollHeight;
+                }
+            }, 500);
+        }
+    }, [visibleModal, selectedConversation])
+
+    useEffect(() => {
         fetchConversations();
-    },[])
+    }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(conversations);
-    },[conversations])
+    }, [conversations])
 
-    async function fetchConversations(){
-        try{
-            let response = await fetch(`${API_URL}/api/shared/conversations` , {
+    async function fetchConversations() {
+        try {
+            let response = await fetch(`${API_URL}/api/shared/conversations`, {
                 headers: {
-                    'Content-Type' : 'appliction/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'appliction/json',
+                    'Authorization': `Bearer ${auth}`
                 }
             });
 
             let result = await response.json();
 
             setConversations(result.conversations)
-        }catch(error){
+            return result.conversations
+        } catch (error) {
             console.log(error)
         }
     }
 
-    return(
-        <div style={{color: 'white'}}>
+    async function sendMessage() {
+        try {
+            let response = await fetch(`${API_URL}/api/shared/conversations/messages?conversationId=${selectedConversation.conv_id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
+                },
+                body: JSON.stringify({
+                    text: messageText
+                })
+            });
+
+            let result = await response.json()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    function handleConvoClick(convo) {
+        setSelectedConversation(convo);
+        setVisibleModal(true)
+    }
+
+    async function handleSendMessage(e) {
+        e.preventDefault();
+        await sendMessage();
+        const updatedConvos = await fetchConversations();
+        const matchConvo = updatedConvos.find(c => c.convo_id === selectedConversation.convo_id)
+        setSelectedConversation(matchConvo)
+
+        setMessageText('');
+    }
+
+    return (
+        <div style={{ color: 'white' }}>
             <h1 id='header'>Conversations</h1>
-            {conversations?.length <= 0 ? 'No conversations yet.' : 
-            <div>
-                conversations here
-            </div>}
+            <Modal styles={{
+                content: {backgroundColor: '#272727'} , 
+                header: {backgroundColor: '#272727'} ,
+                title: {width: '100%' , display: 'flex' , justifyContent: 'center'}
+            }} 
+            title={
+                <div style={{display: 'flex' , flexDirection: 'column' , alignItems: 'center', gap: '1rem'}}>
+                    <Image 
+                        src={user.client === 'shipper' ? `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedConversation?.carrier_name)}&background=333&color=FFFFFF` : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedConversation?.company_name)}&background=333&color=FFFFFF`} 
+                        
+                        alt="Profile" 
+                        h={40} 
+                        w={40} 
+                        radius="xl" 
+                    />
+                        
+                        <span style={{display: 'block' , color: 'white' , fontSize: '0.8rem'}}>{selectedConversation?.shipment_number}</span>
+                </div>} 
+                
+            opened={visibleModal} onClose={() => setVisibleModal(false)}>
+
+                <div id='convo-container' style={{ display: 'flex', flexDirection: 'column', height: '500px' }}>
+                    <div ref={msgsEndRef} style={{ flex: 1, overflowY: 'auto' }}>
+                        {selectedConversation?.messages.map(msg => (
+                            <div key={msg.id} className={msg.sender === user.client ? 'sent' : 'received'}>
+                                <div className={msg.sender === user.client ? 'msg-right' : 'msg-left'}>
+                                    {msg.text}
+                                </div>
+                                <span style={{display: 'inline-block' , fontSize: '0.6rem' , color: '#FFFFFF'}}>{new Date(msg.time_sent).toLocaleString()}</span>
+                            </div>
+                        ))}
+
+                    </div>
+
+                    <form id='convo-footer-div' onSubmit={(e) => handleSendMessage(e)}>
+                        <Input styles={{ wrapper: { width: '100%' }, input: { width: '100%' } }} id='message-text-input' value={messageText} onChange={(e) => setMessageText(e.target.value)} placeholder='Message' />
+                        <Button id='send-btn' type='submit'><Image src={sendIcon} /></Button>
+                    </form>
+
+                </div>
+            </Modal>
+            {conversations?.length <= 0 ? 'No conversations yet.' :
+                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                    {conversations.map(convo => (
+                        <div className='conversation-div' onClick={() => handleConvoClick(convo)} key={convo.id} style={{ display: 'flex', width: '100%', gap: '2rem', borderBottom: 'solid gray 0.8px', paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '1rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <Image src={user.client === 'shipper' ? `https://ui-avatars.com/api/?name=${encodeURIComponent(convo.carrier_name)}&background=f6bd02&color=0B1F3A` : `https://ui-avatars.com/api/?name=${encodeURIComponent(convo.company_name)}&background=f6bd02&color=0B1F3A`} alt="Profile" h={60} w={60} radius="xl" />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '.8rem' }}>
+                                    <span style={{ display: 'inline-block' }}>{user.client === 'shipper' ? convo.carrier_name : convo.company_name} - {convo.shipment_number}</span>
+                                    <span style={{ display: 'inline-block' }}>{new Date(convo.messages[convo.messages.length-1].time_sent).toLocaleString()}</span>
+                                </div>
+                                <div>
+                                    <p>{convo.messages[convo.messages.length - 1].text}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>}
         </div>
     )
 }
