@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { Image, Modal, Input, Button } from '@mantine/core';
+import { useState, useEffect, useRef , useContext } from 'react';
+import { NotificationContext } from '../contexts/NotificationsContext';
+import { Image, Modal, Input, Button , Badge } from '@mantine/core';
 import sendIcon from '../assets/paper-plane-right.svg';
 import '../styles/conversations.css'
 
@@ -12,6 +13,16 @@ function Conversations({ auth, user }) {
     const [visibleModal, setVisibleModal] = useState(false)
 
     const msgsEndRef = useRef(null)
+
+    const notificationsContext = useContext(NotificationContext)
+    const fetchUnread = notificationsContext.fetchMessages
+    const convoNotifications = notificationsContext.convoNotifications
+
+    function isUnread(convoId){
+        let isUnread = convoNotifications.find(convo => convoId === convo.conv_id);
+
+        return isUnread;
+    }
 
     useEffect(() => {
         if (visibleModal && selectedConversation?.messages) {
@@ -33,7 +44,7 @@ function Conversations({ auth, user }) {
 
     async function fetchConversations() {
         try {
-            let response = await fetch(`${API_URL}/api/shared/conversations`, {
+            let response = await fetch(`${API_URL}/api/shared/conversations?status=true,false&sender=carrier,shipper`, {
                 headers: {
                     'Content-Type': 'appliction/json',
                     'Authorization': `Bearer ${auth}`
@@ -68,7 +79,28 @@ function Conversations({ auth, user }) {
         }
     }
 
-    function handleConvoClick(convo) {
+    async function readMessages(convo){
+        try{
+            let response = await fetch(`${API_URL}/api/shared/conversations/messages/${convo.conv_id}` , {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type' : 'application/json' , 
+                    'Authorization' : `Bearer ${auth}`
+                }
+            });
+
+            let result = await response.json()
+
+            await fetchUnread()
+
+            return result;
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    async function handleConvoClick(convo) {
+        await readMessages(convo)
         setSelectedConversation(convo);
         setVisibleModal(true)
     }
@@ -77,7 +109,7 @@ function Conversations({ auth, user }) {
         e.preventDefault();
         await sendMessage();
         const updatedConvos = await fetchConversations();
-        const matchConvo = updatedConvos.find(c => c.convo_id === selectedConversation.convo_id)
+        const matchConvo = updatedConvos.find(c => c.conv_id === selectedConversation.conv_id)
         setSelectedConversation(matchConvo)
 
         setMessageText('');
@@ -128,9 +160,10 @@ function Conversations({ auth, user }) {
                 </div>
             </Modal>
             {conversations?.length <= 0 ? 'No conversations yet.' :
-                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' , justifyContent: 'center' }}>
                     {conversations.map(convo => (
-                        <div className='conversation-div' onClick={() => handleConvoClick(convo)} key={convo.id} style={{ display: 'flex', width: '100%', gap: '2rem', borderBottom: 'solid gray 0.8px', paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '1rem' }}>
+                        <div className='conversation-div' onClick={() => handleConvoClick(convo)} key={convo.conv_id} style={{ display: 'flex', width: '100%', gap: '2rem', borderBottom: 'solid gray 0.8px', paddingLeft: '1rem' , alignItems: 'center', paddingRight: '1rem', paddingTop: '1rem', paddingBottom: '1rem' }}>
+                            {isUnread(convo.conv_id) && <div className='badge-div'><Badge size='xs' circle /></div>}
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Image src={user.client === 'shipper' ? `https://ui-avatars.com/api/?name=${encodeURIComponent(convo.carrier_name)}&background=f6bd02&color=0B1F3A` : `https://ui-avatars.com/api/?name=${encodeURIComponent(convo.company_name)}&background=f6bd02&color=0B1F3A`} alt="Profile" h={60} w={60} radius="xl" />
                             </div>

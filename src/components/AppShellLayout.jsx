@@ -1,7 +1,9 @@
 import { Outlet } from 'react-router-dom';
-import { AppShell, Burger, Image } from '@mantine/core';
+import { AppShell, Burger, Image , Badge } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
+import { useContext , useEffect } from 'react';
+import { NotificationContext } from '../contexts/NotificationsContext';
 import '../styles/appShell.css';
 import signOutIcon from '../assets/sign-out.svg';
 import ordersIcon from '../assets/credit-card.svg';
@@ -12,8 +14,16 @@ import adminIcon from '../assets/identification-card.svg';
 import chatsIcon from '../assets/chats.svg';
 import routeIcon from '../assets/path.svg';
 
-function AppShellLayout({ user }) {
+function AppShellLayout({ user , setAuth }) {
     const [opened, { toggle }] = useDisclosure();
+
+    const data = useContext(NotificationContext);
+    const fetchNotifications = data?.fetchMessages;
+    const notifications = data?.notifications;
+
+    useEffect(()=>{
+        fetchNotifications()
+    },[])
 
     return (
         <AppShell
@@ -47,7 +57,7 @@ function AppShellLayout({ user }) {
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/admin'><Image id='scroll-icon' src={adminIcon} h={20} w='auto' /><span>Admin</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span><Badge color='blue'>{notifications}</Badge></Link>
                 </div>}
                 {user.client === 'carrier' && <div id='links-container'>
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={routeIcon} h={20} w='auto' /><span>Shipment Routing</span></Link>
@@ -56,7 +66,7 @@ function AppShellLayout({ user }) {
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/carrier/packages'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Rate Packages</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span><Badge color='blue'>{notifications}</Badge></Link>
 
                     
                 </div>}

@@ -58,3 +58,8 @@
     border-radius: 15px;
 }
 
+.badge-div{
+    display: flex;
+    align-items: center;
+}
+

@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
+import { NotificationProvider } from './contexts/NotificationsContext';
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
 import {BrowserRouter , Routes , Route , Navigate} from 'react-router';
@@ -32,6 +33,7 @@ function App() {
   return (
     <MantineProvider>
       <Notifications />
+      <NotificationProvider user={user} auth={auth}>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<SignIn setAuth={setAuth} user={user}/>}/>
@@ -55,6 +57,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      </NotificationProvider>
     </MantineProvider>
   )
 }
