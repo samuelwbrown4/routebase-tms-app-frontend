@@ -55,9 +55,9 @@ function AppShellLayout({ user , setAuth }) {
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/manage-carriers'><Image id='scroll-icon' src={scrollIcon} h={20} w='auto' /><span>Manage Carriers</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/admin'><Image id='scroll-icon' src={adminIcon} h={20} w='auto' /><span>Admin</span></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span>{(notifications > 0) && <Badge color='blue'>{notifications}</Badge>}</Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span><Badge color='blue'>{notifications}</Badge></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/admin'><Image id='scroll-icon' src={adminIcon} h={20} w='auto' /><span>Admin</span></Link>
                 </div>}
                 {user.client === 'carrier' && <div id='links-container'>
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={routeIcon} h={20} w='auto' /><span>Shipment Routing</span></Link>
@@ -66,7 +66,7 @@ function AppShellLayout({ user , setAuth }) {
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/carrier/packages'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Rate Packages</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span><Badge color='blue'>{notifications}</Badge></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/conversations'><Image id='chats-icon' src={chatsIcon} h={20} w='auto' /><span>Conversations</span>{(notifications > 0) && <Badge color='blue'>{notifications}</Badge>}</Link>
 
                     
                 </div>}
