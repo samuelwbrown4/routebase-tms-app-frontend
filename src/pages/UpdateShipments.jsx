@@ -31,6 +31,13 @@ function UpdateShipments({ auth, user }) {
         setFilteredShipments(shipmentsList)
     }, [shipmentsList]);
 
+    function formatDateForDB(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
     async function fetchCarrierUndelivered() {
         try {
             const response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit`, {
@@ -74,7 +81,7 @@ function UpdateShipments({ auth, user }) {
                     'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
-                    date: pickupDate ? pickupDate.toISOString().split('T')[0] : deliveryDate.toISOString().split('T')[0],
+                    date: pickupDate ? formatDateForDB(pickupDate) : formatDateForDB(deliveryDate),
                     userId: user.id,
                     eventType: pickupDate ? 'picked_up' : 'delivered'
                 })
