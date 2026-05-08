@@ -20,7 +20,7 @@ function UpdateShipments({ auth, user }) {
     const [deliveryDate, setDeliveryDate] = useState(undefined);
     const [pickInput, setPickInput] = useState(false);
     const [deliveryInput, setDeliveryInput] = useState(false);
-    const [message , setMessage] = useState(null)
+    const [message, setMessage] = useState(null)
 
 
     useEffect(() => {
@@ -31,12 +31,6 @@ function UpdateShipments({ auth, user }) {
         setFilteredShipments(shipmentsList)
     }, [shipmentsList]);
 
-    function formatDateForDB(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
 
     async function fetchCarrierUndelivered() {
         try {
@@ -63,15 +57,16 @@ function UpdateShipments({ auth, user }) {
     //add update logic
     async function handleUpdateShipment() {
         try {
-            if(message){
+            if (message) {
                 handleSubmitMessage()
             }
+            console.log('pu date' , pickupDate)
             if (!pickupDate && !deliveryDate) {
                 notifications.show({
                     title: 'No status update made',
                     message: 'Pickup date/Delivery date not provided'
                 })
-                return 
+                return
             }
             close();
             const response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
@@ -81,7 +76,8 @@ function UpdateShipments({ auth, user }) {
                     'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
-                    date: pickupDate ? formatDateForDB(pickupDate) : formatDateForDB(deliveryDate),
+                    date: pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
+                        : new Date(deliveryDate).toISOString().split('T')[0],
                     userId: user.id,
                     eventType: pickupDate ? 'picked_up' : 'delivered'
                 })
@@ -95,12 +91,14 @@ function UpdateShipments({ auth, user }) {
 
             notifications.show({
                 title: 'Success!',
-                message: pickupDate ? `Successfully saved pickup date of ${new Date(pickupDate).toLocaleDateString()}` : `Successfully saved delivery date of ${new Date(deliveryDate).toLocaleDateString()}`,
+                message: pickupDate ? `Successfully saved pickup date of ${new Date(pickupDate).toISOString().split('T')[0]}` : `Successfully saved delivery date of ${new Date(deliveryDate).toISOString().split('T')[0]}`,
                 position: 'top-center'
             })
-            fetchCarrierUndelivered()
 
            
+            fetchCarrierUndelivered()
+
+
 
 
         } catch (error) {
@@ -108,13 +106,13 @@ function UpdateShipments({ auth, user }) {
         }
     }
 
-    async function handleSubmitMessage(){
-        try{
-            let response = await fetch(`${API_URL}/api/shared/conversations?shipmentNumber=${selectedShipment.shipment_number}` , {
+    async function handleSubmitMessage() {
+        try {
+            let response = await fetch(`${API_URL}/api/shared/conversations?shipmentNumber=${selectedShipment.shipment_number}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type' : 'application/json' , 
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
                     text: message
@@ -123,14 +121,14 @@ function UpdateShipments({ auth, user }) {
 
             let result = await response.json();
 
-            if(result.message){
+            if (result.message) {
                 notifications.show({
                     title: 'Success!',
                     message: 'New message created',
                     position: 'top-center'
                 });
                 return;
-            } else if(result.conversation){
+            } else if (result.conversation) {
                 notifications.show({
                     title: 'Success!',
                     message: 'New conversation created, message sent',
@@ -142,7 +140,7 @@ function UpdateShipments({ auth, user }) {
             //query to see if any conversations exist for shipment
             //if not, create new one and add message
             //if so, just add message
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
@@ -238,7 +236,7 @@ function UpdateShipments({ auth, user }) {
                             </span>}
                     </div>
                     <div>
-                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555' , color: 'white' } }} label="Add comment" description="(optional)" value={message} onChange={(e)=>setMessage(e.target.value)} />
+                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555', color: 'white' } }} label="Add comment" description="(optional)" value={message} onChange={(e) => setMessage(e.target.value)} />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'right' }}>
                         <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => handleUpdateShipment()}>Confirm</Button>
