@@ -74,7 +74,7 @@ function UpdateShipments({ auth, user }) {
                     'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
-                    date: pickupDate ? pickupDate : deliveryDate,
+                    date: pickupDate ? pickupDate.toISOString().split('T')[0] : deliveryDate.toISOString().split('T')[0],
                     userId: user.id,
                     eventType: pickupDate ? 'picked_up' : 'delivered'
                 })
