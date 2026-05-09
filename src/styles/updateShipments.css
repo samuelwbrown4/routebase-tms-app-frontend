@@ -34,7 +34,7 @@
 }
 
 .selected-shipment-row:hover{
-    background-color: rgba(246, 168, 2, 0.85);
+    background-color: rgba(246, 168, 2, 0.85)!important;
     color: #0b1f3a;
 }
 
@@ -54,6 +54,46 @@
   visibility: visible;
   transform: scale(1.05);
 }
+
+#data-table{
+  color: white;
+  background-color: black;
+  font-size: 0.7rem;
+}
+
+.mdt-header {
+  background-color: black;
+}
+
+.mantine-datatable-row:hover td {
+  background-color: #333 !important;
+}
+
+.mantine-datatable-row:hover td {
+  background-color: #333 !important;
+}
+
+.mantine-datatable-row.selected-shipment-row:hover td {
+  background-color: rgba(246, 168, 2, 0.85)!important;
+    color: #0b1f3a;
+}
+
+.mantine-datatable-header-cell-resizable {
+  background-color: black !important;
+  color: white !important;
+}
+
+
+
+table th.mantine-datatable-header-cell-resizable {
+  background-color: black !important;
+  color: white !important;
+}
+
+.mantine-datatable-header-cell-sortable-text:hover {
+  color: black !important;
+}
+
 
 
 

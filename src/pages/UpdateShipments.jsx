@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DataTable, useDataTableColumns } from 'mantine-datatable';
 import { Table, Button, Drawer, Textarea, Select, Image } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
@@ -22,6 +23,11 @@ function UpdateShipments({ auth, user }) {
     const [deliveryInput, setDeliveryInput] = useState(false);
     const [message, setMessage] = useState(null)
 
+    const [sortStatus, setSortStatus] = useState({
+        columnAccessor: 'requested_pickup_date',
+        direction: 'asc'
+    })
+
 
     useEffect(() => {
         fetchCarrierUndelivered();
@@ -30,6 +36,123 @@ function UpdateShipments({ auth, user }) {
     useEffect(() => {
         setFilteredShipments(shipmentsList)
     }, [shipmentsList]);
+
+    const sortedShipments = [...filteredShipments].sort((a, b) => {
+        const { columnAccessor, direction } = sortStatus;
+        if (a[columnAccessor] < b[columnAccessor]) return direction === 'asc' ? -1 : 1;
+        if (a[columnAccessor] > b[columnAccessor]) return direction === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+        const key = 'shipments-table';
+    const { effectiveColumns } = useDataTableColumns({
+        key,
+        columns: [
+            {
+                accessor: 'shipment_number',
+                title: 'Shipment #',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+
+            {
+                accessor: 'origin',
+                title: 'Origin Name',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+
+            {
+                accessor: 'origin_city',
+                title: 'Origin City',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+            {
+                accessor: 'origin_state',
+                title: 'Origin State',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+            {
+                accessor: 'origin_zip',
+                title: 'Origin Zip',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+            {
+                accessor: 'destination',
+                title: 'Destination Name',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+
+            {
+                accessor: 'destination_city',
+                title: 'Destination City',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+            {
+                accessor: 'destination_state',
+                title: 'Destination State',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+            {
+                accessor: 'destination_zip',
+                title: 'Destination Zip',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true
+            },
+            {
+                accessor: 'requested_pickup_date',
+                title: 'Req. Pickup Date',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true,
+                render: ({ requested_pickup_date }) => new Date(requested_pickup_date).toLocaleDateString()
+            },
+            {
+                accessor: 'requested_delivery_date',
+                title: 'Req. Delivery Date',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true,
+                render: ({ requested_delivery_date }) => new Date(requested_delivery_date).toLocaleDateString()
+            },
+            {
+                accessor: 'status',
+                title: 'Status',
+                ellipsis: true,
+                resizable: true,
+                draggable: true,
+                sortable: true,
+                render: ({ status }) => status.toUpperCase().replaceAll('_', ' ')
+            }
+        ]
+    })
+
 
 
     async function fetchCarrierUndelivered() {
@@ -60,7 +183,7 @@ function UpdateShipments({ auth, user }) {
             if (message) {
                 handleSubmitMessage()
             }
-            console.log('pu date' , pickupDate)
+            console.log('pu date', pickupDate)
             if (!pickupDate && !deliveryDate) {
                 notifications.show({
                     title: 'No status update made',
@@ -95,7 +218,7 @@ function UpdateShipments({ auth, user }) {
                 position: 'top-center'
             })
 
-           
+
             fetchCarrierUndelivered()
 
 
@@ -262,43 +385,18 @@ function UpdateShipments({ auth, user }) {
                 </div>
 
             </div>
+            <DataTable id="data-table"
 
-            <Table className='table'>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Td>Shipment #</Table.Td>
-                        <Table.Td>Origin</Table.Td>
-                        <Table.Td>Origin City</Table.Td>
-                        <Table.Td>Origin State</Table.Td>
-                        <Table.Td>Origin Zip</Table.Td>
-                        <Table.Td>Destination</Table.Td>
-                        <Table.Td>Destination City</Table.Td>
-                        <Table.Td>Destination State</Table.Td>
-                        <Table.Td>Destination Zip</Table.Td>
-                        <Table.Td>Req. Pick</Table.Td>
-                        <Table.Td>Req. Del</Table.Td>
-                        <Table.Td>Status</Table.Td>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {filteredShipments?.map(shipment => (
-                        <Table.Tr key={shipment.id} onClick={selectedShipment?.id === shipment.id ? () => setSelectedShipment(null) : () => setSelectedShipment(shipment)} className={`update-shipment-row  ${shipment.id === selectedShipment?.id ? 'selected-shipment-row' : ''}`}>
-                            <Table.Td>{shipment.near_destination ? <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => console.log('near destination click')}>❗</span> : ''}{shipment.shipment_number}</Table.Td>
-                            <Table.Td>{shipment.origin}</Table.Td>
-                            <Table.Td>{shipment.origin_city}</Table.Td>
-                            <Table.Td>{shipment.origin_state}</Table.Td>
-                            <Table.Td>{shipment.origin_zip}</Table.Td>
-                            <Table.Td>{shipment.destination}</Table.Td>
-                            <Table.Td>{shipment.destination_city}</Table.Td>
-                            <Table.Td>{shipment.destination_state}</Table.Td>
-                            <Table.Td>{shipment.destination_zip}</Table.Td>
-                            <Table.Td>{new Date(shipment.requested_pickup_date).toLocaleDateString()}</Table.Td>
-                            <Table.Td>{new Date(shipment.requested_delivery_date).toLocaleDateString()}</Table.Td>
-                            <Table.Td>{shipment.status.toUpperCase().replaceAll('_', ' ')}</Table.Td>
-                        </Table.Tr>
-                    ))}
-                </Table.Tbody>
-            </Table>
+                highlightOnHover
+                storeColumnsKey={key}   
+                columns={effectiveColumns}
+                resizableColumns
+                records={sortedShipments}
+                sortStatus={sortStatus}
+                onSortStatusChange={setSortStatus}
+                onRowClick={({ record }) => selectedShipment?.id === record.id ? setSelectedShipment(null) : setSelectedShipment(record)}
+                rowClassName={(record) => record.id === selectedShipment?.id ? 'selected-shipment-row' : ''}
+            />
         </div>
 
     )

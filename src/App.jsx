@@ -1,4 +1,5 @@
 import '@mantine/core/styles.css';
+import 'mantine-datatable/styles.css';
 import { MantineProvider } from '@mantine/core';
 import { NotificationProvider } from './contexts/NotificationsContext';
 import { Notifications } from '@mantine/notifications';
