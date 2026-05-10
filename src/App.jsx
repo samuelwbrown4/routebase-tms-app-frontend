@@ -12,6 +12,7 @@ import AppShellLayout from './components/AppShellLayout';
 import OpenOrders from './pages/OpenOrders';
 import Dashboard from './pages/Dashboard';
 import BuildShipments from './pages/BuildShipments';
+import Shipments from './pages/Shipments';
 import UpdateShipments from './pages/UpdateShipments';
 import ManageCarriers from './pages/ManageCarriers';
 import ManageRatePkgs from './pages/ManageRatePkgs';
@@ -43,6 +44,7 @@ function App() {
             <Route path='/dashboard' element={<Dashboard auth={auth} user={user}/>}/>
             <Route path='/open-orders' element={<OpenOrders auth={auth} user={user}/>}/>
             <Route path='/build-shipments' element={<BuildShipments auth={auth} user={user}/>}/>
+            {user.client === 'shipper' && <Route path='/shipments' element={<Shipments auth={auth} user={user} />} />}
             <Route path='/shipment-tracking' element={<ShipmentTracking auth={auth} user={user}/>}/>
             <Route path='/manage-carriers' element={<ManageCarriers auth={auth} user={user} />}/>
             <Route path='/admin' element={<ShipperAdmin auth={auth} user={user} />}/>

@@ -51,7 +51,9 @@ function AppShellLayout({ user , setAuth }) {
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/open-orders'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Open Orders</span></Link>
 
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipment Tracking</span></Link>
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipments'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipments</span></Link>
+
+                    <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={routeIcon} h={20} w='auto' /><span>Route Tracking</span></Link>
 
                     <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/manage-carriers'><Image id='scroll-icon' src={scrollIcon} h={20} w='auto' /><span>Manage Carriers</span></Link>
 
