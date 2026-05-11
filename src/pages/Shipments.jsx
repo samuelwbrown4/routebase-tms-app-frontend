@@ -110,7 +110,9 @@ function Shipments({ auth, user }) {
         <div>
             <div id='header-div'>
                 <h1>Shipments</h1>
-                <Select searchable clearable clearSectionMode='both' nothingFoundMessage='No matching shipments.' data={searchResults?.map(result => ({ value: result.id, label: result.shipment_number }))} searchValue={searchValue} onSearchChange={setSearchValue} onChange={handleSearchSelect} onClear={getShipments} placeholder='Search...' rightSection={<Image src={searchIcon} h={24} w={'auto'} />} styles={{ input: { backgroundColor: 'transparent' } }} />
+                <Select searchable clearable clearSectionMode='both' nothingFoundMessage='No matching shipments.' data={searchResults?.map(result => ({ value: result.id, label: result.shipment_number }))} searchValue={searchValue} 
+                dropdownOpened={searchValue.length > 2 ? true : false}
+                onSearchChange={setSearchValue} onChange={handleSearchSelect} onClear={getShipments} placeholder='Search...' rightSection={<Image src={searchIcon} h={24} w={'auto'} />} styles={{ input: { backgroundColor: 'transparent' , color: 'white' } }} />
             </div>
             <div>
                 <ShipmentsTable sortStatus={sortStatus} setSortStatus={setSortStatus} filteredShipments={filteredShipments} selectedShipment={selectedShipment} setSelectedShipment={setSelectedShipment} handleDocClick={handleDocClick} />
