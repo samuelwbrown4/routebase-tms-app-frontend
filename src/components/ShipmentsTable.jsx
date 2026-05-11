@@ -1,6 +1,17 @@
 import { DataTable , useDataTableColumns} from "mantine-datatable";
+import {useNavigate} from 'react-router-dom';
+import { Image } from "@mantine/core";
+import eyeIcon from '../assets/eye.svg';
+import paperclipIcon from '../assets/paperclip.svg';
 
-function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selectedShipment , setSelectedShipment}) {
+const API_URL = import.meta.env.VITE_API_URL
+
+
+
+
+function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selectedShipment , setSelectedShipment , handleDocClick}) {
+
+    const navigate = useNavigate()
 
         const sortedShipments = [...filteredShipments].sort((a, b) => {
         const { columnAccessor, direction } = sortStatus;
@@ -13,6 +24,15 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
     const { effectiveColumns } = useDataTableColumns({
         key,
         columns: [
+            {
+                accessor: 'actions',
+                title: 'Actions',
+                render: (shipment) => 
+                    <div style={{display: 'flex' , gap: '0.5rem'}}>   
+                        <Image src={eyeIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); navigate(`/shipments/details/${shipment.id}`)}}/>
+                        <Image src={paperclipIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); handleDocClick(shipment.id)}}/>
+                    </div>
+            },
             {
                 accessor: 'shipment_number',
                 title: 'Shipment #',

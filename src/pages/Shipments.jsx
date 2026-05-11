@@ -1,37 +1,37 @@
-import {useState , useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import ShipmentsTable from '../components/ShipmentsTable';
-import {Select , Image} from '@mantine/core';
+import { Select, Image } from '@mantine/core';
 import searchIcon from '../assets/magnifying-glass.svg';
 
 function Shipments({ auth, user }) {
 
     const API_URL = import.meta.env.VITE_API_URL
 
-    const [shipmentsList , setShipmentsList] = useState([])
-    const [filteredShipments , setFilteredShipments] = useState([])
-    const [selectedShipment , setSelectedShipment] = useState(null)
-    const [searchValue , setSearchValue] = useState('')
-    const [searchResults , setSearchResults] = useState([])
+    const [shipmentsList, setShipmentsList] = useState([])
+    const [filteredShipments, setFilteredShipments] = useState([])
+    const [selectedShipment, setSelectedShipment] = useState(null)
+    const [searchValue, setSearchValue] = useState('')
+    const [searchResults, setSearchResults] = useState([])
 
-    useEffect(()=>{
+    useEffect(() => {
         getShipments();
-    },[])
+    }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         setFilteredShipments(shipmentsList)
-    },[shipmentsList])
+    }, [shipmentsList])
 
-    useEffect(()=>{
-        if(searchValue.length < 3){
+    useEffect(() => {
+        if (searchValue.length < 3) {
             return
         }
-        let timeout = setTimeout(()=>{
+        let timeout = setTimeout(() => {
             handleSearch()
-        } , 1000)
-        
+        }, 1000)
 
-        return ()=>clearTimeout(timeout)
-    },[searchValue])
+
+        return () => clearTimeout(timeout)
+    }, [searchValue])
 
     const [sortStatus, setSortStatus] = useState({
         columnAccessor: 'requested_pickup_date',
@@ -47,25 +47,25 @@ function Shipments({ auth, user }) {
         setFilteredShipments(shipmentsList.filter(shipment => shipment.status.toLowerCase().includes(value)));
     }
 
-    async function handleSearch(){
-        try{
-            let response = await fetch(`${API_URL}/api/shipper/shipments/search?value=${searchValue}` , {
+    async function handleSearch() {
+        try {
+            let response = await fetch(`${API_URL}/api/shipper/shipments/search?value=${searchValue}`, {
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 }
             });
 
             let result = await response.json();
 
             setSearchResults(result.shipments)
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
 
-    function handleSearchSelect(value){
-        setFilteredShipments(shipmentsList.filter(s=>s.id === value))
+    function handleSearchSelect(value) {
+        setFilteredShipments(shipmentsList.filter(s => s.id === value))
     }
 
     async function getShipments() {
@@ -89,14 +89,31 @@ function Shipments({ auth, user }) {
         }
     }
 
+    async function handleDocClick(shipmentId) {
+        try {
+            let response = await fetch(`${API_URL}/api/shipper/documents/${shipmentId}/bol`, {
+                headers: {
+                    'Authorization': `Bearer ${auth}`
+                }
+            });
+
+            let object = await response.blob();
+
+            const objectUrl = URL.createObjectURL(object);
+            window.open(objectUrl, '_blank');
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div>
             <div id='header-div'>
                 <h1>Shipments</h1>
-                <Select searchable clearable clearSectionMode='both' nothingFoundMessage='No matching shipments.' data={searchResults?.map(result => ({value: result.id, label: result.shipment_number}))} searchValue={searchValue} onSearchChange={setSearchValue} onChange={handleSearchSelect} onClear={getShipments} placeholder='Search...' rightSection={<Image src={searchIcon} h={24} w={'auto'}/>} styles={{input: {backgroundColor: 'transparent'}}}/>
+                <Select searchable clearable clearSectionMode='both' nothingFoundMessage='No matching shipments.' data={searchResults?.map(result => ({ value: result.id, label: result.shipment_number }))} searchValue={searchValue} onSearchChange={setSearchValue} onChange={handleSearchSelect} onClear={getShipments} placeholder='Search...' rightSection={<Image src={searchIcon} h={24} w={'auto'} />} styles={{ input: { backgroundColor: 'transparent' } }} />
             </div>
             <div>
-                <ShipmentsTable sortStatus={sortStatus} setSortStatus={setSortStatus} filteredShipments={filteredShipments} selectedShipment={selectedShipment} setSelectedShipment={setSelectedShipment}/>
+                <ShipmentsTable sortStatus={sortStatus} setSortStatus={setSortStatus} filteredShipments={filteredShipments} selectedShipment={selectedShipment} setSelectedShipment={setSelectedShipment} handleDocClick={handleDocClick} />
             </div>
         </div>
     )

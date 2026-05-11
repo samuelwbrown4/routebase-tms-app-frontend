@@ -20,10 +20,18 @@
     background-color: rgba(8, 149, 204, 0.167);*/
     background-color: black;
     color: white;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
+    padding-left: 1rem;
+    padding-right: 0rem;
+    border-right: #f6bd029a solid 2px;
+}
+
+.collapsed{
+    /*background-image: url('/shell-background.png');
+    background-size: cover;
+    background-color: rgba(8, 149, 204, 0.167);*/
+    background-color: black;
+    color: white;
+    padding: 2px;
     border-right: #f6bd029a solid 2px;
 }
 
@@ -31,7 +39,7 @@
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
 }
 
 
@@ -56,4 +64,8 @@ a:hover{
     color: #f6a802;
     transform: scale(1.05);
     transition: all 0.2s ease;
+}
+
+.toggle-nav:hover{
+    background-color: #1a1a1a;
 }
