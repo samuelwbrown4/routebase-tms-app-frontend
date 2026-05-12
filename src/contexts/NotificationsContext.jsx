@@ -5,6 +5,7 @@ const NotificationContext = createContext();
 function NotificationProvider({children , auth , user}){
     const [notifications , setNotifications] = useState([]);
     const [convoNotifications , setConvoNotifications] = useState([])
+    const [pendingContractsCount , setPendingContractsCount] = useState(null);
 
     const API_URL = import.meta.env.VITE_API_URL
 
@@ -36,8 +37,29 @@ function NotificationProvider({children , auth , user}){
         }
     }
 
+    async function fetchPendingContracts(){
+        if(!auth || !user)
+        return;
+        try{
+            let response = await fetch(`${API_URL}/api/shipper/contracts?status=pending` , {
+                headers: {
+                    'Content-Type' : 'application/json' ,
+                    'Authorization' : `Bearer ${auth}`
+                }
+            });
+
+            let result = await response.json();
+
+            let totalContracts = result.contracts?.length
+
+            setPendingContractsCount(totalContracts)
+        }catch(error){
+            console.log(error)
+        }
+    }
+
     return(
-        <NotificationContext.Provider value={{notifications , fetchMessages , convoNotifications}}>
+        <NotificationContext.Provider value={{notifications , fetchMessages , convoNotifications , pendingContractsCount , fetchPendingContracts}}>
             {children}
         </NotificationContext.Provider>
     )

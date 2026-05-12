@@ -45,7 +45,7 @@ function App() {
             <Route path='/dashboard' element={<Dashboard auth={auth} user={user}/>}/>
             <Route path='/open-orders' element={<OpenOrders auth={auth} user={user}/>}/>
             <Route path='/build-shipments' element={<BuildShipments auth={auth} user={user}/>}/>
-            {user.client === 'shipper' && <Route path='/shipments' element={<Shipments auth={auth} user={user} />} />}
+            {user?.client === 'shipper' && <Route path='/shipments' element={<Shipments auth={auth} user={user} />} />}
             <Route path='/shipments/details/:shipmentId' element={<ShipmentDetails user={user} auth={auth}/>} />
             <Route path='/shipment-tracking' element={<ShipmentTracking auth={auth} user={user}/>}/>
             <Route path='/manage-carriers' element={<ManageCarriers auth={auth} user={user} />}/>

@@ -9,3 +9,12 @@
 .approve-deny-btn{
     cursor: pointer;
 }
+
+
+.mantine-Accordion-control:hover{
+    background-color: #333 !important;
+}
+
+.mantine-Tabs-tab:hover{
+    background-color: #333 !important;
+}
