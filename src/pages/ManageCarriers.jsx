@@ -13,10 +13,7 @@ function ManageCarriers({ auth, user }) {
     const API_URL = import.meta.env.VITE_API_URL
 
     const [contracts, setContracts] = useState([])
-    const [filteredContracts, setFilteredContracts] = useState([])
-    const [proposedContracts, setProposedContracts] = useState([])
     const [currentTab , setCurrentTab] = useState('active')
-    const [rates, setRates] = useState([])
 
     const [opened, { open, close }] = useDisclosure(false);
 
@@ -26,22 +23,7 @@ function ManageCarriers({ auth, user }) {
 
     useEffect(() => {
         fetchContracts('active');
-
     }, [])
-
-    useEffect(() => {
-        if (proposedContracts.length > 0) {
-            notifications.show({
-                title: 'Alert!',
-                message: `${proposedContracts.length} proposed contracts needing attention`
-            })
-        }
-    }, [proposedContracts])
-
-    useEffect(() => {
-        console.log(contracts)
-        setFilteredContracts(contracts.filter(contract => contract.contract_status === 'active'))
-    }, [contracts])
 
     //fetch all carriers
     async function fetchContracts(status) {
@@ -95,48 +77,8 @@ function ManageCarriers({ auth, user }) {
 
     return (
         <div id='manage-carriers-container'>
-            <Modal opened={opened} onClose={close} title="Authentication">
-                <div>
-                    <h4>{proposedContracts.length > 0 ? 'Contract Proposals' : 'Nothing to see here!'}</h4>
-                    {proposedContracts.length > 0 && (
-                        <Accordion>
-                            {proposedContracts.map(c => (
-                                <Accordion.Item key={c.id} value={c.id}>
-                                    <Accordion.Control>{c.carrier} {new Date(c.start_date).toLocaleDateString()}-{new Date(c.end_date).toLocaleDateString()}</Accordion.Control>
-                                    <Accordion.Panel>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            {c.rates.map(r => (
-                                                <div key={r.rateId} style={{ display: 'flex', flexDirection: 'column' }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                                                        <div>{r.min_distance}-{r.max_distance}</div>
-                                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                                            <span style={{ display: 'block' }}>Flat Rate: ${r.flat_rate}</span>
-                                                            <span style={{ display: 'block' }}>Per Mile Rate: ${r.per_mile_rate}</span>
-                                                            <span style={{ display: 'block' }}>Fuel Surcharge: {r.fuel_surcharge_percentage}%</span>
-                                                        </div>
-                                                    </div>
-
-                                                </div>))}
-                                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                                                <Image className='approve-deny-btn' onClick={() => updateContract(c.id, 'active')} src={checkIcon} h={24} w={'auto'} />
-                                                <Image className='approve-deny-btn' onClick={() => updateContract(c.id, 'rejected')} src={xIcon} h={24} w={'auto'} />
-                                            </div>
-                                        </div>
-
-                                    </Accordion.Panel>
-                                </Accordion.Item>
-                            ))}
-                        </Accordion>
-                    )}
-                </div>
-            </Modal>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h1>Manage Contracts</h1>
-                <div>
-                    <Indicator inline label={proposedContracts?.length} size={16} color='red'>
-                        <Image id='contracts-button' src={scrollIcon} h={30} w={'auto'} onClick={open} />
-                    </Indicator>
-                </div>
             </div>
             <Tabs defaultValue='active'>
                 <Tabs.List>
