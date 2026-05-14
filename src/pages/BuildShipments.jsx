@@ -1,4 +1,4 @@
-import { useLocation , useNavigate} from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import OffTruckOrdersTable from '../components/OffTruckOrdersTable';
@@ -27,9 +27,10 @@ function BuildShipments({ auth, user }) {
     const [totalWeight, setTotalWeight] = useState(0);
     const [distance, setDistance] = useState(0);
     const [rates, setRates] = useState([]);
+    const [rate, setRate] = useState(null)
 
-    const [distanceLoading , setDistanceLoading] = useState(false)
-    const [ratesLoading , setRatesLoading] = useState(false)
+    const [distanceLoading, setDistanceLoading] = useState(false)
+    const [ratesLoading, setRatesLoading] = useState(false)
 
     const navigate = useNavigate();
 
@@ -52,16 +53,27 @@ function BuildShipments({ auth, user }) {
         console.log('distance', distance)
     }, [onTruckOrders]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setRates([])
-    },[distance])
+    }, [distance])
 
     useEffect(() => {
         navigate('/build-shipments', {
             state: { potentialLoads: offTruckOrders },
             replace: true
         })
-}, [offTruckOrders])
+    }, [offTruckOrders])
+
+    useEffect(() => {
+        if (!rate) {
+            return
+        }
+        const selectedRate = rates.find(r => r.id === rate);
+        if (selectedRate) {
+            setCarrier(selectedRate.carrierId);
+        }
+        setCarrier(rate.carrierId)
+    }, [rate])
 
     async function fetchCarrierList() {
         try {
@@ -129,10 +141,11 @@ function BuildShipments({ auth, user }) {
                     equipmentType: equipmentType,
                     status: 'planned',
                     totalWeight: totalWeight,
-                    pickDate: pickDate,
-                    dropDate: dropDate,
+                    pickDate: new Date(pickDate).toISOString.split('T')[0],
+                    dropDate: new Date(dropDate).toISOString.split('T')[0],
                     userId: user.id,
-                    orders: onTruckOrders.map(order => order.id)
+                    orders: onTruckOrders.map(order => order.id),
+                    distance: distance
                 })
             });
 
@@ -196,7 +209,7 @@ function BuildShipments({ auth, user }) {
             setDistanceLoading(false)
 
             fetchRates(result.distance)
-            
+
 
         } catch (error) {
             console.log(error)
@@ -205,12 +218,12 @@ function BuildShipments({ auth, user }) {
     }
 
     async function fetchRates(dist) {
-        if(!(dist > 0)){
+        if (!(dist > 0)) {
             return setRates([])
         }
         try {
             setRates([])
-            
+
 
             const response = await fetch(`${API_URL}/api/shipper/rates`, {
                 method: 'POST',
@@ -225,36 +238,41 @@ function BuildShipments({ auth, user }) {
 
             const result = await response.json();
 
-            if(!result.rates){
+                console.log('Raw backend result:', result.rates); // Add this
+
+
+            if (!result.rates) {
                 return alert(result.message)
             }
 
             console.log(result.rates)
 
-            calculateRates(result.rates , dist)
+            calculateRates(result.rates, dist)
             setRatesLoading(false);
-        }catch (error) {
+        } catch (error) {
             console.log(error)
             alert(`Error: ${error}`)
             setRatesLoading(false)
         }
     }
 
-    function calculateRates(ratesArray , dist){
+    function calculateRates(ratesArray, dist) {
         const availableRates = []
-        
-        ratesArray.forEach(function(rate){
+
+        ratesArray.forEach(function (rate) {
             let rateObject = {
+                id: rate.rateid,
                 carrier: rate.carrier,
-                rate: parseFloat(rate.flat_rate) + (parseFloat(dist) * parseFloat(rate.per_mile_rate)) + (parseFloat(rate.flat_rate) * parseFloat(rate.fuel_surcharge_percentage) / 100) 
+                carrierId: rate.carrierid,
+                rate: parseFloat(rate.flat_rate) + (parseFloat(dist) * parseFloat(rate.per_mile_rate)) + (parseFloat(rate.flat_rate) * parseFloat(rate.fuel_surcharge_percentage) / 100)
             }
 
             availableRates.push(rateObject)
         })
 
-        availableRates.sort((a,b)=> a.rate - b.rate);
+        availableRates.sort((a, b) => a.rate - b.rate);
 
-        console.log('Available rates: ' , availableRates)
+        console.log('Available rates: ', availableRates)
 
         setRates(availableRates);
     }
@@ -289,20 +307,20 @@ function BuildShipments({ auth, user }) {
             <div id='header-div'>
                 <h1>Build Shipment</h1>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <span style={{display: 'block'}}>Total Weight: </span>
-                        <span style={{display: 'block'}}>{`${totalWeight} lbs.`}</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <span style={{display: 'block'}}>Distance: </span>
-                        {distanceLoading && <Loader type='dots' color='yellow'/>}
-                        <span style={{display: 'block'}}>{distance > 0 ? `${distance} mi.` : ''}</span>
-                    </div>
-                
-                    <span>Low Cost Carrier:</span> 
-                    {ratesLoading && <Loader type='dots' color='yellow' />}
-                    <span> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
+                    <span style={{ display: 'block' }}>Total Weight: </span>
+                    <span style={{ display: 'block' }}>{`${totalWeight} lbs.`}</span>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <span style={{ display: 'block' }}>Distance: </span>
+                    {distanceLoading && <Loader type='dots' color='yellow' />}
+                    <span style={{ display: 'block' }}>{distance > 0 ? `${distance} mi.` : ''}</span>
+                </div>
+
+                <span>Low Cost Carrier:</span>
+                {ratesLoading && <Loader type='dots' color='yellow' />}
+                <span> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
             </div>
-            
+
             <TruckDropZone
                 onTruckOrders={onTruckOrders}
                 removeFromTruck={removeFromTruck}
@@ -324,6 +342,8 @@ function BuildShipments({ auth, user }) {
                 createShipment={createShipment}
                 distance={distance}
                 distanceLoading={distanceLoading}
+                rates={rates}
+                setRate={setRate}
             />
             <OffTruckOrdersTable offTruckOrders={offTruckOrders} />
         </DndContext>

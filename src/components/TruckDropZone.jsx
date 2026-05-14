@@ -3,7 +3,7 @@ import { Button, Image, Select, CloseButton } from '@mantine/core'
 import { DatePickerInput } from '@mantine/dates';
 import '../styles/offTruckOrders.css'
 
-function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentTypes, setMode, modeList, mode, carrier, setCarrier, equipmentType, setEquipmentType, pickDate, setPickDate, dropDate, setDropDate, totalWeight, setTotalWeight, createShipment, distance }) {
+function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentTypes, setMode, modeList, mode, carrier, setCarrier, equipmentType, setEquipmentType, pickDate, setPickDate, dropDate, setDropDate, totalWeight, setTotalWeight, createShipment, distance , rates , setRate }) {
 
     const { isOver, setNodeRef } = useDroppable({
         id: 'truck-zone'
@@ -47,10 +47,10 @@ function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentT
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' , gap: '0.5rem' }}>
                         <span>Carrier: </span>
                         <Select classNames={{ input: 'shipment-overview-select', wrapper: 'shipment-overview-select-wrapper' }} placeholder='...'
-                            data={carrierList.map(carrier => ({
-                                value: carrier.id,
-                                label: carrier.name
-                            }))} onChange={(_value, option) => setCarrier(_value)} />
+                            data={rates?.map(rate => ({
+                                value: rate?.id,
+                                label: `${rate.carrier} - $${rate.rate}`
+                            })) || []} onChange={(_value, option) => setRate(_value)} />
                     </div>
                 
 

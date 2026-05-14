@@ -3,13 +3,14 @@ import {useNavigate} from 'react-router-dom';
 import { Image } from "@mantine/core";
 import eyeIcon from '../assets/eye.svg';
 import paperclipIcon from '../assets/paperclip.svg';
+import chatIcon from '../assets/chat.svg';
 
 const API_URL = import.meta.env.VITE_API_URL
 
 
 
 
-function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selectedShipment , setSelectedShipment , handleDocClick}) {
+function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selectedShipment , setSelectedShipment , handleDocClick, getConversation}) {
 
     const navigate = useNavigate()
 
@@ -31,6 +32,7 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
                     <div style={{display: 'flex' , gap: '0.5rem'}}>   
                         <Image src={eyeIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); navigate(`/shipments/details/${shipment.id}`)}}/>
                         <Image src={paperclipIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); handleDocClick(shipment.id)}}/>
+                        <Image src={chatIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation() ; getConversation(shipment.id)}}/>
                     </div>
             },
             {
@@ -141,7 +143,6 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
 
     return (
         <DataTable id="data-table"
-
             highlightOnHover
             storeColumnsKey={key}
             columns={effectiveColumns}
