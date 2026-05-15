@@ -42,7 +42,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
                 console.log(error)
             }
         }
-
+        fetchShipment()
     }, [])
 
 
