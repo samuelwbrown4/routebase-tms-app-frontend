@@ -37,7 +37,7 @@ const shipments = [
     { id: 2, origin: [34.0007, -81.0348], destination: [35.2271, -80.8431] },
 ];
 
-// inside your return:
+
 
 
 export default function RouteMap({displayedShipment}) {

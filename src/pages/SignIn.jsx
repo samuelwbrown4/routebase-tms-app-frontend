@@ -21,6 +21,7 @@ function SignIn({ setAuth , user }) {
         try {
             let response = await fetch(`${API_URL}/api/users/login`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -33,10 +34,9 @@ function SignIn({ setAuth , user }) {
 
             if (!result.token) {
                 return alert(`Error: ${result.error}`)
-            }
-            localStorage.setItem('auth', result.token);
+            };
             setAuth(result.token);
-            navigate(radio === 'shipper' ? '/dashboard' : '/update-shipments');
+            navigate(radio === 'shipper' ? '/dashboard' : '/shipment-tracking');
         } catch (error) {
             console.log(error)
             alert('Failed to reach backend service. Contact Administrator.')

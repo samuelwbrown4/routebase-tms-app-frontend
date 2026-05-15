@@ -1,54 +1,67 @@
 import CustomerLocationsTable from '../components/CustomerLocationsTable';
 import backIcon from '../assets/arrow-square-left.svg'
-import {useEffect , useState} from 'react';
-import {Image} from '@mantine/core'
-import {useNavigate} from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { Image } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
+import refreshToken from '../utils/refresh';
 
-function ViewCustomerLocations({auth , user}){
+function ViewCustomerLocations({ auth, user, setAuth }) {
 
     const API_URL = import.meta.env.VITE_API_URL
 
-    const [customerLocations , setCustomerLocations] = useState([])
+    const [customerLocations, setCustomerLocations] = useState([])
 
     const navigate = useNavigate()
 
-    useEffect(()=>{
+    useEffect(() => {
         getAllCustomerLocations()
-    },[])
+    }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(customerLocations)
-    },[customerLocations])
+    }, [customerLocations])
 
-    async function getAllCustomerLocations(){
-        try{
-            let response = await fetch(`${API_URL}/api/shipper/customer-locations` , {
+    async function getAllCustomerLocations() {
+        try {
+            let response = await fetch(`${API_URL}/api/shipper/customer-locations`, {
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/customer-locations`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             let result = await response.json();
 
-            if(!result.customerLocations){
+            if (!result.customerLocations) {
                 return alert('Customer Locations could not be found')
             }
 
             setCustomerLocations(result.customerLocations)
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
 
     return (
-         <div style={{display: 'flex' , flexDirection: 'column'}}>
-            <div style={{display: 'flex'  , gap: '1.5rem'}}>
-                <Image src={backIcon} h={35} w={35} style={{marginTop: '.5rem'}} id="back-btn" onClick={()=>navigate('/admin/customers')}/>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', gap: '1.5rem' }}>
+                <Image src={backIcon} h={35} w={35} style={{ marginTop: '.5rem' }} id="back-btn" onClick={() => navigate('/admin/customers')} />
                 <h1 className="header">Admin / Customers / View</h1>
             </div>
             <div>
-                {customerLocations?.length > 0 && (<CustomerLocationsTable customerLocations={customerLocations}/>)}
+                {customerLocations?.length > 0 && (<CustomerLocationsTable customerLocations={customerLocations} />)}
             </div>
         </div>
     )

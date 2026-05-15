@@ -1,13 +1,16 @@
-import { useState, useEffect, useContext} from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router';
 import { NotificationContext } from '../contexts/NotificationsContext';
 import ShipmentsTable from '../components/ShipmentsTable';
 import { Select, Image } from '@mantine/core';
 import searchIcon from '../assets/magnifying-glass.svg';
 import ChatModal from '../components/ChatModal';
+import refreshToken from '../utils/refresh';
 
-function Shipments({ auth, user }) {
+function Shipments({ auth, user, setAuth }) {
 
     const API_URL = import.meta.env.VITE_API_URL
+    const navigate = useNavigate();
 
     const [shipmentsList, setShipmentsList] = useState([])
     const [filteredShipments, setFilteredShipments] = useState([])
@@ -15,9 +18,9 @@ function Shipments({ auth, user }) {
     const [searchValue, setSearchValue] = useState('')
     const [searchResults, setSearchResults] = useState([])
 
-    const [visibleModal , setVisibleModal] = useState(false)
-    const [conversation , setConversation] = useState(null)
-    const [currentShipment , setCurrentShipment] = useState(null)
+    const [visibleModal, setVisibleModal] = useState(false)
+    const [conversation, setConversation] = useState(null)
+    const [currentShipment, setCurrentShipment] = useState(null)
 
     const contextData = useContext(NotificationContext);
     const conversations = contextData?.convoNotifications
@@ -65,6 +68,18 @@ function Shipments({ auth, user }) {
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/shipments/search?value=${searchValue}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             let result = await response.json();
 
             setSearchResults(result.shipments)
@@ -86,6 +101,18 @@ function Shipments({ auth, user }) {
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/shipments?status=${['planned', 'routed', 'in_transit', 'delivered'].join(',')}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             let result = await response.json();
 
             if (!result.shipments) {
@@ -106,6 +133,15 @@ function Shipments({ auth, user }) {
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = refreshToken(setAuth, navigate);
+                response = await fetch(`${API_URL}/api/shipper/documents/${shipmentId}/bol`, {
+                    headers: {
+                        'Authorization': `Bearer ${newToken}`
+                    }
+                });
+            }
+
             let object = await response.blob();
 
             const objectUrl = URL.createObjectURL(object);
@@ -115,35 +151,47 @@ function Shipments({ auth, user }) {
         }
     }
 
-    async function getConversation(shipmentId){
-        try{
-            let response = await fetch(`${API_URL}/api/shared/conversations/${shipmentId}` , {
+    async function getConversation(shipmentId) {
+        try {
+            let response = await fetch(`${API_URL}/api/shared/conversations/${shipmentId}`, {
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 }
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shared/conversations/${shipmentId}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
 
             let result = await response.json();
 
             console.log('conversation fetched', result)
 
             setConversation(result.conversation)
-            setCurrentShipment(filteredShipments.find(s=> s.id === shipmentId))
+            setCurrentShipment(filteredShipments.find(s => s.id === shipmentId))
             setVisibleModal(true)
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
 
     return (
         <div>
-            <ChatModal conversation={conversation} setVisibleModal={setVisibleModal} visibleModal={visibleModal} user={user} auth={auth} getConversation={getConversation} shipment={currentShipment} />
+            <ChatModal conversation={conversation} setVisibleModal={setVisibleModal} visibleModal={visibleModal} user={user} auth={auth} getConversation={getConversation} shipment={currentShipment} setAuth={setAuth} />
             <div id='header-div'>
                 <h1>Shipments</h1>
-                <Select searchable clearable clearSectionMode='both' nothingFoundMessage='No matching shipments.' data={searchResults?.map(result => ({ value: result.id, label: result.shipment_number }))} searchValue={searchValue} 
-                dropdownOpened={searchValue.length > 2 ? true : false}
-                onSearchChange={setSearchValue} onChange={handleSearchSelect} onClear={getShipments} placeholder='Search...' rightSection={<Image src={searchIcon} h={24} w={'auto'} />} styles={{ input: { backgroundColor: 'transparent' , color: 'white' } }} />
+                <Select searchable clearable clearSectionMode='both' nothingFoundMessage='No matching shipments.' data={searchResults?.map(result => ({ value: result.id, label: result.shipment_number }))} searchValue={searchValue}
+                    dropdownOpened={searchValue.length > 2 ? true : false}
+                    onSearchChange={setSearchValue} onChange={handleSearchSelect} onClear={getShipments} placeholder='Search...' rightSection={<Image src={searchIcon} h={24} w={'auto'} />} styles={{ input: { backgroundColor: 'transparent', color: 'white' } }} />
             </div>
             <div >
                 <ShipmentsTable sortStatus={sortStatus} setSortStatus={setSortStatus} filteredShipments={filteredShipments} selectedShipment={selectedShipment} setSelectedShipment={setSelectedShipment} handleDocClick={handleDocClick} getConversation={getConversation} />

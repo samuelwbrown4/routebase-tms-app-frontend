@@ -6,8 +6,9 @@ import TruckDropZone from '../components/TruckDropZone';
 import '../styles/buildShipments.css'
 import { notifications } from '@mantine/notifications';
 import { Loader } from '@mantine/core';
+import refreshToken from '../utils/refresh';
 
-function BuildShipments({ auth, user }) {
+function BuildShipments({ auth, user, setAuth }) {
 
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -84,6 +85,18 @@ function BuildShipments({ auth, user }) {
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/carriers`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             let data = await response.json();
 
             if (!data.carriers) {
@@ -105,6 +118,18 @@ function BuildShipments({ auth, user }) {
                     'Authorization': `Bearer ${auth}`
                 }
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/equipment-types`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
 
             let data = await response.json();
 
@@ -148,6 +173,32 @@ function BuildShipments({ auth, user }) {
                     distance: distance
                 })
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate)
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/shipments`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            originId: onTruckOrders[0].origin_id,
+                            destinationId: onTruckOrders[0].destination_id,
+                            carrier: carrier,
+                            equipmentType: equipmentType,
+                            status: 'planned',
+                            totalWeight: totalWeight,
+                            pickDate: new Date(pickDate).toISOString.split('T')[0],
+                            dropDate: new Date(dropDate).toISOString.split('T')[0],
+                            userId: user.id,
+                            orders: onTruckOrders.map(order => order.id),
+                            distance: distance
+                        })
+                    });
+                }
+            }
 
             let result = await response.json()
 
@@ -196,6 +247,23 @@ function BuildShipments({ auth, user }) {
                 })
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/proxy/distance`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            originLat,
+                            originLong,
+                            destLat,
+                            destLong
+                        })
+                    });
+                }
+            }
 
             const result = await response.json();
 
@@ -236,9 +304,25 @@ function BuildShipments({ auth, user }) {
                 })
             })
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/rates`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            distance: dist
+                        })
+                    })
+                }
+            }
+
             const result = await response.json();
 
-                console.log('Raw backend result:', result.rates); // Add this
+            console.log('Raw backend result:', result.rates); // Add this
 
 
             if (!result.rates) {

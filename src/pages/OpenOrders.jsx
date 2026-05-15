@@ -9,9 +9,10 @@ import searchIcon from '../assets/magnifying-glass.svg';
 import packageIcon from '../assets/package.svg';
 import unselectIcon from '../assets/selection-slash.svg';
 import '../styles/openOrders.css';
+import refreshToken from '../utils/refresh.js';
 
 
-function OpenOrders({ auth, user }) {
+function OpenOrders({ auth, user, setAuth }) {
 
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -86,12 +87,24 @@ function OpenOrders({ auth, user }) {
 
     async function getOpenOrders() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/orders?status=unplanned`, { 
+            let response = await fetch(`${API_URL}/api/shipper/orders?status=unplanned`, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Authorization': `Bearer ${auth}`
                 }
             })
+
+            if (response.status === 401) {
+                const newToken = await refreshToken(setAuth, navigate)
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/orders?status=unplanned`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    })
+                }
+            }
 
             let result = await response.json();
 
@@ -115,6 +128,18 @@ function OpenOrders({ auth, user }) {
                     'Authorization': `Bearer ${auth}`
                 }
             });
+
+            if (response.status === 401) {
+                const newToken = await refreshToken(setAuth, navigate)
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/orders/${orderId}/line-items`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
 
             let result = await response.json();
 
@@ -162,16 +187,16 @@ function OpenOrders({ auth, user }) {
                     <Table className='table'>
                         <Table.Thead>
                             <Table.Tr className='header-row' >
-                                <Table.Th onClick={()=>handleSort('order_number')}>Order No.{sortField === 'order_number' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('origin')}>Origin Name{sortField === 'origin' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('origin_address')}>Origin Address{sortField === 'origin_address' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('origin_city')}>Origin City{sortField === 'origin_city' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('origin_state')}>Origin State{sortField === 'origin_state' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('destination')}>Destination Name{sortField === 'destination' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('destination_address')}>Destination Address{sortField === 'destination_address' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('destination_city')}>Destination City{sortField === 'destination_city' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('destination_state')}>Destination State{sortField === 'destination_state' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={()=>handleSort('weight')}>Weight{sortField === 'weight' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('order_number')}>Order No.{sortField === 'order_number' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('origin')}>Origin Name{sortField === 'origin' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('origin_address')}>Origin Address{sortField === 'origin_address' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('origin_city')}>Origin City{sortField === 'origin_city' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('origin_state')}>Origin State{sortField === 'origin_state' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('destination')}>Destination Name{sortField === 'destination' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('destination_address')}>Destination Address{sortField === 'destination_address' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('destination_city')}>Destination City{sortField === 'destination_city' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('destination_state')}>Destination State{sortField === 'destination_state' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th onClick={() => handleSort('weight')}>Weight{sortField === 'weight' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>

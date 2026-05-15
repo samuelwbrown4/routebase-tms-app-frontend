@@ -3,6 +3,7 @@ import { Image } from '@mantine/core';
 import backIcon from '../assets/arrow-square-left.svg'
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import refreshToken from "../utils/refresh";
 
 function CreateUser({ user, auth }) {
 
@@ -47,6 +48,18 @@ function CreateUser({ user, auth }) {
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/locations`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             let result = await response.json();
 
             if (!result.locations) {
@@ -83,6 +96,28 @@ function CreateUser({ user, auth }) {
                     erpId
                 })
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/shipper-users`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            firstName,
+                            lastName,
+                            locationId,
+                            email,
+                            phone,
+                            role,
+                            erpId
+                        })
+                    });
+                }
+            }
 
             let result = response.json();
 

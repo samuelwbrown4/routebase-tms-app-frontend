@@ -1,11 +1,13 @@
 import RouteMap from "../components/RouteMap";
 import { notifications } from '@mantine/notifications';
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router";
 import { Table, Button, Notification, Loader } from '@mantine/core'
 import '../styles/routingTracking.css'
+import refreshToken from "../utils/refresh";
 
-function ShipmentTracking({ user, auth }) {
-
+function ShipmentTracking({ user, auth, setAuth }) {
+    const navigate = useNavigate()
     const API_URL = import.meta.env.VITE_API_URL
 
     const [routableShipments, setRoutableShipments] = useState([])
@@ -36,22 +38,35 @@ function ShipmentTracking({ user, auth }) {
 
         const interval = setInterval(async () => {
             const response = await fetch(`${API_URL}/api/shipper/shipments/${displayedShipment.id}`, {
-                headers: { 
-                    'Content-Type' : 'application/json',
-                    'Authorization': `Bearer ${auth}` 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 }
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/shipments/${displayedShipment.id}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             const result = await response.json();
             console.log(result.shipment)
             setDisplayedShipment(result.shipment);
-            console.log('current location' , result.shipment.current_position)
-           
-        }, 60000); 
+            console.log('current location', result.shipment.current_position)
 
-        return function(){
+        }, 60000);
+
+        return function () {
             console.log('leaving dom')
             clearInterval(interval);
-        } 
+        }
     }, [displayedShipment?.id]);
 
     async function getShipments(status) {
@@ -62,6 +77,18 @@ function ShipmentTracking({ user, auth }) {
                     'Authorization': `Bearer ${auth}`
                 }
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/${user.client === 'carrier' ? 'carrier' : 'shipper'}/shipments?status=${status}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
 
             let result = await response.json();
 
@@ -92,6 +119,22 @@ function ShipmentTracking({ user, auth }) {
                 })
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/shipments/${shipment.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            eventType: eventType
+                        })
+                    });
+                }
+            }
+
             let result = await response.json();
 
             if (result.message) {
@@ -115,6 +158,18 @@ function ShipmentTracking({ user, auth }) {
                     'Authorization': `Bearer ${auth}`
                 }
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/shipments/geometry/${shipmentId}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
 
             let result = await response.json();
 

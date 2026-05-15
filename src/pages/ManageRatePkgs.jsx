@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { useDisclosure } from '@mantine/hooks';
 import { Card, Spoiler, Button, Image, Modal, Input, Select } from '@mantine/core';
-import {DateInput} from '@mantine/dates';
+import { DateInput } from '@mantine/dates';
 import plusIcon from '../assets/plus-square.svg';
 import scrollIcon from '../assets/scroll.svg'
 import '../styles/ratePkgs.css'
+import refreshToken from '../utils/refresh';
 
-function ManageRatePkgs({ auth, user }) {
+function ManageRatePkgs({ auth, user, setAuth }) {
 
     const API_URL = import.meta.env.VITE_API_URL;
+
+    const navigate = useNavigate()
 
     const [packages, setPackages] = useState([]);
     const [shippers, setShippers] = useState([]);
@@ -16,8 +20,8 @@ function ManageRatePkgs({ auth, user }) {
     const [selectedPackage, setSelectedPackage] = useState('')
     const [selectedShipper, setSelectedShipper] = useState('')
 
-    const [contractStartDate , setContractStartDate] = useState(undefined)
-    const [contractEndDate , setContractEndDate] = useState(undefined)
+    const [contractStartDate, setContractStartDate] = useState(undefined)
+    const [contractEndDate, setContractEndDate] = useState(undefined)
 
     const [pkgName, setPkgName] = useState('');
 
@@ -54,6 +58,18 @@ function ManageRatePkgs({ auth, user }) {
                     'Authorization': `Bearer ${auth}`
                 }
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/packages`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
 
             const result = await response.json();
 
@@ -102,6 +118,41 @@ function ManageRatePkgs({ auth, user }) {
                 })
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/packages`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            name: pkgName,
+                            minDistance1: 0,
+                            maxDistance1: 499.99,
+                            flatRate1: Number(flatRate1),
+                            perMileRate1: Number(perMileRate1),
+                            fuelSurcharge1: Number(fuelSurcharge1),
+                            minDistance2: 500,
+                            maxDistance2: 749.99,
+                            flatRate2: Number(flatRate2),
+                            perMileRate2: Number(perMileRate2),
+                            fuelSurcharge2: Number(fuelSurcharge2),
+                            minDistance3: 750,
+                            maxDistance3: 1199.99,
+                            flatRate3: Number(flatRate3),
+                            perMileRate3: Number(perMileRate3),
+                            fuelSurcharge3: Number(fuelSurcharge3),
+                            minDistance4: 1200,
+                            flatRate4: Number(flatRate4),
+                            perMileRate4: Number(perMileRate4),
+                            fuelSurcharge4: Number(fuelSurcharge4)
+                        })
+                    });
+                }
+            }
+
             let result = await response.json();
 
             if (!result.message) {
@@ -125,6 +176,18 @@ function ManageRatePkgs({ auth, user }) {
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/shippers`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             let result = await response.json();
 
 
@@ -136,30 +199,49 @@ function ManageRatePkgs({ auth, user }) {
         }
     }
 
-    async function createContract(){
-        try{
-            let response = await fetch(`${API_URL}/api/carrier/contracts` , {
+    async function createContract() {
+        try {
+            let response = await fetch(`${API_URL}/api/carrier/contracts`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer: ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer: ${auth}`
                 },
                 body: JSON.stringify({
                     startDate: contractStartDate,
                     endDate: contractEndDate,
-                    packageId:selectedPackage,
+                    packageId: selectedPackage,
                     shipperId: selectedShipper
                 })
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/contracts`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer: ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            startDate: contractStartDate,
+                            endDate: contractEndDate,
+                            packageId: selectedPackage,
+                            shipperId: selectedShipper
+                        })
+                    });
+                }
+            }
+
             let result = await response.json();
 
-            if(!result.contract){
+            if (!result.contract) {
                 return alert(result.error)
             }
 
             alert('Successfully proposed contract')
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     }
@@ -174,51 +256,51 @@ function ManageRatePkgs({ auth, user }) {
                 header: { backgroundColor: '#2c2c2c', color: 'white' },
             }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
-                    <div style={{ display: 'flex', gap: '1rem', width: '100%' , justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', gap: '1rem', width: '100%', justifyContent: 'center' }}>
                         <Select placeholder="Select Shipper" data={shippers.map(s => ({ value: String(s.id), label: s.name }))} value={selectedShipper} onChange={setSelectedShipper} />
                         <Select placeholder="Select Rate Package" data={packages.map(p => ({ value: String(p.pkgid), label: p.pkgname }))} value={selectedPackage} onChange={setSelectedPackage} />
                     </div>
                     <div style={{ display: 'flex', gap: '1rem', width: '100%', marginLeft: '2rem', marginRight: '2rem', justfiyContent: 'center' }}>
                         <DateInput
-                                    value={contractStartDate}
-                                    onChange={setContractStartDate}
-                                    fullWidth='false'
-                                    size='xs'
-                                    w={200}
-                                    popoverProps={{ width: 250, height: 250 }}
-                                    styles={{
-                                        calendarHeaderControl: {
-                                            width: 40,
-                                            height: 40,
-                                        },
-                                        calendarHeaderControlIcon: {
-                                            width: 24,
-                                            height: 24,
-                                        },
-                                    }}
+                            value={contractStartDate}
+                            onChange={setContractStartDate}
+                            fullWidth='false'
+                            size='xs'
+                            w={200}
+                            popoverProps={{ width: 250, height: 250 }}
+                            styles={{
+                                calendarHeaderControl: {
+                                    width: 40,
+                                    height: 40,
+                                },
+                                calendarHeaderControlIcon: {
+                                    width: 24,
+                                    height: 24,
+                                },
+                            }}
 
-                                />
+                        />
                         <DateInput
-                                    value={contractEndDate}
-                                    onChange={setContractEndDate}
-                                    fullWidth='false'
-                                    size='xs'
-                                    w={200}
-                                    popoverProps={{ width: 250, height: 250 }}
-                                    styles={{
-                                        calendarHeaderControl: {
-                                            width: 40,
-                                            height: 40,
-                                        },
-                                        calendarHeaderControlIcon: {
-                                            width: 24,
-                                            height: 24,
-                                        },
-                                    }}
+                            value={contractEndDate}
+                            onChange={setContractEndDate}
+                            fullWidth='false'
+                            size='xs'
+                            w={200}
+                            popoverProps={{ width: 250, height: 250 }}
+                            styles={{
+                                calendarHeaderControl: {
+                                    width: 40,
+                                    height: 40,
+                                },
+                                calendarHeaderControlIcon: {
+                                    width: 24,
+                                    height: 24,
+                                },
+                            }}
 
-                                />
+                        />
                     </div>
-                    <div style={{display: 'flex' , justifyContent: 'center'}}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button onClick={createContract}>Propose Contract</Button>
                     </div>
                 </div>

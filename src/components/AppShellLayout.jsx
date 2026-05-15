@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { AppShell, Burger, Image, Badge } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import { NotificationContext } from '../contexts/NotificationsContext';
 import '../styles/appShell.css';
@@ -17,6 +17,10 @@ import leftArrow from '../assets/caret-left.svg';
 import rightArrow from '../assets/caret-right.svg';
 
 function AppShellLayout({ user, setAuth }) {
+
+    const API_URL = import.meta.env.VITE_API_URL
+    const navigate = useNavigate() 
+
     const [opened, { toggle }] = useDisclosure(true);
 
     const data = useContext(NotificationContext);
@@ -29,6 +33,19 @@ function AppShellLayout({ user, setAuth }) {
         fetchNotifications()
         fetchPendingContracts()
     }, [])
+
+    async function handleSignout() {
+        try {
+            await fetch(`${API_URL}/api/users/logout`, {
+                method: 'POST',
+                credentials: 'include' 
+            });
+            setAuth(null);
+            navigate('/');
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 
     return (
@@ -53,7 +70,7 @@ function AppShellLayout({ user, setAuth }) {
             </AppShell.Header>
             <AppShell.Navbar className={opened ? 'shell-navbar' : 'collapsed'}>
                 <div style={{ display: 'flex', justifyContent: opened ? 'space-between' : 'center', height: '100%' }}>
-                    <div style={{display: 'flex' , flexDirection: 'column' , justifyContent: 'space-between', height: '100%' , paddingTop: '1rem' , paddingBottom: '1rem'}}>
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', paddingTop: '1rem', paddingBottom: '1rem' }}>
                         {user.client === 'shipper' && opened && <div id='links-container'>
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/dashboard'><Image id='dashboard-icon' src={dashboardIcon} h={20} w='auto' /><span>Dashboard</span></Link>
 
@@ -81,10 +98,10 @@ function AppShellLayout({ user, setAuth }) {
 
 
 
-                        {opened && <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/' onClick={() => { localStorage.removeItem('auth'); setAuth(null); }}><Image id='sign-out-icon' src={signOutIcon} h={20} w='auto' /><span>Sign Out</span></Link>}
+                        {opened && <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/' onClick={() => { handleSignout() }}><Image id='sign-out-icon' src={signOutIcon} h={20} w='auto' /><span>Sign Out</span></Link>}
                     </div>
                     <div onClick={toggle} className='toggle-nav' style={{ display: 'flex', alignItems: 'center' }}>
-                        <Image src={opened ? leftArrow : rightArrow} h={16} w={16}  />
+                        <Image src={opened ? leftArrow : rightArrow} h={16} w={16} />
                     </div>
                 </div>
             </AppShell.Navbar>

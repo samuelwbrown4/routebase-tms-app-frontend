@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { DataTable, useDataTableColumns } from 'mantine-datatable';
 import { Table, Button, Drawer, Textarea, Select, Image } from '@mantine/core';
+import { useNavigate } from 'react-router';
 import { useDisclosure } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 import calendarIcon from '../assets/calendar.svg';
 import caretDownIcon from '../assets/caret-down.svg';
+import refreshToken from '../utils/refresh';
 
 import '../styles/updateShipments.css';
 
-function UpdateShipments({ auth, user }) {
-
+function UpdateShipments({ auth, user, setAuth }) {
+    const navigate = useNavigate()
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [shipmentsList, setShipmentsList] = useState([])
@@ -44,7 +46,7 @@ function UpdateShipments({ auth, user }) {
         return 0;
     });
 
-        const key = 'shipments-table';
+    const key = 'shipments-table';
     const { effectiveColumns } = useDataTableColumns({
         key,
         columns: [
@@ -164,6 +166,18 @@ function UpdateShipments({ auth, user }) {
                 }
             });
 
+            if (response.status === 401) {
+                let newToken = refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
             const result = await response.json();
 
             if (!result.shipments) {
@@ -206,6 +220,25 @@ function UpdateShipments({ auth, user }) {
                 })
             });
 
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            date: pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
+                                : new Date(deliveryDate).toISOString().split('T')[0],
+                            userId: user.id,
+                            eventType: pickupDate ? 'picked_up' : 'delivered'
+                        })
+                    });
+                }
+            }
+
             let result = await response.json();
 
             if (result.error) {
@@ -241,6 +274,22 @@ function UpdateShipments({ auth, user }) {
                     text: message
                 })
             });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shared/conversations?shipmentNumber=${selectedShipment.shipment_number}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({
+                            text: message
+                        })
+                    });
+                }
+            }
 
             let result = await response.json();
 
@@ -388,7 +437,7 @@ function UpdateShipments({ auth, user }) {
             <DataTable id="data-table"
 
                 highlightOnHover
-                storeColumnsKey={key}   
+                storeColumnsKey={key}
                 columns={effectiveColumns}
                 resizableColumns
                 records={sortedShipments}
