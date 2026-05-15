@@ -37,7 +37,7 @@ function ShipmentTracking({ user, auth, setAuth }) {
         if (!displayedShipment) return;
 
         const interval = setInterval(async () => {
-            const response = await fetch(`${API_URL}/api/shipper/shipments/${displayedShipment.id}`, {
+            let response = await fetch(`${API_URL}/api/shipper/shipments/${displayedShipment.id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
