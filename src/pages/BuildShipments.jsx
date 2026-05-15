@@ -73,7 +73,6 @@ function BuildShipments({ auth, user, setAuth }) {
         if (selectedRate) {
             setCarrier(selectedRate.carrierId);
         }
-        setCarrier(rate.carrierId)
     }, [rate])
 
     async function fetchCarrierList() {
