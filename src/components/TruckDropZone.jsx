@@ -49,7 +49,7 @@ function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentT
                         <Select classNames={{ input: 'shipment-overview-select', wrapper: 'shipment-overview-select-wrapper' }} placeholder='...'
                             data={rates?.map(rate => ({
                                 value: rate?.id,
-                                label: `${rate.carrier} - $${rate.rate}`
+                                label: `${rate.carrier} ($${rate.rate.toFixed(2)})`
                             })) || []} onChange={(_value, option) => setRate(_value)} />
                     </div>
                 

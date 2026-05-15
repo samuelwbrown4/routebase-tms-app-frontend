@@ -166,8 +166,8 @@ function BuildShipments({ auth, user, setAuth }) {
                     equipmentType: equipmentType,
                     status: 'planned',
                     totalWeight: totalWeight,
-                    pickDate: new Date(pickDate).toISOString.split('T')[0],
-                    dropDate: new Date(dropDate).toISOString.split('T')[0],
+                    pickDate: new Date(pickDate).toISOString().split('T')[0],
+                    dropDate: new Date(dropDate).toISOString().split('T')[0],
                     userId: user.id,
                     orders: onTruckOrders.map(order => order.id),
                     distance: distance
@@ -190,8 +190,8 @@ function BuildShipments({ auth, user, setAuth }) {
                             equipmentType: equipmentType,
                             status: 'planned',
                             totalWeight: totalWeight,
-                            pickDate: new Date(pickDate).toISOString.split('T')[0],
-                            dropDate: new Date(dropDate).toISOString.split('T')[0],
+                            pickDate: new Date(pickDate).toISOString().split('T')[0],
+                            dropDate: new Date(dropDate).toISOString().split('T')[0],
                             userId: user.id,
                             orders: onTruckOrders.map(order => order.id),
                             distance: distance
