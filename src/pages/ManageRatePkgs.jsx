@@ -52,7 +52,7 @@ function ManageRatePkgs({ auth, user, setAuth }) {
 
     async function fetchPkgs() {
         try {
-            const response = await fetch(`${API_URL}/api/carrier/packages`, {
+            let response = await fetch(`${API_URL}/api/carrier/packages`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`

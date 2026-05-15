@@ -234,7 +234,7 @@ function BuildShipments({ auth, user, setAuth }) {
             const destLat = onTruckOrders?.[0].destination_lat;
             const destLong = onTruckOrders?.[0].destination_long;
 
-            const response = await fetch(`${API_URL}/api/shipper/proxy/distance`, {
+            let response = await fetch(`${API_URL}/api/shipper/proxy/distance`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -293,7 +293,7 @@ function BuildShipments({ auth, user, setAuth }) {
             setRates([])
 
 
-            const response = await fetch(`${API_URL}/api/shipper/rates`, {
+            let response = await fetch(`${API_URL}/api/shipper/rates`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

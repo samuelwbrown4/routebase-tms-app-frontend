@@ -133,7 +133,7 @@ function Dashboard({ auth, user, setAuth }) {
 
     async function getUndeliveredShipments() {
         try {
-            const response = await fetch(`${API_URL}/api/shipper/shipments?status=${['planned', 'routed', 'in_transit'].join(',')}`, {
+            let response = await fetch(`${API_URL}/api/shipper/shipments?status=${['planned', 'routed', 'in_transit'].join(',')}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`

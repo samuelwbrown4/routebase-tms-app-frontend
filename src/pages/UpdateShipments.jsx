@@ -159,7 +159,7 @@ function UpdateShipments({ auth, user, setAuth }) {
 
     async function fetchCarrierUndelivered() {
         try {
-            const response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit`, {
+            let response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -206,7 +206,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                 return
             }
             close();
-            const response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
+            let response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
