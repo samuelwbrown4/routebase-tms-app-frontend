@@ -28,6 +28,7 @@ function BuildShipments({ auth, user, setAuth }) {
     const [totalWeight, setTotalWeight] = useState(0);
     const [distance, setDistance] = useState(0);
     const [rates, setRates] = useState([]);
+    const [selectedRate , setSelectedRate] = useState(null)
     const [rate, setRate] = useState(null)
 
     const [distanceLoading, setDistanceLoading] = useState(false)
@@ -66,14 +67,16 @@ function BuildShipments({ auth, user, setAuth }) {
     }, [offTruckOrders])
 
     useEffect(() => {
-        if (!rate) {
+        if (!selectedRate) {
             return
         }
-        const selectedRate = rates.find(r => r.id === rate);
-        if (selectedRate) {
-            setCarrier(selectedRate.carrierId);
+        const matchRate = rates.find(r => r.id === selectedRate);
+        if (matchRate) {
+            setCarrier(matchRate.carrierId);
+            setRate(matchRate.rate)
         }
-    }, [rate])
+    }, [selectedRate])
+
 
     async function fetchCarrierList() {
         try {
@@ -169,7 +172,8 @@ function BuildShipments({ auth, user, setAuth }) {
                     dropDate: new Date(dropDate).toISOString().split('T')[0],
                     userId: user.id,
                     orders: onTruckOrders.map(order => order.id),
-                    distance: distance
+                    distance: distance,
+                    rate: rate
                 })
             });
 
@@ -426,7 +430,7 @@ function BuildShipments({ auth, user, setAuth }) {
                 distance={distance}
                 distanceLoading={distanceLoading}
                 rates={rates}
-                setRate={setRate}
+                setSelectedRate={setSelectedRate}
             />
             <OffTruckOrdersTable offTruckOrders={offTruckOrders} />
         </DndContext>

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router"
 import { useEffect, useState } from 'react';
-import { Table, Badge, Card } from '@mantine/core'
+import { Table, Badge, Card, Spoiler } from '@mantine/core'
 import '../styles/shipmentDetails.css'
 import refreshToken from "../utils/refresh";
 
@@ -10,8 +10,14 @@ function ShipmentDetails({ auth, user, setAuth }) {
     const navigate = useNavigate()
 
     const [shipment, setShipment] = useState(null)
+    const [visibleBreakdown, setVisibleBreakdown] = useState(false)
+    const [rateDetails , setRateDetails] = useState(null)
 
     const { shipmentId } = useParams();
+
+    useEffect(() => {
+        console.log(shipment)
+    }, [shipment])
 
     useEffect(() => {
         async function fetchShipment() {
@@ -45,6 +51,52 @@ function ShipmentDetails({ auth, user, setAuth }) {
         fetchShipment()
     }, [])
 
+    useEffect(()=>{
+        getRateDetails()
+    },[shipment])
+
+    useEffect(()=>{
+        console.log('rate details' , rateDetails)
+    },[rateDetails])
+
+    async function getRateDetails(){
+        try{
+            let response = await fetch(`${API_URL}/api/shipper/rates/${shipment.carrier_id}` , {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${auth}`
+                },
+                body: JSON.stringify({distance: shipment.distance,
+                    originId: shipment.origin_id
+                })
+            });
+
+            if(response.status === 401){
+                let newToken = await refreshToken(setAuth , navigate);
+                if(newToken){
+                    response = await fetch(`${API_URL}/api/shipper/rates/${shipment.carrier_id}` , {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type' : 'application/json',
+                            'Authorization' : `Bearer ${newToken}`
+                        },
+                        body: JSON.stringify({distance: shipment.distance,
+                            originId: shipment.origin_id
+                        })
+                    })
+                }
+            };
+
+            let result = await response.json();
+
+             
+
+            setRateDetails(result.rateDetails);
+        }catch(error){
+            console.log(error)
+        }
+    }
 
     return (
         <div style={{ color: 'white' }}>
@@ -71,8 +123,16 @@ function ShipmentDetails({ auth, user, setAuth }) {
                         <div className='top-right'>
                             <Card withBorder className='top-section-sub'>
                                 <h3 className='sub-header'><b>Carrier Info</b></h3>
-                                <div className='sub-details'><span><b>Carrier Name:</b></span><span>{shipment?.destination}</span></div>
-                                <div className='sub-details'><span><b>SCAC:</b></span><span>{shipment?.destination_address}</span></div>
+                                <div className='sub-details'><span><b>Carrier Name:</b></span><span>{shipment?.carrier_name}</span></div>
+                                <div className='sub-details'><span><b>SCAC:</b></span><span>{shipment?.carrier_scac}</span></div>
+                                <div className='sub-details'><span><b>Freight Cost:</b></span><span>${shipment?.rate}</span></div><Spoiler style={{color: 'white' , display: 'inline'}} 
+                                maxHeight={0}
+                                showLabel="Show breakdown"
+                                    hideLabel="Hide breakdown" expanded={visibleBreakdown} onExpandedChange={()=>setVisibleBreakdown(!visibleBreakdown)}>
+                                        hello
+                                </Spoiler>
+                                
+                                
                             </Card>
                         </div>
                     </div>
@@ -89,7 +149,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
                             </Table.Thead>
                             <Table.Tbody>
                                 {shipment?.orders.map(o =>
-                                    <Table.Tr>
+                                    <Table.Tr key={o.id}>
                                         <Table.Td>{o?.order_number}</Table.Td>
                                         <Table.Td>{o?.customer_po}</Table.Td>
                                         <Table.Td>{o?.weight}</Table.Td>

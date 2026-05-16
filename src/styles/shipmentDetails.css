@@ -37,6 +37,8 @@
 .sub-details{
     display: flex;
     gap: 1rem;
+    align-items: center;
+    width: 100%;
 }
 
 #orders-section{
@@ -57,4 +59,12 @@
 .top-section-sub:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px #2c3035;
+}
+
+#cost-breakdown-span{
+    cursor: pointer;
+}
+#cost-breakdown-span:hover{
+    transform: scale(1.05);
+    transition: all 0.2s ease;
 }
