@@ -129,7 +129,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
                                 maxHeight={0}
                                 showLabel="Show breakdown"
                                     hideLabel="Hide breakdown" expanded={visibleBreakdown} onExpandedChange={()=>setVisibleBreakdown(!visibleBreakdown)}>
-                                        hello
+                                        <span>{`($${rateDetails?.flat_rate} + ($${rateDetails?.per_mile_rate} x ${shipment?.distance})) x ${rateDetails?.fuel_surcharge_percentage}`}</span>
                                 </Spoiler>
                                 
                                 
