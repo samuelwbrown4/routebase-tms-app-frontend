@@ -11,7 +11,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
 
     const [shipment, setShipment] = useState(null)
     const [visibleBreakdown, setVisibleBreakdown] = useState(false)
-    const [rateDetails , setRateDetails] = useState(null)
+    const [rateDetails, setRateDetails] = useState(null)
 
     const { shipmentId } = useParams();
 
@@ -51,37 +51,39 @@ function ShipmentDetails({ auth, user, setAuth }) {
         fetchShipment()
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         getRateDetails()
-    },[shipment])
+    }, [shipment])
 
-    useEffect(()=>{
-        console.log('rate details' , rateDetails)
-    },[rateDetails])
+    useEffect(() => {
+        console.log('rate details', rateDetails)
+    }, [rateDetails])
 
-    async function getRateDetails(){
-        try{
-            let response = await fetch(`${API_URL}/api/shipper/rates/${shipment.carrier_id}` , {
+    async function getRateDetails() {
+        try {
+            let response = await fetch(`${API_URL}/api/shipper/rates/${shipment.carrier_id}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer ${auth}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
                 },
-                body: JSON.stringify({distance: shipment.distance,
+                body: JSON.stringify({
+                    distance: shipment.distance,
                     originId: shipment.origin_id
                 })
             });
 
-            if(response.status === 401){
-                let newToken = await refreshToken(setAuth , navigate);
-                if(newToken){
-                    response = await fetch(`${API_URL}/api/shipper/rates/${shipment.carrier_id}` , {
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shipper/rates/${shipment.carrier_id}`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type' : 'application/json',
-                            'Authorization' : `Bearer ${newToken}`
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
                         },
-                        body: JSON.stringify({distance: shipment.distance,
+                        body: JSON.stringify({
+                            distance: shipment.distance,
                             originId: shipment.origin_id
                         })
                     })
@@ -90,10 +92,10 @@ function ShipmentDetails({ auth, user, setAuth }) {
 
             let result = await response.json();
 
-             
+
 
             setRateDetails(result.rateDetails);
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
@@ -125,14 +127,14 @@ function ShipmentDetails({ auth, user, setAuth }) {
                                 <h3 className='sub-header'><b>Carrier Info</b></h3>
                                 <div className='sub-details'><span><b>Carrier Name:</b></span><span>{shipment?.carrier_name}</span></div>
                                 <div className='sub-details'><span><b>SCAC:</b></span><span>{shipment?.carrier_scac}</span></div>
-                                <div className='sub-details'><span><b>Freight Cost:</b></span><span>${shipment?.rate}</span></div><Spoiler style={{color: 'white' , display: 'inline'}} 
-                                maxHeight={0}
-                                showLabel="Show breakdown"
-                                    hideLabel="Hide breakdown" expanded={visibleBreakdown} onExpandedChange={()=>setVisibleBreakdown(!visibleBreakdown)}>
-                                        <span>{`($${rateDetails?.flat_rate} + ($${rateDetails?.per_mile_rate} x ${shipment?.distance})) x ${rateDetails?.fuel_surcharge_percentage}`}</span>
+                                <div className='sub-details'><span><b>Freight Cost:</b></span><span>${shipment?.rate}</span></div><Spoiler style={{ color: 'white', display: 'inline' }}
+                                    maxHeight={0}
+                                    showLabel="Show breakdown"
+                                    hideLabel="Hide breakdown" expanded={visibleBreakdown} onExpandedChange={() => setVisibleBreakdown(!visibleBreakdown)}>
+                                    <span>{`($${rateDetails?.flat_rate} + ($${rateDetails?.per_mile_rate} x ${shipment?.distance})) x ${rateDetails?.fuel_surcharge_percentage}`}</span>
                                 </Spoiler>
-                                
-                                
+
+
                             </Card>
                         </div>
                     </div>
@@ -148,10 +150,10 @@ function ShipmentDetails({ auth, user, setAuth }) {
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
-                                {shipment?.orders.map(o =>
+                                {shipment?.orders?.map(o =>
                                     <Table.Tr key={o.id}>
                                         <Table.Td>{o?.order_number}</Table.Td>
-                                        <Table.Td>{o?.customer_po}</Table.Td>
+                                        <Table.Td>{o?.customer_po_number}</Table.Td>
                                         <Table.Td>{o?.weight}</Table.Td>
                                         <Table.Td></Table.Td>
                                     </Table.Tr>
