@@ -149,7 +149,7 @@ function OpenOrders({ auth, user, setAuth }) {
                 return alert('No line items found')
             };
 
-            setSelectedOrderDetails(result.lineItems);
+            setSelectedOrderDetails(result.lineItems.order_line_items);
 
         } catch (error) {
             alert('Error retrieving order line item details! Contact administrator.')
@@ -173,12 +173,12 @@ function OpenOrders({ auth, user, setAuth }) {
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <Input style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }} classNames={{ input: 'search-input', wrapper: 'search-input-wrapper' }} placeholder='Order, customer, etc...' value={searchValue} onChange={e => setSearchValue(e.target.value)} leftSection={<Image h={20} w={20} src={searchIcon} />} />
 
-                    <Button variant="outline" color="white" style={{ marginTop: '0rem', marginBottom: '1rem' }} onClick={open}>
+                    {/*<Button variant="outline" color="white" style={{ marginTop: '0rem', marginBottom: '1rem' }} onClick={open}>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <Image src={filterIcon} alt="filter" h={20} w={20} />
                             Filter
                         </span>
-                    </Button>
+                    </Button>*/}
                 </div>
 
             </div>
@@ -235,11 +235,11 @@ function OpenOrders({ auth, user, setAuth }) {
                                                                 {selectedOrderDetails.map((li, idx) => (
                                                                     <Table.Tr key={li.material_number}>
                                                                         <Table.Td>{idx + 1}</Table.Td>
-                                                                        <Table.Td>{li.material_number}</Table.Td>
+                                                                        <Table.Td>{li.materialNumber}</Table.Td>
                                                                         <Table.Td>{li.description}</Table.Td>
-                                                                        <Table.Td>{li.quantity}</Table.Td>
-                                                                        <Table.Td>{`${li.total_weight_lbs} lbs`}</Table.Td>
-                                                                        <Table.Td>{li.freight_class}</Table.Td>
+                                                                        <Table.Td>{`${li.quantity}  ${li.unitOfMeasure}`}</Table.Td>
+                                                                        <Table.Td>{`${li.weight} lbs`}</Table.Td>
+                                                                        <Table.Td>{li.freightClass}</Table.Td>
                                                                     </Table.Tr>
                                                                 ))}
                                                             </Table.Tbody>

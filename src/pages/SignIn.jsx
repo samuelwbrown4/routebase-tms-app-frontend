@@ -6,18 +6,18 @@ import passwordIcon from '../assets/password.svg';
 import '../styles/signIn.css'
 
 
-function SignIn({ setAuth , user }) {
+function SignIn({ setAuth, user }) {
 
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
-    const [radio , setRadio] = useState('shipper')
+    const [radio, setRadio] = useState('shipper')
 
     const navigate = useNavigate();
 
     async function signIn(e) {
-        e.preventDefault();
+        e?.preventDefault();
         try {
             let response = await fetch(`${API_URL}/api/users/login`, {
                 method: 'POST',
@@ -44,27 +44,54 @@ function SignIn({ setAuth , user }) {
         }
     }
 
+    async function fillDemoCreds() {
+    const demoEmail = radio === 'shipper' ? 'l.hensley@purepath.com' : 'r.kincaid@trueflow.com';
+    const demoPass = 'Password123!';
+    
+    setEmail(demoEmail);
+    setPass(demoPass);
+
+    try {
+        let response = await fetch(`${API_URL}/api/users/login`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: demoEmail, password: demoPass, client: radio })
+        });
+
+        let result = await response.json();
+        if (!result.token) return alert(`Error: ${result.error}`);
+        setAuth(result.token);
+        navigate(radio === 'shipper' ? '/dashboard' : '/shipment-tracking');
+    } catch (error) {
+        alert('Failed to reach backend service. Contact Administrator.')
+    }
+}
+
     return (
         <AppShell
             padding="md"
             header={{ height: 60 }}>
 
             <div style={{ backgroundImage: 'url(/tms_sign_in_graphic.png)', backgroundSize: 'cover', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0b1f3ada', gap: '1rem', alignItems: 'center', boxShadow: '0 0 8px 2px #f6a802', color: '#dff4f7', width: '35%', borderRadius: '6px' }}>
-                    <h2 id="sign-in-header">Welcome Back!</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0b1f3ada', gap: '1rem', alignItems: 'center', boxShadow: '0 0 8px 2px #f6a802', color: '#dff4f7', width: '35%',  borderRadius: '6px' }}>
+                    <h1 id="sign-in-header">Welcome Back!</h1>
                     <h4>Sign in to Routebase</h4>
                     <form id="sign-in-form" onSubmit={signIn}>
-                       
-                            <Radio.Group value={radio} onChange={setRadio}>
-                               <Group gap="xl">
-                                    <Radio value='shipper' label="Shipper" />
-                                    <Radio value = 'carrier' label="Carrier" />
-                             </Group>
-                            </Radio.Group>
-                      
+
+                        <Radio.Group value={radio} onChange={setRadio}>
+                            <Group gap="xl">
+                                <Radio value='shipper' label="Shipper" />
+                                <Radio value='carrier' label="Carrier" />
+                            </Group>
+                        </Radio.Group>
+
                         <Input placeholder='email' leftSection={<Image h={16} w={16} src={atIcon} />} classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={email} onChange={(e) => setEmail(e.target.value)} />
-                        <Input type='password' placeholder='password' leftSection={<Image h={16} w={16} src={passwordIcon}/>} classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={pass} onChange={(e) => setPass(e.target.value)} />
-                        <Button type='submit'>Sign In</Button>
+                        <Input styles={{input: {backgroundColor: '#4061a4c4'}}} type='password' placeholder='password' leftSection={<Image h={16} w={16} src={passwordIcon} />} classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={pass} onChange={(e) => setPass(e.target.value)} />
+                        <div style={{ display: 'flex' , gap: '2rem' , justifyContent: 'center'}}>
+                            <Button type='submit'>User Sign In</Button>
+                            <Button onClick={() => fillDemoCreds()}>Demo Sign In</Button>
+                        </div>
                     </form>
                     <span>Don't have an account? Request one from an administrator <Link id='here-link'>here.</Link></span>
                     <Image src='/routebase-logo-white.png' alt='routebase-logo-notext' h={100} fit='contain' />
