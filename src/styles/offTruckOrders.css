@@ -9,17 +9,20 @@
     display: flex;
    height: auto;
    padding: 1rem;
-   border-radius: 8px;
    font-size: smaller;
    align-items: flex-start;
-   min-width: 150px;
-   justify-content: space-between;
+   justify-content: 'center';
+   width: 100%;
+   gap: 2rem;
+   margin-top: 1rem;
+   border-top: 1px solid rgba(177, 175, 175, 0.36);
 }
 
 
 
 .shipment-overview-select{
-    background-color: transparent;
+    background-color: #2a2a2a;
+    border: 1px solid #f6a802 !important;
     color: white;
     height: 36px; 
     margin-top: 0;
@@ -32,10 +35,59 @@
 }
 
 .date-picker{
-    background-color: transparent;
+    background-color: #2a2a2a !important;
     color: white;
-    border: 1px solid white;
+    border: 1px solid #f6a802 !important;
     border-radius: 4px;
-    min-width: 150px;
+    width: 100%;
     height: 36px; 
+}
+
+.mantine-Popover-dropdown {
+    background-color: #1a1a1a !important;
+    color: white !important;
+    border: 1px solid #f6a802 !important;
+}
+
+.mantine-Select-option:hover {
+     background-color: #f6a802 !important;
+    color: black !important;
+}
+
+.mantine-DatePickerInput-day {
+    color: white !important;
+}
+
+.mantine-DatePickerInput-day:hover {
+    background-color: #f6a802 !important;
+    color: black !important;
+}
+
+.mantine-DatePickerInput-day[data-selected] {
+    background-color: #f6a802 !important;
+    color: black !important;
+}
+
+.mantine-DatePickerInput-calendarHeaderLevel,
+.mantine-DatePickerInput-weekday {
+    color: white !important;
+}
+
+.mantine-DatePickerInput-calendarHeaderControl {
+    color: white !important;
+}
+
+.mantine-DatePickerInput-calendarHeaderControl:hover {
+    background-color: #f6a802 !important;
+    color: black !important;
+}
+
+
+@keyframes greenPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); }
+    50% { box-shadow: 0 0 35px rgba(0, 255, 0, 0.9); }
+}
+
+.tender-btn {
+    animation: greenPulse 2s infinite;
 }

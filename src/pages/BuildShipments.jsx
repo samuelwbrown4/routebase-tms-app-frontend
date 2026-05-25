@@ -5,7 +5,7 @@ import OffTruckOrdersTable from '../components/OffTruckOrdersTable';
 import TruckDropZone from '../components/TruckDropZone';
 import '../styles/buildShipments.css'
 import { notifications } from '@mantine/notifications';
-import { Loader } from '@mantine/core';
+import { Loader, Switch , Tooltip} from '@mantine/core';
 import refreshToken from '../utils/refresh';
 
 function BuildShipments({ auth, user, setAuth }) {
@@ -28,8 +28,11 @@ function BuildShipments({ auth, user, setAuth }) {
     const [totalWeight, setTotalWeight] = useState(0);
     const [distance, setDistance] = useState(0);
     const [rates, setRates] = useState([]);
-    const [selectedRate , setSelectedRate] = useState(null)
-    const [rate, setRate] = useState(null)
+    const [selectedRate, setSelectedRate] = useState(null);
+    const [rate, setRate] = useState(null);
+    const [spotOnOff, setSpotOnOff] = useState(false);
+    const [recommendedMode, setRecommendedMode] = useState('')
+    const [expiry , setExpiry] = useState('2')
 
     const [distanceLoading, setDistanceLoading] = useState(false)
     const [ratesLoading, setRatesLoading] = useState(false)
@@ -66,6 +69,14 @@ function BuildShipments({ auth, user, setAuth }) {
         })
     }, [offTruckOrders])
 
+    useEffect(()=>{
+        spotOnOff ? setExpiry('2') : setExpiry(null)
+    },[spotOnOff])
+
+    useEffect(()=>{
+        console.log('expires in' , expiry , 'hrs')
+    },[expiry])
+
     useEffect(() => {
         if (!selectedRate) {
             return
@@ -76,6 +87,10 @@ function BuildShipments({ auth, user, setAuth }) {
             setRate(matchRate.rate)
         }
     }, [selectedRate])
+
+    useEffect(() => {
+        totalWeight > 10000 ? setRecommendedMode('TL') : setRecommendedMode('LTL')
+    }, [totalWeight])
 
 
     async function fetchCarrierList() {
@@ -393,19 +408,32 @@ function BuildShipments({ auth, user, setAuth }) {
         <DndContext onDragEnd={handleDragEnd}>
             <div id='header-div'>
                 <h1>Build Shipment</h1>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <span style={{ display: 'block' }}>Total Weight: </span>
-                    <span style={{ display: 'block' }}>{`${totalWeight} lbs.`}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'gray', minHeight: '40px' , marginBottom: '.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5rem', borderRight: '3px solid gray' , textAlign: 'center', flex: .5, fontSize: '.8rem' }}>
+                    <span style={{fontWeight: '750'}}>Spot Market:</span>
+                    <Tooltip label={spotOnOff ? 'Turn Spot Market Off?' : 'Turn Spot Market On?'} refProp="rootRef">
+                        <Switch  checked={spotOnOff} onChange={(e) => setSpotOnOff(e.target.checked)} onLabel="ON" offLabel="OFF" color='green'></Switch>
+                    </Tooltip>
+                    
+
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <span style={{ display: 'block' }}>Distance: </span>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: '3px solid gray',  flex: .5, textAlign: 'center' , justifyContent: 'center', fontSize: '.8rem' }}>
+                    <span style={{ display: 'block' , fontWeight: '750' }}>Total Weight: </span>
+                    <span style={{ display: 'block' , color: 'white' }}>{`${totalWeight} lbs.`}</span>
+                </div>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: '3px solid gray',  flex: .5, justifyContent: 'center' , fontSize: '.8rem' }}>
+                    <span style={{ display: 'block' , fontWeight: '750' }}>Distance: </span>
                     {distanceLoading && <Loader type='dots' color='yellow' />}
-                    <span style={{ display: 'block' }}>{distance > 0 ? `${distance} mi.` : ''}</span>
+                    <span style={{ display: 'block' , color: 'white' }}>{distance > 0 ? `${distance} mi.` : ''}</span>
+                </div>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center',  flex: .8 , justifyContent: 'center', fontSize: '.8rem' }}>
+                    <span style={{fontWeight: '750'}}>Low Cost Carrier:</span>
+                    {ratesLoading && <Loader type='dots' color='yellow' />}
+                    <span style={{color: 'white'}}> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
                 </div>
 
-                <span>Low Cost Carrier:</span>
-                {ratesLoading && <Loader type='dots' color='yellow' />}
-                <span> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
+
             </div>
 
             <TruckDropZone
@@ -431,6 +459,10 @@ function BuildShipments({ auth, user, setAuth }) {
                 distanceLoading={distanceLoading}
                 rates={rates}
                 setSelectedRate={setSelectedRate}
+                spotOnOff={spotOnOff}
+                recommendedMode={recommendedMode}
+                expiry={expiry}
+                setExpiry={setExpiry}
             />
             <OffTruckOrdersTable offTruckOrders={offTruckOrders} />
         </DndContext>
