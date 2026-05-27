@@ -15,7 +15,7 @@ function CountdownBadge({ deadline, shipmentsList, user , id , resetBidDeadline 
 
         const interval = setInterval(() => {
             const now = Date.now() // returns UTC milliseconds directly
-            const gap = new Date(deadline).getTime() - now
+            const gap = new Date(deadline ).getTime() - now
 
             if (gap <= 0) {
                 setTimeLeft('Expired')
