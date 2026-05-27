@@ -26,6 +26,7 @@ import ViewCustomerLocations from './pages/ViewCustomerLocations';
 import CreateCustomerLocation from './pages/CreateCustomerLocation';
 import ShipmentTracking from './pages/ShipmentTracking';
 import Conversations from './pages/Conversations';
+import SpotMarket from './pages/SpotMarket';
 import { jwtDecode } from 'jwt-decode';
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
               {user?.client === 'shipper' && <Route path='/shipments' element={<Shipments auth={auth} setAuth={setAuth} user={user} />} />}
               <Route path='/shipments/details/:shipmentId' element={<ShipmentDetails user={user} setAuth={setAuth} auth={auth} />} />
               <Route path='/shipment-tracking' element={<ShipmentTracking auth={auth} setAuth={setAuth} user={user} />} />
+              <Route path='/spot-market' element={<SpotMarket auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/manage-carriers' element={<ManageCarriers auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/admin' element={<ShipperAdmin auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/update-shipments' element={<UpdateShipments auth={auth} setAuth={setAuth} user={user} />} />

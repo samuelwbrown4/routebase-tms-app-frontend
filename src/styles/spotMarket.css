@@ -1,0 +1,84 @@
+.offer-list-item{
+    list-style: none;
+    margin: auto;
+    border: .5px solid gray;
+    cursor: pointer;
+    border-radius: 6px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    width: 75%;
+    margin-bottom: 1rem;
+}
+
+.offer-list-item:hover{
+     background-color: #f6a802 !important;
+    color: black !important;
+}
+
+#offer-list{
+    padding-left: 0;
+    width: 100%;
+}
+
+.selected-offer{
+    background-color: #d28f00 !important;
+    color: black;
+    border: .5px solid black;
+}
+
+.selected-offer:hover{
+    background-color: gray;
+}
+
+.offer-action-btn{
+    cursor: pointer
+}
+
+.clickable{
+    cursor: pointer;
+}
+
+.mantine-Modal-content{
+   background-color: #1a1a1a !important;
+    color: white !important;
+    border: 1px solid #f6a802 !important; 
+    
+}
+
+.mantine-Modal-header{
+   background-color: #1a1a1a !important;
+    color: white !important; 
+}
+
+@keyframes greenPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+    50% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.9); }
+}
+
+.offer-btn {
+    background-color: green;
+    animation: greenPulse 3s infinite;
+    width: 33%;
+}
+
+.offer-btn:hover {
+    background-color: green;
+}
+
+.mantine-Modal-close:hover{
+    background-color: black;
+    border: #ccc
+}
+
+.mantine-Input-input{
+    background-color: #2a2a2a !important;
+    color: white !important;
+    border: 1px solid #f6a802 !important;
+}
+
+#refresh-btn:hover{
+    transform: scale(1.3);
+    transition: all 0.2s ease;
+}

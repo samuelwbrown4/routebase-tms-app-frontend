@@ -15,6 +15,7 @@ import chatsIcon from '../assets/chats.svg';
 import routeIcon from '../assets/map.svg';
 import leftArrow from '../assets/caret-left.svg';
 import rightArrow from '../assets/caret-right.svg';
+import spotMarketIcon from '../assets/storefront.svg';
 
 function AppShellLayout({ user, setAuth }) {
 
@@ -78,6 +79,8 @@ function AppShellLayout({ user, setAuth }) {
 
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipments'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Shipments</span></Link>
 
+                            <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/spot-market'><Image id='shipment-icon' src={spotMarketIcon} h={20} w='auto' /><span>Spot Market</span></Link>
+
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={routeIcon} h={20} w='auto' /><span>Route Tracking</span></Link>
 
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/manage-carriers'><Image id='scroll-icon' src={scrollIcon} h={20} w='auto' /><span>Contracts</span>{(pendingContractsCount > 0) && <Badge color='blue'>{pendingContractsCount}</Badge>}</Link>
@@ -90,6 +93,8 @@ function AppShellLayout({ user, setAuth }) {
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={routeIcon} h={20} w='auto' /><span>Shipment Routing</span></Link>
 
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/update-shipments'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Update Shipments</span></Link>
+
+                            <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/spot-market'><Image id='shipment-icon' src={spotMarketIcon} h={20} w='auto' /><span>Spot Market</span></Link>
 
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/carrier/packages'><Image id='orders-icon' src={ordersIcon} h={20} w='auto' /><span>Rate Packages</span></Link>
 

@@ -1,4 +1,4 @@
-import { Table, Button, Image, Collapse, Input, Drawer, Skeleton } from "@mantine/core";
+import { Table, Button, Image, Collapse, Input, Drawer, Skeleton , Loader } from "@mantine/core";
 import { Fragment } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useState } from "react";
@@ -29,6 +29,8 @@ function OpenOrders({ auth, user, setAuth }) {
     const [loading, setLoading] = useState(true)
     const [sortField, setSortField] = useState(null)
     const [sortDirection, setSortDirection] = useState('asc')
+
+    const [tableLoading , setTableLoading] = useState(true)
 
     const navigate = useNavigate();
 
@@ -114,6 +116,7 @@ function OpenOrders({ auth, user, setAuth }) {
 
             setOrders(result.orders)
             setLoading(false)
+            setTableLoading(false)
 
         } catch (error) {
             alert('Error retrieving open order data! Contact administrator.')
@@ -182,7 +185,8 @@ function OpenOrders({ auth, user, setAuth }) {
                 </div>
 
             </div>
-            <div className='table-container'>
+            
+             <div className='table-container'>
                 <Skeleton visible={loading}>
                     <Table className='table'>
                         <Table.Thead>
@@ -199,7 +203,8 @@ function OpenOrders({ auth, user, setAuth }) {
                                 <Table.Th onClick={() => handleSort('weight')}>Weight{sortField === 'weight' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
-                        <Table.Tbody>
+                        {tableLoading && <Loader color='white' type='bars'/>}
+                        {!tableLoading && <Table.Tbody>
                             {sortedOrders.map((order) => {
                                 return (
                                     <Fragment key={order.id}>
@@ -252,7 +257,7 @@ function OpenOrders({ auth, user, setAuth }) {
                                     </Fragment>
                                 )
                             })}
-                        </Table.Tbody>
+                        </Table.Tbody>}
                     </Table>
                 </Skeleton>
             </div>

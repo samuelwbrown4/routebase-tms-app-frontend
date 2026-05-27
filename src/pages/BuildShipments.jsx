@@ -5,7 +5,7 @@ import OffTruckOrdersTable from '../components/OffTruckOrdersTable';
 import TruckDropZone from '../components/TruckDropZone';
 import '../styles/buildShipments.css'
 import { notifications } from '@mantine/notifications';
-import { Loader, Switch , Tooltip} from '@mantine/core';
+import { Loader, Switch, Tooltip } from '@mantine/core';
 import refreshToken from '../utils/refresh';
 
 function BuildShipments({ auth, user, setAuth }) {
@@ -32,7 +32,7 @@ function BuildShipments({ auth, user, setAuth }) {
     const [rate, setRate] = useState(null);
     const [spotOnOff, setSpotOnOff] = useState(false);
     const [recommendedMode, setRecommendedMode] = useState('')
-    const [expiry , setExpiry] = useState('2')
+    const [expiry, setExpiry] = useState('2')
 
     const [distanceLoading, setDistanceLoading] = useState(false)
     const [ratesLoading, setRatesLoading] = useState(false)
@@ -59,8 +59,11 @@ function BuildShipments({ auth, user, setAuth }) {
     }, [onTruckOrders]);
 
     useEffect(() => {
+        if (spotOnOff) {
+            return
+        }
         setRates([])
-    }, [distance])
+    }, [distance, spotOnOff])
 
     useEffect(() => {
         navigate('/build-shipments', {
@@ -69,13 +72,13 @@ function BuildShipments({ auth, user, setAuth }) {
         })
     }, [offTruckOrders])
 
-    useEffect(()=>{
+    useEffect(() => {
         spotOnOff ? setExpiry('2') : setExpiry(null)
-    },[spotOnOff])
+    }, [spotOnOff])
 
-    useEffect(()=>{
-        console.log('expires in' , expiry , 'hrs')
-    },[expiry])
+    useEffect(() => {
+        console.log('expires in', expiry, 'hrs')
+    }, [expiry])
 
     useEffect(() => {
         if (!selectedRate) {
@@ -181,14 +184,17 @@ function BuildShipments({ auth, user, setAuth }) {
                     destinationId: onTruckOrders[0].destination_id,
                     carrier: carrier,
                     equipmentType: equipmentType,
-                    status: 'planned',
+                    status: spotOnOff ? 'pending_carrier' : 'planned',
                     totalWeight: totalWeight,
                     pickDate: new Date(pickDate).toISOString().split('T')[0],
                     dropDate: new Date(dropDate).toISOString().split('T')[0],
                     userId: user.id,
                     orders: onTruckOrders.map(order => order.id),
                     distance: distance,
-                    rate: rate
+                    rate: rate,
+                    shipmentType: spotOnOff ? 'spot' : 'contract',
+                    expiry
+
                 })
             });
 
@@ -206,13 +212,16 @@ function BuildShipments({ auth, user, setAuth }) {
                             destinationId: onTruckOrders[0].destination_id,
                             carrier: carrier,
                             equipmentType: equipmentType,
-                            status: 'planned',
+                            status: spotOnOff ? 'pending_carrier' : 'planned',
                             totalWeight: totalWeight,
                             pickDate: new Date(pickDate).toISOString().split('T')[0],
                             dropDate: new Date(dropDate).toISOString().split('T')[0],
                             userId: user.id,
                             orders: onTruckOrders.map(order => order.id),
-                            distance: distance
+                            distance: distance,
+                            rate: rate,
+                            shipmentType: spotOnOff ? 'spot' : 'contract',
+                            expiry
                         })
                     });
                 }
@@ -304,7 +313,7 @@ function BuildShipments({ auth, user, setAuth }) {
     }
 
     async function fetchRates(dist) {
-        if (!(dist > 0)) {
+        if (!(dist > 0) || spotOnOff) {
             return setRates([])
         }
         try {
@@ -340,7 +349,7 @@ function BuildShipments({ auth, user, setAuth }) {
 
             const result = await response.json();
 
-            console.log('Raw backend result:', result.rates); // Add this
+            console.log('Raw backend result:', result.rates); 
 
 
             if (!result.rates) {
@@ -409,28 +418,28 @@ function BuildShipments({ auth, user, setAuth }) {
             <div id='header-div'>
                 <h1>Build Shipment</h1>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'gray', minHeight: '40px' , marginBottom: '.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5rem', borderRight: '3px solid gray' , textAlign: 'center', flex: .5, fontSize: '.8rem' }}>
-                    <span style={{fontWeight: '750'}}>Spot Market:</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'gray', minHeight: '40px', marginBottom: '.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5rem', borderRight: '3px solid gray', textAlign: 'center', flex: .5, fontSize: '.8rem' }}>
+                    <span style={{ fontWeight: '750' }}>Spot Market:</span>
                     <Tooltip label={spotOnOff ? 'Turn Spot Market Off?' : 'Turn Spot Market On?'} refProp="rootRef">
-                        <Switch  checked={spotOnOff} onChange={(e) => setSpotOnOff(e.target.checked)} onLabel="ON" offLabel="OFF" color='green'></Switch>
+                        <Switch checked={spotOnOff} onChange={(e) => setSpotOnOff(e.target.checked)} onLabel="ON" offLabel="OFF" color='green'></Switch>
                     </Tooltip>
-                    
+
 
                 </div>
-                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: '3px solid gray',  flex: .5, textAlign: 'center' , justifyContent: 'center', fontSize: '.8rem' }}>
-                    <span style={{ display: 'block' , fontWeight: '750' }}>Total Weight: </span>
-                    <span style={{ display: 'block' , color: 'white' }}>{`${totalWeight} lbs.`}</span>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: '3px solid gray', flex: .5, textAlign: 'center', justifyContent: 'center', fontSize: '.8rem' }}>
+                    <span style={{ display: 'block', fontWeight: '750' }}>Total Weight: </span>
+                    <span style={{ display: 'block', color: 'white' }}>{`${totalWeight} lbs.`}</span>
                 </div>
-                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: '3px solid gray',  flex: .5, justifyContent: 'center' , fontSize: '.8rem' }}>
-                    <span style={{ display: 'block' , fontWeight: '750' }}>Distance: </span>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: '3px solid gray', flex: .5, justifyContent: 'center', fontSize: '.8rem' }}>
+                    <span style={{ display: 'block', fontWeight: '750' }}>Distance: </span>
                     {distanceLoading && <Loader type='dots' color='yellow' />}
-                    <span style={{ display: 'block' , color: 'white' }}>{distance > 0 ? `${distance} mi.` : ''}</span>
+                    <span style={{ display: 'block', color: 'white' }}>{distance > 0 ? `${distance} mi.` : ''}</span>
                 </div>
-                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center',  flex: .8 , justifyContent: 'center', fontSize: '.8rem' }}>
-                    <span style={{fontWeight: '750'}}>Low Cost Carrier:</span>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', flex: .8, justifyContent: 'center', fontSize: '.8rem' }}>
+                    <span style={{ fontWeight: '750' }}>Low Cost Carrier:</span>
                     {ratesLoading && <Loader type='dots' color='yellow' />}
-                    <span style={{color: 'white'}}> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
+                    <span style={{ color: 'white' }}> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
                 </div>
 
 
