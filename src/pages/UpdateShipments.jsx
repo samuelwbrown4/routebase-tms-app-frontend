@@ -61,70 +61,24 @@ function UpdateShipments({ auth, user, setAuth }) {
 
             {
                 accessor: 'origin',
-                title: 'Origin Name',
+                title: 'Origin',
                 ellipsis: true,
                 resizable: true,
                 draggable: true,
-                sortable: true
+                sortable: true,
+                render: ({direction_category , shipper_name , shipper_city , shipper_state , supplier_name , supplier_city , supplier_state}) => direction_category === 'outbound' ? `${shipper_name} - ${shipper_city}, ${shipper_state}` : `${supplier_name} - ${supplier_city}, ${supplier_state}`
             },
 
-            {
-                accessor: 'origin_city',
-                title: 'Origin City',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'origin_state',
-                title: 'Origin State',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'origin_zip',
-                title: 'Origin Zip',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
             {
                 accessor: 'destination',
-                title: 'Destination Name',
+                title: 'Destination',
                 ellipsis: true,
                 resizable: true,
                 draggable: true,
-                sortable: true
+                sortable: true,
+                render: ({direction_category , customer_name , customer_city , customer_state , shipper_name , shipper_city , shipper_state}) => direction_category === 'outbound' ? `${customer_name} - ${customer_city}, ${customer_state}` : `${shipper_name} - ${shipper_city}, ${shipper_state}`
             },
 
-            {
-                accessor: 'destination_city',
-                title: 'Destination City',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'destination_state',
-                title: 'Destination State',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'destination_zip',
-                title: 'Destination Zip',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
             {
                 accessor: 'requested_pickup_date',
                 title: 'Req. Pickup Date',
@@ -329,7 +283,7 @@ function UpdateShipments({ auth, user, setAuth }) {
     //add message logic
     return (
         <div>
-            <Drawer styles={{ body: { backgroundColor: '#2c2c2c' }, content: { backgroundColor: '#2c2c2c', color: 'white' }, header: { backgroundColor: '#2c2c2c' } }} position='top' closeOnClickOutside='true' opened={opened} onClose={close} title={`Update Shipment: #${selectedShipment?.shipment_number} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 CURRENT STATUS: ${selectedShipment?.status.toUpperCase().replaceAll('_', ' ')} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 ${selectedShipment?.origin} ➔ ${selectedShipment?.destination}`}>
+            <Drawer styles={{ body: { backgroundColor: '#2c2c2c' }, content: { backgroundColor: '#2c2c2c', color: 'white' }, header: { backgroundColor: '#2c2c2c' } }} position='top' closeOnClickOutside='true' opened={opened} onClose={close} title={`Update Shipment: #${selectedShipment?.shipment_number} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 CURRENT STATUS: ${selectedShipment?.status.toUpperCase().replaceAll('_', ' ')} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.shipper_name : selectedShipment?.supplier_name} ➔ ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.customer_name : selectedShipment?.shipper_name}`}>
                 <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '3rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '3rem' }}>
                         <span>Requested Pickup Date: {new Date(selectedShipment?.requested_pickup_date).toLocaleDateString()} {!selectedShipment?.actual_pickup_date ?

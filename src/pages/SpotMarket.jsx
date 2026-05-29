@@ -132,11 +132,13 @@ function SpotMarket({ auth, user, setAuth }) {
 
             let result = await response.json();
             if (result.acceptedShipment) {
-                getSpotRates()
-                notifications.show({
+                getSpotLoads()
+                setOpenOffers(false)
+                return notifications.show({
                     title: 'Success!',
                     message: `Bid has been accepted.`
                 })
+                
             }
 
 
@@ -232,10 +234,10 @@ function SpotMarket({ auth, user, setAuth }) {
                         {shipmentsList.map(s =>
                             <Table.Tr key={s.id}>
                                 <Table.Td>{s.shipment_number}</Table.Td>
-                                <Table.Td>{s.origin}</Table.Td>
-                                <Table.Td>{`${s.origin_city}, ${s.origin_state}`}</Table.Td>
-                                <Table.Td>{s.destination}</Table.Td>
-                                <Table.Td>{`${s.destination_city}, ${s.destination_state}`}</Table.Td>
+                                <Table.Td>{s.direction_category === 'outbound' ? s.shipper_name : s.supplier_name}</Table.Td>
+                                <Table.Td>{`${s.direction_category === 'outbound' ? s.shipper_city : s.supplier_city}, ${s.direction_category === 'outbound' ? s.shipper_state : s.supplier_state}`}</Table.Td>
+                                <Table.Td>{s. direction_category === 'outbound' ? s.customer_name : s.shipper_name}</Table.Td>
+                                <Table.Td>{`${s. direction_category === 'outbound' ? s.customer_city : s.shipper_city}, ${s. direction_category === 'outbound' ? s.customer_state : s.shipper_state}`}</Table.Td>
                                 <Table.Td style={{ textAlign: 'center' }}><span>{s.offers ? s.offers.length : '0'}</span></Table.Td>
                                 {user.client === 'shipper' && <Table.Td style={{ textAlign: 'center' }}><Badge className={s.offers ? 'clickable' : ''} color={s.offers ? 'blue' : 'gray'} onClick={s.offers ? () => { setSelectedShipment(s); setOpenOffers(true) } : () => console.log('no offers')}>View Offers</Badge></Table.Td>}
                                 {user.client === 'carrier' && <Table.Td style={{ textAlign: 'center' }}><Badge className={new Date(s.bid_deadline).getTime() - Date.now() > 0 ? 'clickable' : ''} color={new Date(s.bid_deadline).getTime() - Date.now() > 0 ? 'blue' : 'gray'} onClick={new Date(s.bid_deadline).getTime() - Date.now() > 0 ? () => { setOpenMakeOffer(true), setSelectedShipment(s) } : () => console.log('expired')}>Make Offer</Badge></Table.Td>}
