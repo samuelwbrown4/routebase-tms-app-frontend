@@ -182,6 +182,8 @@ function BuildShipments({ auth, user, setAuth }) {
                 body: JSON.stringify({
                     originId: onTruckOrders[0].origin_id,
                     destinationId: onTruckOrders[0].destination_id,
+                    companyId : onTruckOrders[0].company_id,
+                    directionCategory: onTruckOrders[0].direction_category,
                     carrier: carrier,
                     equipmentType: equipmentType,
                     status: spotOnOff ? 'pending_carrier' : 'planned',
@@ -210,6 +212,8 @@ function BuildShipments({ auth, user, setAuth }) {
                         body: JSON.stringify({
                             originId: onTruckOrders[0].origin_id,
                             destinationId: onTruckOrders[0].destination_id,
+                            companyId: onTruckOrders[0].company_id,
+                            directionCategory: onTruckOrders[0].direction_category,
                             carrier: carrier,
                             equipmentType: equipmentType,
                             status: spotOnOff ? 'pending_carrier' : 'planned',
@@ -256,10 +260,10 @@ function BuildShipments({ auth, user, setAuth }) {
         try {
             setDistanceLoading(true)
             setRatesLoading(true);
-            const originLat = onTruckOrders?.[0].origin_lat;
-            const originLong = onTruckOrders?.[0].origin_long;
-            const destLat = onTruckOrders?.[0].destination_lat;
-            const destLong = onTruckOrders?.[0].destination_long;
+            const originLat = onTruckOrders?.[0].direction_category === 'outbound' ? onTruckOrders?.[0].shipper_lat : onTruckOrders?.[0].supplier_lat;
+            const originLong = onTruckOrders?.[0].direction_category === 'outbound' ? onTruckOrders?.[0].shipper_long : onTruckOrders?.[0].supplier_long;
+            const destLat = onTruckOrders?.[0].direction_category === 'outbound' ? onTruckOrders?.[0].customer_lat : onTruckOrders?.[0].shipper_lat;
+            const destLong = onTruckOrders?.[0].direction_category === 'outbound' ? onTruckOrders?.[0].customer_long : onTruckOrders?.[0].shipper_long;
 
             let response = await fetch(`${API_URL}/api/shipper/proxy/distance`, {
                 method: 'POST',

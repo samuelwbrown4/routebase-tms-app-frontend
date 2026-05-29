@@ -1,6 +1,6 @@
 import { DataTable , useDataTableColumns} from "mantine-datatable";
 import {useNavigate} from 'react-router-dom';
-import { Image } from "@mantine/core";
+import { Image , Badge } from "@mantine/core";
 import eyeIcon from '../assets/eye.svg';
 import paperclipIcon from '../assets/paperclip.svg';
 import chatIcon from '../assets/chat.svg';
@@ -33,7 +33,16 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
                         <Image src={eyeIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); navigate(`/shipments/details/${shipment.id}`)}}/>
                         <Image src={paperclipIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); handleDocClick(shipment.id)}}/>
                         <Image src={chatIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation() ; getConversation(shipment.id)}}/>
-                    </div>
+                    </div>,
+                resizable: false,
+                width: 100
+            },
+            {
+                accessor: 'direction_category',
+                title: 'Direction',
+                render: ({direction_category}) => <Badge color={direction_category === 'outbound' ? 'green' : 'blue'}>{direction_category.toUpperCase()}</Badge>,
+                resizable: false,
+                width: 100
             },
             {
                 accessor: 'shipment_number',
@@ -46,70 +55,24 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
 
             {
                 accessor: 'origin',
-                title: 'Origin Name',
+                title: 'Origin',
                 ellipsis: true,
                 resizable: true,
                 draggable: true,
-                sortable: true
+                sortable: true,
+                render: ({direction_category , shipper_name , shipper_city , shipper_state , supplier_name , supplier_city , supplier_state}) => direction_category === 'outbound' ? `${shipper_name} - ${shipper_city}, ${shipper_state}` : `${supplier_name} - ${supplier_city}, ${supplier_state}`
             },
 
-            {
-                accessor: 'origin_city',
-                title: 'Origin City',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'origin_state',
-                title: 'Origin State',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'origin_zip',
-                title: 'Origin Zip',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
             {
                 accessor: 'destination',
-                title: 'Destination Name',
+                title: 'Destination',
                 ellipsis: true,
                 resizable: true,
                 draggable: true,
-                sortable: true
+                sortable: true,
+                render: ({direction_category , customer_name , customer_city , customer_state , shipper_name , shipper_city , shipper_state}) => direction_category === 'outbound' ? `${customer_name} - ${customer_city}, ${customer_state}` : `${shipper_name} - ${shipper_city}, ${shipper_state}`
             },
 
-            {
-                accessor: 'destination_city',
-                title: 'Destination City',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'destination_state',
-                title: 'Destination State',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
-            {
-                accessor: 'destination_zip',
-                title: 'Destination Zip',
-                ellipsis: true,
-                resizable: true,
-                draggable: true,
-                sortable: true
-            },
             {
                 accessor: 'requested_pickup_date',
                 title: 'Req. Pickup Date',
@@ -146,12 +109,13 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
             highlightOnHover
             storeColumnsKey={key}
             columns={effectiveColumns}
-            resizableColumns
+            
             records={sortedShipments}
             sortStatus={sortStatus}
             onSortStatusChange={setSortStatus}
             onRowClick={({ record }) => selectedShipment?.id === record.id ? setSelectedShipment(null) : setSelectedShipment(record)}
             rowClassName={(record) => record.id === selectedShipment?.id ? 'selected-shipment-row' : ''}
+            defaultColumnProps={{ width: 100 }}
         />
     )
 };

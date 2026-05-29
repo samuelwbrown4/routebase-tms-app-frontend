@@ -202,12 +202,12 @@ function ShipmentTracking({ user, auth, setAuth }) {
                     {routableShipments.map(r => (
                         <Table.Tr key={r.id}>
                             <Table.Td>{r.shipment_number}</Table.Td>
-                            <Table.Td>{r.origin_address}</Table.Td>
-                            <Table.Td>{r.origin_city}</Table.Td>
-                            <Table.Td>{r.origin_state}</Table.Td>
-                            <Table.Td>{r.destination_address}</Table.Td>
-                            <Table.Td>{r.destination_city}</Table.Td>
-                            <Table.Td>{r.destination_state}</Table.Td>
+                            <Table.Td>{r.direction_category === 'outbound' ? r.shipper_address : r.supplier_address}</Table.Td>
+                            <Table.Td>{r.direction_category === 'outbound' ? r.shipper_city : r.supplier_city}</Table.Td>
+                            <Table.Td>{r.direction_category === 'outbound' ? r.shipper_state : r.supplier_state}</Table.Td>
+                            <Table.Td>{r.direction_category === 'outbound' ? r.customer_address : r.shipper_address}</Table.Td>
+                            <Table.Td>{r.direction_category === 'outbound' ? r.customer_city : r.shipper_city}</Table.Td>
+                            <Table.Td>{r.direction_category === 'outbound' ? r.customer_state : r.shipper_state}</Table.Td>
                             <Table.Td>{new Date(r.requested_pickup_date).toLocaleDateString()}</Table.Td>
                             <Table.Td>{new Date(r.requested_delivery_date).toLocaleDateString()}</Table.Td>
                             <Table.Td><Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => routeShipment(r)} loading={loadingId === r.id} loaderProps={{ type: 'dots', color: 'black' }}>Route</Button></Table.Td>

@@ -17,8 +17,8 @@ function DraggableRow({ order }) {
     return (
         <Table.Tr ref={setNodeRef} style={style} {...listeners} {...attributes}>
             <Table.Td>{order.order_number}</Table.Td>
-            <Table.Td>{order.origin}</Table.Td>
-            <Table.Td>{order.destination}</Table.Td>
+            <Table.Td>{order.direction_category === 'outbound' ? order.shipper_location_name : order.supplier_name}</Table.Td>
+            <Table.Td>{order.direction_category === 'outbound' ? order.customer_location_name : order.shipper_location_name}</Table.Td>
             <Table.Td>{order.weight}</Table.Td>
         </Table.Tr>
     )

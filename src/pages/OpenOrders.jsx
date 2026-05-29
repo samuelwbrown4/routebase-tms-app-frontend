@@ -210,14 +210,14 @@ function OpenOrders({ auth, user, setAuth }) {
                                     <Fragment key={order.id}>
                                         <Table.Tr className={`row${potentialLoads.some(load => load.id === order.id) ? ' selected-row' : ''}`} value={order} onClick={() => handleAddToQueue(order)} >
                                             <Table.Td>{order.order_number}</Table.Td>
-                                            <Table.Td>{order.origin}</Table.Td>
-                                            <Table.Td>{order.origin_address}</Table.Td>
-                                            <Table.Td>{order.origin_city}</Table.Td>
-                                            <Table.Td>{order.origin_state}</Table.Td>
-                                            <Table.Td>{order.destination}</Table.Td>
-                                            <Table.Td>{order.destination_address}</Table.Td>
-                                            <Table.Td>{order.destination_city}</Table.Td>
-                                            <Table.Td>{order.destination_state}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.shipper_location_name : order.supplier_name}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.shipper_address : order.supplier_address}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.shipper_city : order.supplier_city}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.shipper_state : order.supplier_state}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.customer_location_name : order.shipper_location_name}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.customer_address : order.shipper_address}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.customer_city : order.shipper_city}</Table.Td>
+                                            <Table.Td>{order.direction_category === 'outbound' ? order.customer_state : order.shipper_state}</Table.Td>
                                             <Table.Td>{order.weight}</Table.Td>
                                             <Table.Td><Image src={moreIcon} w={16} h={16} onClick={() => { setSelectedOrder(order); setExpandedOrder(expandedOrder === order.id ? null : order.id) }}></Image></Table.Td>
                                         </Table.Tr>
