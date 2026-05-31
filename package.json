@@ -19,6 +19,7 @@
     "@mantine/notifications": "^8.3.18",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.20",
+    "framer-motion": "^12.40.0",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "mantine-datatable": "^8.3.13",

@@ -26,3 +26,10 @@
     background-color: #f6bd029a;
     color: black;
 }
+
+.leaflet-container {
+    
+    border-radius: 8px;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+    border: .1px solid #333 !important;
+}

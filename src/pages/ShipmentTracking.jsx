@@ -12,6 +12,7 @@ function ShipmentTracking({ user, auth, setAuth }) {
 
     const [routableShipments, setRoutableShipments] = useState([])
     const [routedShipments, setRoutedShipments] = useState([])
+    const [inTransitShipments , setInTransitShipments] = useState([])
     const [displayedShipment, setDisplayedShipment] = useState(undefined)
 
     const [loadingId, setLoadingId] = useState(null)
@@ -28,6 +29,14 @@ function ShipmentTracking({ user, auth, setAuth }) {
         console.log('routable', routableShipments)
         console.log('routed', routedShipments)
     }, [routableShipments, routedShipments])
+
+    useEffect(()=>{
+        setInTransitShipments(routedShipments.filter(s=>s.status === 'in_transit'))
+    },[routedShipments])
+
+    useEffect(()=>{
+        console.log('in transit check' , inTransitShipments)
+    },[inTransitShipments])
 
     useEffect(() => {
         console.log(displayedShipment)
@@ -217,8 +226,7 @@ function ShipmentTracking({ user, auth, setAuth }) {
             </Table>}
 
             <div style={{ display: 'flex' }}>
-
-                <RouteMap displayedShipment={displayedShipment} />
+                <RouteMap inTransitShipments={inTransitShipments} displayedShipment={displayedShipment} getShipmentGeometry={getShipmentGeometry} />
                 <div style={{ width: '30%', display: 'flex', flexDirection: 'column', textAlign: 'center', alignItems: 'center' }}>
                     <h4><u>Routed Shipments</u></h4>
                     {routedShipments.map(r => (

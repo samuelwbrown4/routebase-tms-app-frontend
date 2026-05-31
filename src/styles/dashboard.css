@@ -4,9 +4,49 @@
 
 .dashboard-card{
     cursor: pointer;
+    width: 20%;
 }
 
 .dashboard-card:hover{
     transform: scale(1.05);
     transition: all 0.2s ease;
+}
+
+.newsfeed-card{
+    display: flex;
+    flex-direction: row;
+    background-color: #1a1a1a;
+    color: white;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25);
+    border: .1px solid #333;
+    height: 100% !important;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: space-between;
+
+
+}
+
+.newsfeed-card:hover{
+  transform: scale(1.02);
+    transition: all 0.2s ease;  
+
+}
+
+
+
+.news-indicator{
+    cursor: pointer;
+    background-color: #2a2a2a;
+}
+
+.current-news{
+    cursor: pointer;
+    background-color: #f6bd02;
+}
+
+.news-indicator:hover{
+    transform: scale(1.10);
+    transition: all 0.2s ease;  
 }
