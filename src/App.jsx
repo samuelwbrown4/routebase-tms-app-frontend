@@ -19,11 +19,11 @@ import ManageCarriers from './pages/ManageCarriers';
 import ManageRatePkgs from './pages/ManageRatePkgs';
 import ShipperAdmin from './pages/ShipperAdmin';
 import CreateUser from './pages/CreateUser';
-import UserAdminOptions from './pages/UserAdminOptions';
-import ViewUsers from './pages/ViewUsers';
+import AdminUsers from './pages/AdminUsers';
 import CustomerAdminOptions from './pages/CustomerAdminOptions';
 import ViewCustomerLocations from './pages/ViewCustomerLocations';
 import CreateCustomerLocation from './pages/CreateCustomerLocation';
+import AdminCarriers from './pages/AdminCarriers';
 import ShipmentTracking from './pages/ShipmentTracking';
 import Conversations from './pages/Conversations';
 import SpotMarket from './pages/SpotMarket';
@@ -82,9 +82,9 @@ function App() {
               <Route path='/manage-carriers' element={<ManageCarriers auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/admin' element={<ShipperAdmin auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/update-shipments' element={<UpdateShipments auth={auth} setAuth={setAuth} user={user} />} />
-              <Route path='/admin/users' element={<UserAdminOptions auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/admin/customers' element={<CustomerAdminOptions auth={auth} setAuth={setAuth} user={user} />} />
-              <Route path='/admin/users/view' element={<ViewUsers auth={auth} setAuth={setAuth} user={user} />} />
+              <Route path='/admin/carriers' element={<AdminCarriers auth={auth} setAuth={setAuth} user={user} />} />
+              <Route path='/admin/users' element={<AdminUsers auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/admin/customers/view' element={<ViewCustomerLocations auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/admin/users/create-user' element={<CreateUser auth={auth} setAuth={setAuth} user={user} />} />
               <Route path='/admin/customers/create-customer-location' element={<CreateCustomerLocation auth={auth} setAuth={setAuth} user={user} />} />

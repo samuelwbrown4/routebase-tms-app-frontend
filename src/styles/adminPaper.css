@@ -1,11 +1,16 @@
 .admin-paper:hover {
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    
     cursor: pointer;
     transform: scale(1.05);
+    transition: all 0.2s ease;
 }
 
 .admin-paper {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25);
+    border: .1px solid #333 !important;
+    background-color: #1a1a1a;
+    color: #adadad;
 }
 
 #back-btn:hover {

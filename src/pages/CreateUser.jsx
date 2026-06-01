@@ -1,4 +1,4 @@
-import CreateUserForm from "../components/CreateUserForm";
+import CreateUserForm from "../components/UserForm";
 import { Image } from '@mantine/core';
 import backIcon from '../assets/arrow-square-left.svg'
 import { useNavigate } from 'react-router-dom';

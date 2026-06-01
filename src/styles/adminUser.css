@@ -1,0 +1,32 @@
+#add-user-btn{
+    display: flex;
+    color: green;
+    border: 1px solid green;
+    border-radius: 6px;
+    
+}
+#add-user-btn:hover{
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);  
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
+.edit-user-btn:hover{
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); 
+    cursor: pointer;
+}
+
+#users-table{
+    border-radius: 8px;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+    border: .1px solid #333 !important;
+    background-color: #1a1a1a;
+    color: #adadad;
+    width: 100%
+}
+
+.user-table-row:hover{
+    color: white !important;
+}

@@ -5,11 +5,11 @@ function AdminPaper({title , text , nav}){
     return(
         <Paper onClick={nav} className="admin-paper" p="xl" 
             radius="md" 
-            style={{ backgroundColor: '#2c2c2c', textAlign: 'center', minWidth: 240, height: 160, alignContent: 'center' }}>
+            style={{ textAlign: 'center', minWidth: 240, height: 160, alignContent: 'center' }}>
             <Title order={1} style={{ justifyContent: 'center' , fontSize: '3rem', color: 'white', lineHeight: 1 }}>
                 {title}
             </Title>
-            <Text size="sm" c="dimmed" mt="xs">
+            <Text size="m" c="dimmed" mt="xs" style={{fontWeight: 'bold'}}>
                 {text}
             </Text>
         </Paper>
