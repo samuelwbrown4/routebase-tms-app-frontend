@@ -1,11 +1,14 @@
 import { useDroppable } from '@dnd-kit/core'
 import { Button, Image, Select, CloseButton, NumberInput } from '@mantine/core'
+import {useNavigate} from 'react-router-dom'
 import { DatePickerInput } from '@mantine/dates';
 import '../styles/offTruckOrders.css'
 import calendarIcon from '../assets/calendar.svg';
 import hourglassIcon from '../assets/hourglass-medium.svg';
 
-function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentTypes, setMode, modeList, mode, carrier, setCarrier, equipmentType, setEquipmentType, pickDate, setPickDate, dropDate, setDropDate, totalWeight, setTotalWeight, createShipment, distance, rates, setSelectedRate, spotOnOff, recommendedMode, expiry, setExpiry }) {
+function TruckDropZone({offTruckOrders, onTruckOrders, removeFromTruck, carrierList, equipmentTypes, setMode, modeList, mode, carrier, setCarrier, equipmentType, setEquipmentType, pickDate, setPickDate, dropDate, setDropDate, totalWeight, setTotalWeight, createShipment, distance, rates, setSelectedRate, spotOnOff, recommendedMode, expiry, setExpiry }) {
+
+    const navigate = useNavigate()
 
     const { isOver, setNodeRef } = useDroppable({
         id: 'truck-zone'
@@ -169,10 +172,20 @@ function TruckDropZone({ onTruckOrders, removeFromTruck, carrierList, equipmentT
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', marginRight: '5rem' }}>
-                    {(mode !== '') && (equipmentType !== '')  && (pickDate !== '') && (dropDate !== '') &&
+                    {(mode !== '') && (equipmentType !== '')  && (pickDate) && (dropDate) && onTruckOrders.length > 0 &&
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingRight: '3rem' }}>
-                            <Button color='green' radius='xl' size='lg' className='tender-btn' onClick={() => createShipment()}>{spotOnOff ? 'Send to Spot Market' : 'Tender Shipment'}</Button>
+                            <Button color='green' radius='md' size='xl' className='tender-btn' onClick={() => createShipment()}>{spotOnOff ? 'Send to Spot Market' : 'Tender Shipment'}</Button>
                         </div>
+                    }
+                    {onTruckOrders.length === 0 && offTruckOrders.length === 0 &&
+                    <div style={{display: 'flex' , flexDirection: 'column' , alignItems: 'center' , gap: '1rem'}}>
+                        <span style={{color: '#adadad'}}>No orders left. Where to next?</span>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingRight: onTruckOrders.length === 0 && offTruckOrders.length === 0 ? '' : '3rem', gap: '1rem' }}>
+                            <Button color='blue' radius='md' size='sm' className='decision-btn' onClick={() => navigate('/open-orders')}>Open Orders</Button>
+                            <Button color='blue' radius='md' size='sm' className='decision-btn' onClick={() => navigate('/shipments')}>Shipments</Button>
+                            <Button color='blue' radius='md' size='sm' className='decision-btn' onClick={() => navigate('/spot-market')}>Spot Market</Button>
+                        </div> 
+                    </div>
                     }
                 </div>
             </div>

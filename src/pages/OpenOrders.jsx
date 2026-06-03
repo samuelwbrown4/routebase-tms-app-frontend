@@ -190,7 +190,7 @@ function OpenOrders({ auth, user, setAuth }) {
                 <Skeleton visible={loading}>
                     <Table className='table'>
                         <Table.Thead>
-                            <Table.Tr className='header-row' >
+                            <Table.Tr className='header-row' style={{borderBottom: '2px solid white'}} >
                                 <Table.Th onClick={() => handleSort('order_number')}>Order No.{sortField === 'order_number' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
                                 <Table.Th onClick={() => handleSort('origin')}>Origin Name{sortField === 'origin' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
                                 <Table.Th onClick={() => handleSort('origin_address')}>Origin Address{sortField === 'origin_address' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
@@ -200,7 +200,7 @@ function OpenOrders({ auth, user, setAuth }) {
                                 <Table.Th onClick={() => handleSort('destination_address')}>Destination Address{sortField === 'destination_address' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
                                 <Table.Th onClick={() => handleSort('destination_city')}>Destination City{sortField === 'destination_city' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
                                 <Table.Th onClick={() => handleSort('destination_state')}>Destination State{sortField === 'destination_state' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
-                                <Table.Th onClick={() => handleSort('weight')}>Weight{sortField === 'weight' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
+                                <Table.Th colSpan={2} onClick={() => handleSort('weight')}>Weight (lbs.){sortField === 'weight' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
                         {tableLoading && <Loader color='white' type='bars'/>}
@@ -218,7 +218,7 @@ function OpenOrders({ auth, user, setAuth }) {
                                             <Table.Td>{order.direction_category === 'outbound' ? order.customer_address : order.shipper_address}</Table.Td>
                                             <Table.Td>{order.direction_category === 'outbound' ? order.customer_city : order.shipper_city}</Table.Td>
                                             <Table.Td>{order.direction_category === 'outbound' ? order.customer_state : order.shipper_state}</Table.Td>
-                                            <Table.Td>{order.weight}</Table.Td>
+                                            <Table.Td>{order.weight.split('.')[0]}</Table.Td>
                                             <Table.Td><Image src={moreIcon} w={16} h={16} onClick={() => { setSelectedOrder(order); setExpandedOrder(expandedOrder === order.id ? null : order.id) }}></Image></Table.Td>
                                         </Table.Tr>
                                         <Table.Tr>
@@ -238,7 +238,7 @@ function OpenOrders({ auth, user, setAuth }) {
                                                             </Table.Thead>
                                                             <Table.Tbody>
                                                                 {selectedOrderDetails.map((li, idx) => (
-                                                                    <Table.Tr key={li.material_number}>
+                                                                    <Table.Tr key={li.material_number} style={{color: '#adadad'}}>
                                                                         <Table.Td>{idx + 1}</Table.Td>
                                                                         <Table.Td>{li.materialNumber}</Table.Td>
                                                                         <Table.Td>{li.description}</Table.Td>

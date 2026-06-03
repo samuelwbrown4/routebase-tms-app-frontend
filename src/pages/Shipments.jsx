@@ -193,7 +193,7 @@ function Shipments({ auth, user, setAuth }) {
                     dropdownOpened={searchValue.length > 2 ? true : false}
                     onSearchChange={setSearchValue} onChange={handleSearchSelect} onClear={getShipments} placeholder='Search...' rightSection={<Image src={searchIcon} h={24} w={'auto'} />} styles={{ input: { backgroundColor: 'transparent', color: 'white' } }} />
             </div>
-            <div >
+            <div id='shipments-table-container'>
                 <ShipmentsTable sortStatus={sortStatus} setSortStatus={setSortStatus} filteredShipments={filteredShipments} selectedShipment={selectedShipment} setSelectedShipment={setSelectedShipment} handleDocClick={handleDocClick} getConversation={getConversation} />
             </div>
         </div>

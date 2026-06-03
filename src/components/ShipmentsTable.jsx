@@ -25,25 +25,7 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
     const { effectiveColumns } = useDataTableColumns({
         key,
         columns: [
-            {
-                accessor: 'actions',
-                title: 'Actions',
-                render: (shipment) => 
-                    <div style={{display: 'flex' , gap: '0.5rem'}}>   
-                        <Image src={eyeIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); navigate(`/shipments/details/${shipment.id}`)}}/>
-                        <Image src={paperclipIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); handleDocClick(shipment.id)}}/>
-                        <Image src={chatIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation() ; getConversation(shipment.id)}}/>
-                    </div>,
-                resizable: false,
-                width: 100
-            },
-            {
-                accessor: 'direction_category',
-                title: 'Direction',
-                render: ({direction_category}) => <Badge color={direction_category === 'outbound' ? 'green' : 'blue'}>{direction_category.toUpperCase()}</Badge>,
-                resizable: false,
-                width: 100
-            },
+            
             {
                 accessor: 'shipment_number',
                 title: 'Shipment #',
@@ -99,7 +81,27 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
                 draggable: true,
                 sortable: true,
                 render: ({ status }) => status.toUpperCase().replaceAll('_', ' ')
+            },
+            {
+                accessor: 'direction_category',
+                title: 'Direction',
+                render: ({direction_category}) => <Badge color={direction_category === 'outbound' ? 'green' : 'blue'}>{direction_category.toUpperCase()}</Badge>,
+                resizable: false,
+                width: 120
+            },
+            {
+                accessor: 'actions',
+                title: 'Actions',
+                render: (shipment) => 
+                    <div style={{display: 'flex' , gap: '0.5rem'}}>   
+                        <Image id='view-shipment-btn' src={eyeIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); navigate(`/shipments/details/${shipment.id}`)}}/>
+                        <Image id='bol-btn' src={paperclipIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation(); handleDocClick(shipment.id)}}/>
+                        <Image id='chat-btn' src={chatIcon} h={16} w={'auto'} onClick={(e)=>{e.stopPropagation() ; getConversation(shipment.id)}}/>
+                    </div>,
+                resizable: false,
+                width: 100
             }
+            
         ]
     })
 
@@ -109,13 +111,13 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
             highlightOnHover
             storeColumnsKey={key}
             columns={effectiveColumns}
-            
+            rowBorderColor={'#adadad'}
             records={sortedShipments}
             sortStatus={sortStatus}
             onSortStatusChange={setSortStatus}
             onRowClick={({ record }) => selectedShipment?.id === record.id ? setSelectedShipment(null) : setSelectedShipment(record)}
             rowClassName={(record) => record.id === selectedShipment?.id ? 'selected-shipment-row' : ''}
-            defaultColumnProps={{ width: 100 }}
+            defaultColumnProps={{ width: 120 }}
         />
     )
 };

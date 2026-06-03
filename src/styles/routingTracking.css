@@ -1,11 +1,11 @@
 .routed-shipment {
     width: 70%;
-    background-color: #1a1b1e;
+    background-color: #2a2a2a;
     border-radius: 15px;
     padding: 0.4rem 1rem;
     margin: 0.3rem 1rem;
     transition: all 0.2s ease;
-    border: 1px solid #2e303a;
+    border: 1px solid #333;
 }
 
 .routed-shipment:hover{
@@ -19,7 +19,7 @@
     background-color: #f6bd02;
     color: black;
     font-weight: bold;
-    border: 1px solid #f6bd02;
+    border: 1px solid gray;
 }
 
 .displayed-shipment:hover {
@@ -32,4 +32,35 @@
     border-radius: 8px;
     box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
     border: .1px solid #333 !important;
+}
+
+#routed-list-div{
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: #adadad;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25);
+    overflow-y: scroll;
+}
+
+#routable-table{
+    font-size: .7rem;
+    background-color: #1a1a1a;
+    color: #adadad;
+    width: 100%;
+}
+
+#routable-table-container{
+    background-color: #1a1a1a;
+    border-radius: 6px;
+    border: 1px solid #333 !important;
+    height: 20vH;
+    overflow-y: scroll;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+}
+
+.route-btn:hover{
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+    box-shadow: 0px 0px 10px #f6bd02;
 }

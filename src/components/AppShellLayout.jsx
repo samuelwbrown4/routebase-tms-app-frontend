@@ -90,6 +90,8 @@ function AppShellLayout({ user, setAuth }) {
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/admin'><Image id='scroll-icon' src={adminIcon} h={20} w='auto' /><span>Admin</span></Link>
                         </div>}
                         {user.client === 'carrier' && opened && <div id='links-container'>
+                            <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/dashboard'><Image id='dashboard-icon' src={dashboardIcon} h={20} w='auto' /><span>Dashboard</span></Link>
+
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/shipment-tracking'><Image id='shipment-icon' src={routeIcon} h={20} w='auto' /><span>Shipment Routing</span></Link>
 
                             <Link style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} to='/update-shipments'><Image id='shipment-icon' src={shipmentIcon} h={20} w='auto' /><span>Update Shipments</span></Link>

@@ -16,7 +16,7 @@ function CarriersTable({ carriers , setOpenEdit , openEdit , setSelectedCarrier}
             </Table.Thead>
             <Table.Tbody>
                 {carriers.map(carrier => (
-                    <Table.Tr className='carriers-table-row' style={{borderBottom: '1px solid #adadad'}} key={carrier.id}>
+                    <Table.Tr className='carriers-table-row'  key={carrier.id}>
                         <Table.Td>{carrier.name}</Table.Td>
                         <Table.Td>{carrier.scac.toUpperCase()}</Table.Td>
                         <Table.Td>{carrier.address}</Table.Td>

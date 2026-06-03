@@ -25,6 +25,10 @@
     color: white !important;
 }
 
+.carriers-table-row{
+    border-bottom: 1px solid #adadad;
+}
+
 .edit-carrier-btn:hover{
     transform: scale(1.1);
     transition: all 0.2s ease;

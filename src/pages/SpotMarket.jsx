@@ -214,12 +214,12 @@ function SpotMarket({ auth, user, setAuth }) {
                 </div>
             </Modal>
             <div>
-                <h1>Spot Market</h1>
+                <h1 style={{margin: '0px'}}>Spot Market</h1>
             </div>
-            <div>
-                <Table>
+            <div id='table-container'>
+                <Table id='spot-market-table'>
                     <Table.Thead>
-                        <Table.Tr>
+                        <Table.Tr id='header-row'>
                             <Table.Th>Shipment #</Table.Th>
                             <Table.Th>Origin</Table.Th>
                             <Table.Th>Origin City/State</Table.Th>
@@ -232,7 +232,7 @@ function SpotMarket({ auth, user, setAuth }) {
                     </Table.Thead>
                     <Table.Tbody>
                         {shipmentsList.map(s =>
-                            <Table.Tr key={s.id}>
+                            <Table.Tr key={s.id} className='row'>
                                 <Table.Td>{s.shipment_number}</Table.Td>
                                 <Table.Td>{s.direction_category === 'outbound' ? s.shipper_name : s.supplier_name}</Table.Td>
                                 <Table.Td>{`${s.direction_category === 'outbound' ? s.shipper_city : s.supplier_city}, ${s.direction_category === 'outbound' ? s.shipper_state : s.supplier_state}`}</Table.Td>

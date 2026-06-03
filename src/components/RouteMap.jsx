@@ -75,7 +75,7 @@ export default function RouteMap({inTransitShipments , displayedShipment, getShi
                             <Popup>Origin</Popup>
                         </Marker>}
 
-                        {inTransitShipments.map(s=> 
+                        {inTransitShipments?.filter(i=>i.current_position !== null)?.map(s=> 
                         <Marker key={s.id} position={s.current_position} icon={inTransitIcon} eventHandlers={{ click: () => getShipmentGeometry(s.id) }}
 >
                             <Popup>{s.shipment_number}</Popup>

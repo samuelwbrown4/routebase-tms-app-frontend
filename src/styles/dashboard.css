@@ -50,3 +50,11 @@
     transform: scale(1.10);
     transition: all 0.2s ease;  
 }
+
+.mantine-Paper-root{
+    padding-top: 0rem;
+}
+
+.m_1b7284a3{
+    padding-top: 0rem;
+}

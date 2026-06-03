@@ -13,7 +13,7 @@
 }
 
 .offer-list-item:hover{
-     background-color: #f6a802 !important;
+     background-color: #f6bd02 !important;
     color: black !important;
 }
 
@@ -43,7 +43,7 @@
 .mantine-Modal-content{
    background-color: #1a1a1a !important;
     color: white !important;
-    border: 1px solid #f6a802 !important; 
+    border: 1px solid #f6bd02 !important; 
     
 }
 
@@ -75,10 +75,33 @@
 .mantine-Input-input{
     background-color: #2a2a2a !important;
     color: white !important;
-    border: 1px solid #f6a802 !important;
+    border: 1px solid #f6bd02 !important;
 }
 
 #refresh-btn:hover{
     transform: scale(1.3);
     transition: all 0.2s ease;
 }
+
+#spot-market-table{
+    
+    background-color: #1a1a1a;
+    color: #adadad;
+    width: 100%;
+   
+}
+
+#table-container {
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+    background-color: #1a1a1a;
+    border-radius: 6px;
+    border: 1px solid #333 !important;
+    height: 70vH;
+    overflow-y: scroll;
+}
+
+#header-row {
+    border-bottom: 2px solid white;
+    font-weight: bold;
+}
+

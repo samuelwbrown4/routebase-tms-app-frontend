@@ -100,6 +100,7 @@ function ShipmentTracking({ user, auth, setAuth }) {
             }
 
             let result = await response.json();
+            console.log('shipment current_position before response:', result.shipments[2]?.current_position)
 
             if (result.shipments && status.includes('planned') && user.client === 'carrier') {
                 setRoutableShipments(result.shipments)
@@ -160,6 +161,9 @@ function ShipmentTracking({ user, auth, setAuth }) {
     }
 
     async function getShipmentGeometry(shipmentId) {
+        if(shipmentId === displayedShipment?.id){
+            return setDisplayedShipment(null)
+        } 
         try {
             let response = await fetch(`${API_URL}/api/carrier/shipments/geometry/${shipmentId}`, {
                 headers: {
@@ -193,7 +197,9 @@ function ShipmentTracking({ user, auth, setAuth }) {
     return (
         <div style={{ position: 'relative', zIndex: 1, color: 'white' }}>
             <h1 id='header'>{user.client === 'shipper' ? 'Shipment Tracking' : 'Shipment Routing'}</h1>
-            {user.client === 'carrier' && routableShipments.length > 0 && <Table>
+            <div style={{ display: 'flex' , flexDirection: 'column' , gap: '2rem'}}>
+            {user.client === 'carrier' && routableShipments.length > 0 && <div id='routable-table-container'>
+            <Table id='routable-table'>
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th>Shipment #</Table.Th>
@@ -209,7 +215,7 @@ function ShipmentTracking({ user, auth, setAuth }) {
                 </Table.Thead>
                 <Table.Tbody>
                     {routableShipments.map(r => (
-                        <Table.Tr key={r.id}>
+                        <Table.Tr className='row' key={r.id}>
                             <Table.Td>{r.shipment_number}</Table.Td>
                             <Table.Td>{r.direction_category === 'outbound' ? r.shipper_address : r.supplier_address}</Table.Td>
                             <Table.Td>{r.direction_category === 'outbound' ? r.shipper_city : r.supplier_city}</Table.Td>
@@ -219,22 +225,23 @@ function ShipmentTracking({ user, auth, setAuth }) {
                             <Table.Td>{r.direction_category === 'outbound' ? r.customer_state : r.shipper_state}</Table.Td>
                             <Table.Td>{new Date(r.requested_pickup_date).toLocaleDateString()}</Table.Td>
                             <Table.Td>{new Date(r.requested_delivery_date).toLocaleDateString()}</Table.Td>
-                            <Table.Td><Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => routeShipment(r)} loading={loadingId === r.id} loaderProps={{ type: 'dots', color: 'black' }}>Route</Button></Table.Td>
+                            <Table.Td><Button className='route-btn' size='xs' style={{ backgroundColor: "transparent", color: '#f6bd02' , borderColor: '#f6bd02' }} onClick={() => routeShipment(r)} loading={loadingId === r.id} loaderProps={{ type: 'dots', color: '#f6bd02' }}>Route</Button></Table.Td>
                         </Table.Tr>
                     ))}
                 </Table.Tbody>
-            </Table>}
+            </Table>
+            </div>}
 
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex' , gap: '2rem' }}>
                 <RouteMap inTransitShipments={inTransitShipments} displayedShipment={displayedShipment} getShipmentGeometry={getShipmentGeometry} />
-                <div style={{ width: '30%', display: 'flex', flexDirection: 'column', textAlign: 'center', alignItems: 'center' }}>
-                    <h4><u>Routed Shipments</u></h4>
+                <div id='routed-list-div' style={{ width: '30%', display: 'flex', flexDirection: 'column', textAlign: 'center', alignItems: 'center' }}>
+                    <h4 style={{color: '#f6bd02' , position: 'sticky' , top: '0' , zIndex: '1'}}>Routed Shipments</h4>
                     {routedShipments.map(r => (
-                        <div className={`routed-shipment ${r.id === displayedShipment?.id ? 'displayed-shipment' : ''}`} key={r.id} style={{ justifyContent: 'center', textAlign: 'center', marginLeft: '1rem', borderBottom: '1px solid gray', cursor: 'pointer' }} onClick={() => getShipmentGeometry(r.id)}><span>{r.shipment_number}</span></div>
+                        <div className={`routed-shipment ${r.id === displayedShipment?.id ? 'displayed-shipment' : ''}`} key={r.id} style={{ justifyContent: 'center', textAlign: 'center', marginLeft: '1rem',  cursor: 'pointer' }} onClick={() => getShipmentGeometry(r.id)}><span>{r.shipment_number}</span></div>
                     ))}
                 </div>
             </div>
-
+                    </div>
 
         </div>
     )

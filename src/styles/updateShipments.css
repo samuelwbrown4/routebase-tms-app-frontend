@@ -14,6 +14,10 @@
   color: white;
 }
 
+.mantine-Textarea-root{
+  width: 70%;
+}
+
 .mantine-Drawer-close:hover {
   background-color: black !important;
   transform: scale(1.1);
@@ -56,21 +60,33 @@
 }
 
 #data-table{
-  color: white;
-  background-color: black;
+  
+  
+  background-color: #1a1a1a;
   font-size: 0.7rem;
+  
+}
+
+#update-table-container{
+    background-color: #1a1a1a;
+    border-radius: 6px;
+    border: 1px solid #333 !important;
+    height: 70vH;
+    overflow-y: scroll;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+}
+
+.mantine-ScrollArea-viewport{
+  background-color: #1a1a1a;
 }
 
 .mdt-header {
-  background-color: black;
+  background-color: #1a1a1a;
 }
 
 .mantine-datatable-row:hover td {
   background-color: #333 !important;
-}
-
-.mantine-datatable-row:hover td {
-  background-color: #333 !important;
+  color: white;
 }
 
 .mantine-datatable-row.selected-shipment-row:hover td {
@@ -78,20 +94,71 @@
     color: #0b1f3a;
 }
 
+
+
 .mantine-datatable-header-cell-resizable {
-  background-color: black !important;
+  background-color: #1a1a1a !important;
   color: white !important;
 }
 
 
 
 table th.mantine-datatable-header-cell-resizable {
-  background-color: black !important;
+  background-color: #1a1a1a !important;
   color: white !important;
 }
 
 .mantine-datatable-header-cell-sortable-text:hover {
   color: black !important;
+}
+
+.mantine-Table-th{
+  color: white;
+}
+
+
+.mantine-datatable-row{
+  color: #adadad;
+  border-color: #adadad !important;
+}
+
+.mantine-Table-tr{
+  border-color: #adadad !important;
+}
+
+.m_4e7aa4fd:where([data-with-row-border]){
+  border-color: #adadad !important;
+}
+
+.mantine-ActionIcon-icon{
+  color: #f6bd02;
+}
+.selected-shipment-row{
+  color: black;
+}
+
+#shipments-table-container{
+  box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+  background-color: #1a1a1a;
+  border-radius: 6px;
+  border: 1px solid #333 !important;
+  height: 70vH;
+
+}
+
+#view-shipment-btn:hover{
+  transform: scale(1.3);
+  transition: all 0.2s ease;
+}
+
+#bol-btn:hover{
+  transform: scale(1.3);
+  transition: all 0.2s ease;
+}
+
+#chat-btn:hover{
+  transform: scale(1.3);
+  transition: all 0.2s ease;
 }
 
 

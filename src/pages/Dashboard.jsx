@@ -14,12 +14,20 @@ function Dashboard({ auth, user, setAuth }) {
 
     const API_URL = import.meta.env.VITE_API_URL;
 
+    const [carrierShipments, setCarrierShipments] = useState([]);
+    const [carrierInTransit, setCarrierIntransit] = useState([]);
+    const [carrierLatePickups, setCarrierLatePickups] = useState([]);
+    const [carrierLateDeliveries, setCarrierLateDeliveries] = useState([]);
+    const [outToBid, setOutToBid] = useState([])
+    const [upcomingPickups, setUpcomingPickups] = useState([]);
+    const [upcomingDeliveries, setUpcomingDeliveries] = useState([])
+
     const [undeliveredShipments, setUndeliveredShipments] = useState([]);
-    const [unplannedOrders, setUnplannedOrders] = useState([])
-    const [unplannedLateOrders, setUnplannedLateOrders] = useState([])
-    const [orders, setOrders] = useState([])
+    const [unplannedOrders, setUnplannedOrders] = useState([]);
+    const [unplannedLateOrders, setUnplannedLateOrders] = useState([]);
+    const [orders, setOrders] = useState([]);
     const [inTransitShipments, setInTransitShipments] = useState([]);
-    const [pendingCarrier, setPendingCarrier] = useState([])
+    const [pendingCarrier, setPendingCarrier] = useState([]);
     const [upcomingOrders, setUpcomingOrders] = useState([]);
     const [upcomingShipments, setUpcomingShipments] = useState([]);
 
@@ -34,52 +42,57 @@ function Dashboard({ auth, user, setAuth }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        getShipmentsByStatus('in_transit')
-        getShipmentsByStatus('pending_carrier')
-        getOpenOrders()
-        getOrdersByStatus('unplanned')
-        fetchNewsfeed()
-        getInTransitShipments()
-        fetchUpcomingOrders()
-        fetchUpcomingShipments()
+        if (user.client === 'shipper') {
+            getShipmentsByStatus('in_transit')
+            getShipmentsByStatus('pending_carrier')
+            getOpenOrders()
+            getOrdersByStatus('unplanned')
+            fetchNewsfeed()
+            getInTransitShipments()
+            fetchUpcomingOrders()
+            fetchUpcomingShipments()
+        }
+
+        getShipmentsByStatus(['in_transit', 'planned', 'routed'])
+        getShipmentsByStatus(['pending_carrier'])
+
+
+
     }, [])
 
     useEffect(() => {
-        console.log('upcoming orders', upcomingOrders)
-    }, [upcomingOrders])
+        if (!carrierShipments) return
+        const today = new Date()
+        const oneWeekOut = new Date()
+        oneWeekOut.setDate(today.getDate() + 7)
+
+        const latePickups = carrierShipments.filter(s => (new Date(s.requested_pickup_date) < new Date()) && !s.actual_pickup_date).length
+
+        const lateDeliveries = carrierShipments.filter(s => (new Date(s.requested_delivery_date) < new Date()) && !s.actual_delivery_date).length
+
+        const upcomingP = carrierShipments.filter(s =>
+            today <= new Date(s.requested_pickup_date) &&
+            new Date(s.requested_pickup_date) <= oneWeekOut &&
+            !s.actual_pickup_date
+        ).sort((a,b)=>new Date(a.requested_pickup_date) - new Date(b.requested_pickup_date))
+        const upcomingD = carrierShipments.filter(s =>
+            today <= new Date(s.requested_delivery_date) &&
+            new Date(s.requested_delivery_date) <= oneWeekOut &&
+            !s.actual_delivery_date
+        ).sort((a,b)=>new Date(a.requested_delivery_date) - new Date(b.requested_delivery_date))
+        setCarrierLatePickups(latePickups)
+        setCarrierLateDeliveries(lateDeliveries)
+        setUpcomingPickups(upcomingP)
+        setUpcomingDeliveries(upcomingD)
+    }, [carrierShipments])
+
+    useEffect(() => {
+        console.log('upcoming orders', upcomingShipments)
+    }, [upcomingShipments])
 
     useEffect(() => {
         console.log('newsfeed', payload)
     }, [payload])
-
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    const ordersByDate = (() => {
-        const days = []
-        for (let i = 0; i <= 4; i++) {
-            const d = new Date(today)
-            d.setDate(today.getDate() + i)
-            days.push({ date: d.toLocaleDateString(), count: 0 })
-        }
-
-        orders.forEach(order => {
-            const orderDate = new Date(order.requested_ship_date)
-
-            orderDate.setHours(0, 0, 0, 0)
-
-            const diffDays = Math.round((orderDate - today) / (1000 * 60 * 60 * 24))
-
-            if (diffDays < 0 || diffDays > 4) return
-
-            const date = orderDate.toLocaleDateString()
-            const existing = days.find(d => d.date === date)
-
-            if (existing) existing.count += 1
-        })
-
-        return days
-    })()
 
     async function getOpenOrders() {
         try {
@@ -160,7 +173,7 @@ function Dashboard({ auth, user, setAuth }) {
 
     async function getShipmentsByStatus(status) {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/shipments?status=${[status].join(',')}`, {
+            let response = await fetch(`${API_URL}/api/${user.client}/shipments?status=${[status].join(',')}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -186,10 +199,15 @@ function Dashboard({ auth, user, setAuth }) {
                 return alert('Error finding undelivered shipments')
             }
 
-            if (status === 'in_transit') {
+            if (status === 'in_transit' && user.client === 'shipper') {
                 setUndeliveredShipments(result.shipments.length)
-            } else {
+            } else if (user.client === 'shipper') {
                 setPendingCarrier(result.shipments.length)
+            } else {
+                if (status.includes('pending_carrier')) {
+                    return setOutToBid(result.shipments.length)
+                }
+                setCarrierShipments(result.shipments)
             }
 
         } catch (error) {
@@ -328,29 +346,37 @@ function Dashboard({ auth, user, setAuth }) {
         }
     }
     return (
-        <div id='dashboard' style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: '3rem'}}>
+        <div id='dashboard' style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: '3rem' }}>
             <div>
                 <h1 className='header'>Dashboard</h1>
             </div>
 
             <div style={{ display: 'flex', color: 'white', width: '100%', height: '50%', flex: 1, justifyContent: 'space-around' }}>
-                <div className='dashboard-card' onClick={() => navigate('/shipment-tracking')}><DashboardCard statValue={undeliveredShipments} stat={'In Transit Shipments'} user={user} /></div>
-                <div className='dashboard-card' onClick={() => navigate('/spot-market')}><DashboardCard statValue={pendingCarrier} stat={'Pending Carrier'} user={user} /></div>
-                <div className='dashboard-card' onClick={() => navigate('/open-orders')}><DashboardCard statValue={unplannedOrders.length} stat={'Unplanned Orders'} /></div>
-                <div className='dashboard-card' onClick={() => navigate('/open-orders')}><DashboardCard statValue={unplannedLateOrders.length} stat={'Late Orders'} /></div>
+                <div className='dashboard-card' onClick={() => navigate('/shipment-tracking')}><DashboardCard statValue={user.client === 'shipper' ? undeliveredShipments : carrierShipments.filter(s => s.status === 'in_transit').length} stat={'In Transit Shipments'} user={user} /></div>
+                <div className='dashboard-card' onClick={() => navigate('/spot-market')}><DashboardCard statValue={user.client === 'shipper' ? pendingCarrier : carrierLatePickups} stat={user.client === 'shipper' ? 'Pending Carrier' : 'Late Pickups'} user={user} /></div>
+                <div className='dashboard-card' onClick={() => navigate('/open-orders')}><DashboardCard statValue={user.client === 'shipper' ? unplannedOrders.length : carrierLateDeliveries} stat={user.client === 'shipper' ? 'Unplanned Orders' : 'Late Deliveries'} /></div>
+                <div className='dashboard-card' onClick={() => navigate('/open-orders')}><DashboardCard statValue={user.client === 'shipper' ? unplannedLateOrders.length : outToBid} stat={user.client === 'shipper' ? 'Late Orders' : 'Active Spot Loads'} /></div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%', height: '50%', flex: 1 }}>
-                <div style={{display: 'flex' , width: '60%', justifyContent: 'space-between', gap: '3.3rem'}}>
-                    <DashboardUpcomingCard style={{widht: '100%' , height: '100%'}} stat={'Upcoming Orders'} statValue={upcomingOrders} />
-                    <DashboardUpcomingCard style={{widht: '100%' , height: '100%'}} stat={'Upcoming Shipments'} statValue={upcomingShipments} />
+                <div style={{ display: 'flex', width: '60%', justifyContent: 'space-between', gap: '3.3rem' }}>
+                    <DashboardUpcomingCard
+                        style={{ height: '100%' }}
+                        stat={user.client === 'shipper' ? 'Upcoming Orders' : 'Pickups This Week'}
+                        statValue={user.client === 'shipper' ? upcomingOrders : upcomingPickups}
+                    />
+                    <DashboardUpcomingCard
+                        style={{ height: '100%' }}
+                        stat={user.client === 'shipper' ? 'Upcoming Shipments' : 'Deliveries This Week'}
+                        statValue={user.client === 'shipper' ? upcomingShipments : upcomingDeliveries}
+                        user={user} />
                 </div>
-                <div style={{display: 'flex' , width: '30%', height: 160}}>
+                <div style={{ display: 'flex', width: '30%', height: 160 }}>
                     <Newsfeed newOrders={newOrders} newShipments={newShipments} newPickups={newPickups} newDeliveries={newDeliveries} newBids={newBids} />
                 </div>
-                
+
             </div>
-            <div style={{display: 'flex' , gap: '2rem' , justifyContent: 'space-around' , width: '100%'}}>
-                
+            <div style={{ display: 'flex', gap: '2rem', justifyContent: 'space-around', width: '100%' }}>
+
             </div>
         </div>
     )

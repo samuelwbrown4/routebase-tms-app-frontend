@@ -283,8 +283,8 @@ function UpdateShipments({ auth, user, setAuth }) {
     //add message logic
     return (
         <div>
-            <Drawer styles={{ body: { backgroundColor: '#2c2c2c' }, content: { backgroundColor: '#2c2c2c', color: 'white' }, header: { backgroundColor: '#2c2c2c' } }} position='top' closeOnClickOutside='true' opened={opened} onClose={close} title={`Update Shipment: #${selectedShipment?.shipment_number} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 CURRENT STATUS: ${selectedShipment?.status.toUpperCase().replaceAll('_', ' ')} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.shipper_name : selectedShipment?.supplier_name} ➔ ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.customer_name : selectedShipment?.shipper_name}`}>
-                <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '3rem' }}>
+            <Drawer styles={{ body: { backgroundColor: '#2c2c2c' }, content: { backgroundColor: '#2c2c2c', color: 'white' }, header: { backgroundColor: '#2c2c2c' } }} position='top' closeOnClickOutside='true' opened={opened} onClose={close} title={`Update Shipment: #${selectedShipment?.shipment_number} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 CURRENT STATUS: ${selectedShipment?.status.toUpperCase().replaceAll('_', ' ')} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.shipper_name : selectedShipment?.supplier_name} ➔ ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.customer_name : selectedShipment?.shipper_name}`} width={'100%'}>
+                <div style={{ height: '100%',width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '3rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '3rem' }}>
                         <span>Requested Pickup Date: {new Date(selectedShipment?.requested_pickup_date).toLocaleDateString()} {!selectedShipment?.actual_pickup_date ?
                             <div style={{ display: 'flex', gap: '2rem' }}>
@@ -361,8 +361,8 @@ function UpdateShipments({ auth, user, setAuth }) {
                             }
                             </span>}
                     </div>
-                    <div>
-                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555', color: 'white' } }} label="Add comment" description="(optional)" value={message} onChange={(e) => setMessage(e.target.value)} />
+                    <div style={{display: 'flex' , justifyContent: 'center', width: '100%'}}>
+                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555', color: 'white', width: '100%' }, wrapper: {width: '100%'} }} label="Add comment" description="(optional)" value={message} onChange={(e) => setMessage(e.target.value)} />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'right' }}>
                         <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => handleUpdateShipment()}>Confirm</Button>
@@ -378,17 +378,18 @@ function UpdateShipments({ auth, user, setAuth }) {
                         <span style={{ display: 'block', color: 'white' }}><b>Status: </b></span>
                         <Select
                             rightSection={<Image h={20} w={'auto'} src={caretDownIcon} />}
-                            styles={{ input: { backgroundColor: 'black', color: 'white', borderColor: "white" } }}
+                            styles={{ input: { backgroundColor: 'black', color: 'white', borderColor: "white" }, wrapper: {borderColor: '#f6bd02'} }}
                             data={[{ label: 'All', value: '' }, { label: 'Planned', value: 'planned' }, { label: 'In transit', value: 'in_transit' }]}
                             defaultValue=''
                             onChange={(_value, option) => handleStatusFilter(_value)} />
                     </div>
 
-                    <Button className={`update-button ${selectedShipment ? 'visible' : ''}`} variant="outline" color="white" onClick={() => open()}>Update</Button>
+                    <Button className={`update-button ${selectedShipment ? 'visible' : ''}`} variant="outline" color="#f6bd02" onClick={() => open()}>Update</Button>
                 </div>
 
             </div>
-            <DataTable id="data-table"
+            <div id='update-table-container'>
+                <DataTable id="data-table"
 
                 highlightOnHover
                 storeColumnsKey={key}
@@ -400,6 +401,8 @@ function UpdateShipments({ auth, user, setAuth }) {
                 onRowClick={({ record }) => selectedShipment?.id === record.id ? setSelectedShipment(null) : setSelectedShipment(record)}
                 rowClassName={(record) => record.id === selectedShipment?.id ? 'selected-shipment-row' : ''}
             />
+            </div>
+            
         </div>
 
     )

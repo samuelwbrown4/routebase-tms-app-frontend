@@ -68,8 +68,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
                     'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
-                    distance: shipment.distance,
-                    originId: shipment.origin_id
+                    distance: shipment.distance
                 })
             });
 
@@ -83,8 +82,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
                             'Authorization': `Bearer ${newToken}`
                         },
                         body: JSON.stringify({
-                            distance: shipment.distance,
-                            originId: shipment.origin_id
+                            distance: shipment.distance
                         })
                     })
                 }
@@ -101,45 +99,60 @@ function ShipmentDetails({ auth, user, setAuth }) {
     }
 
     return (
-        <div style={{ color: 'white' }}>
-            <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <h1 id='shipment-header'>Shipment Details - #{shipment?.shipment_number}</h1><Badge>{shipment?.status.toUpperCase().replaceAll('_', ' ')}</Badge>
+            <div style={{display: 'flex' , flexDirection: 'column' , gap: '.2rem', alignItems:  'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' , color: 'white', width: '95%' }}>
+                    <h1 id='shipment-header'>Shipment Details - #{shipment?.shipment_number}</h1><Badge>{shipment?.status.toUpperCase().replaceAll('_', ' ')}</Badge><Badge sixe='xxl' color={shipment?.direction_category === 'outbound' ? 'green' : 'blue'}>{shipment?.direction_category.toUpperCase()}</Badge>
                 </div>
                 <div id='shipment-details-div'>
                     <div id='shipment-details-top'>
-                        <div className='top-left'>
                             <Card withBorder className='top-section-sub'>
                                 <h3 className='sub-header'><b>Ship From</b></h3>
-                                <div className='sub-details'><span><b>Name:</b></span><span>{shipment?.origin}</span></div>
-                                <div className='sub-details'><span><b>Address:</b></span><span>{shipment?.origin_address}</span></div>
-                                <div className='sub-details'><span><b>City, State ZIP:</b></span><span>{shipment?.origin_city}, {shipment?.origin_state} {shipment?.origin_zip}</span></div>
+                                <div className='sub-details'><span style={{color: 'white'}}><b>Name:</b></span><span>{shipment?.direction_category === 'outbound' ? shipment?.shipper_name : shipment?.supplier_name}</span></div>
+                                <div className='sub-details'><span style={{color: 'white'}}><b>Address:</b></span><span>{shipment?.direction_category === 'outbound' ? shipment?.shipper_address : shipment?.supplier_address}</span></div>
+                                <div className='sub-details' style={{borderBottom: '1px solid #333' , paddingBottom: '1rem'}}>
+                                    <span style={{color: 'white'}}><b>City, State ZIP:</b></span>
+                                    <span>{shipment?.direction_category === 'outbound' ? shipment?.shipper_city : shipment?.supplier_city}, {shipment?.direction_category === 'outbound' ? shipment?.shipper_state : shipment?.supplier_state} {shipment?.direction_category === 'outbound' ? shipment?.shipper_zip : shipment?.supplier_zip}</span>
+                                </div>
+                                <div className='sub-details'>
+                                    <span style={{color: 'white'}}><b>Requested Ship Date:</b></span>
+                                    <span>{new Date(shipment?.requested_pickup_date).toLocaleDateString()}</span>
+                                </div>
+                                <div className='sub-details'>
+                                    <span style={{color: 'white'}}><b>Actual Ship Date:</b></span>
+                                    <span>{shipment?.actual_pickup_date ? new Date(shipment?.actual_pickup_date).toLocaleDateString() : 'TBD'}</span>
+                                    <Badge color={(shipment?.actual_pickup_date ? new Date(shipment?.actual_pickup_date) : new Date() )> new Date(shipment?.requested_pickup_date) ? 'red' : 'green'}>{(shipment?.actual_pickup_date ? new Date(shipment?.actual_pickup_date) : new Date() )> new Date(shipment?.requested_pickup_date) ? 'Late' : 'On Time'}</Badge>
+                                </div>
                             </Card>
                             <Card withBorder className='top-section-sub'>
                                 <h3 className='sub-header'><b>Ship To</b></h3>
-                                <div className='sub-details'><span><b>Name:</b></span><span>{shipment?.destination}</span></div>
-                                <div className='sub-details'><span><b>Address:</b></span><span>{shipment?.destination_address}</span></div>
-                                <div className='sub-details'><span><b>City, State ZIP:</b></span><span>{shipment?.destination_city}, {shipment?.destination_state} {shipment?.destination_zip}</span></div>
+                                <div className='sub-details'><span style={{color: 'white'}}><b>Name:</b></span><span>{shipment?.direction_category === 'outbound' ? shipment?.customer_name : shipment?.shipper_name}</span></div>
+                                <div className='sub-details'><span style={{color: 'white'}}><b>Address:</b></span><span>{shipment?.direction_category === 'outbound' ? shipment?.customer_address : shipment?.shipper_address}</span></div>
+                                <div className='sub-details' style={{borderBottom: '1px solid #333' , paddingBottom: '1rem'}}><span style={{color: 'white'}}><b>City, State ZIP:</b></span><span>{shipment?.direction_category === 'outbound' ? shipment?.customer_city : shipment?.shipper_city}, {shipment?.direction_category === 'outbound' ? shipment?.customer_state : shipment?.shipper_state} {shipment?.direction_category === 'outbound' ? shipment?.customer_zip : shipment?.shipper_zip}</span></div>
+                                <div className='sub-details'>
+                                    <span style={{color: 'white'}}><b>Requested Delivery Date:</b></span>
+                                    <span>{new Date(shipment?.requested_delivery_date).toLocaleDateString()}</span>
+                                </div>
+                                <div className='sub-details'>
+                                    <span style={{color: 'white'}}><b>Actual Delivery Date:</b></span>
+                                    <span>{shipment?.actual_delivery_date ? new Date(shipment?.actual_delivery_date).toLocaleDateString() : 'TBD'}</span>
+                                    <Badge color={(shipment?.actual_delivery_date ? new Date(shipment?.actual_delivery_date) : new Date() )> new Date(shipment?.requested_delivery_date) ? 'red' : 'green'}>{(shipment?.actual_delivery_date ? new Date(shipment?.actual_delivery_date) : new Date() )> new Date(shipment?.requested_delivery_date) ? 'Late' : 'On Time'}</Badge>
+                                </div>
                             </Card>
-                        </div>
-                        <div className='top-right'>
                             <Card withBorder className='top-section-sub'>
                                 <h3 className='sub-header'><b>Carrier Info</b></h3>
-                                <div className='sub-details'><span><b>Carrier Name:</b></span><span>{shipment?.carrier_name}</span></div>
-                                <div className='sub-details'><span><b>SCAC:</b></span><span>{shipment?.carrier_scac}</span></div>
-                                <div className='sub-details'><span><b>Freight Cost:</b></span><span>${shipment?.rate}</span></div><Spoiler style={{ color: 'white', display: 'inline' }}
+                                <div className='sub-details'><span style={{color: 'white'}}><b>Carrier Name:</b></span><span>{shipment?.carrier_name}</span></div>
+                                <div className='sub-details'><span style={{color: 'white'}}><b>SCAC:</b></span><span>{shipment?.carrier_scac}</span></div>
+                                <div className='sub-details'><span style={{color: 'white'}}><b>Freight Cost:</b></span><span>${shipment?.rate}</span><Badge>{shipment?.shipment_type?.toUpperCase()}</Badge></div>
+                                {shipment?.shipment_type === 'contract' && <Spoiler style={{ color: 'white', display: 'inline' }}
                                     maxHeight={0}
                                     showLabel="Show breakdown"
                                     hideLabel="Hide breakdown" expanded={visibleBreakdown} onExpandedChange={() => setVisibleBreakdown(!visibleBreakdown)}>
                                     <span>{`($${rateDetails?.flat_rate} + ($${rateDetails?.per_mile_rate} x ${shipment?.distance})) x ${rateDetails?.fuel_surcharge_percentage}`}</span>
-                                </Spoiler>
-
-
+                                </Spoiler>}
                             </Card>
-                        </div>
                     </div>
                     <div id='orders-section'>
-                        <h2>Orders on Shipment</h2>
+                        <h3 style={{color: '#f6bd02' , marginTop: '0rem'}}>Orders on Shipment</h3>
                         <Table>
                             <Table.Thead>
                                 <Table.Tr>
@@ -162,8 +175,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
                         </Table>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div>  
     )
 }
 

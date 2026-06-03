@@ -435,22 +435,23 @@ function BuildShipments({ auth, user, setAuth }) {
                     <span style={{ display: 'block', fontWeight: '750' }}>Total Weight: </span>
                     <span style={{ display: 'block', color: 'white' }}>{`${totalWeight} lbs.`}</span>
                 </div>
-                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: '3px solid gray', flex: .5, justifyContent: 'center', fontSize: '.8rem' }}>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: spotOnOff ? '' :'3px solid gray', flex: .5, justifyContent: 'center', fontSize: '.8rem' }}>
                     <span style={{ display: 'block', fontWeight: '750' }}>Distance: </span>
                     {distanceLoading && <Loader type='dots' color='yellow' />}
                     <span style={{ display: 'block', color: 'white' }}>{distance > 0 ? `${distance} mi.` : ''}</span>
                 </div>
-                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', flex: .8, justifyContent: 'center', fontSize: '.8rem' }}>
+                {!spotOnOff && <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', flex: .8, justifyContent: 'center', fontSize: '.8rem' }}>
                     <span style={{ fontWeight: '750' }}>Low Cost Carrier:</span>
                     {ratesLoading && <Loader type='dots' color='yellow' />}
                     <span style={{ color: 'white' }}> {rates.length !== 0 ? `${rates[0].carrier} ($${rates?.[0].rate.toFixed(2)})` : ''}</span>
-                </div>
+                </div>}
 
 
             </div>
 
             <TruckDropZone
                 onTruckOrders={onTruckOrders}
+                offTruckOrders={offTruckOrders}
                 removeFromTruck={removeFromTruck}
                 carrierList={carrierList}
                 equipmentTypes={equipmentTypes}

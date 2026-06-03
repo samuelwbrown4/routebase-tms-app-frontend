@@ -88,6 +88,27 @@
     50% { box-shadow: 0 0 35px rgba(0, 255, 0, 0.9); }
 }
 
+@keyframes bluePulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 179, 255, 0.5); }
+    50% { box-shadow: 0 0 35px rgba(0, 145, 255, 0.9); }
+}
+
 .tender-btn {
+    background-color: transparent;
+    border-color: rgba(0, 255, 0, 0.9);
+    color: rgba(0, 255, 0, 0.9);
     animation: greenPulse 2s infinite;
+}
+
+.decision-btn{
+    
+    background-color: transparent;
+    border-color: #228be6;
+    color: #228be6;
+}
+
+.decision-btn:hover{
+    animation: bluePulse 2s infinite;
+    background-color: transparent;
+    color: #228be6;
 }
