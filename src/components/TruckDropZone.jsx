@@ -172,7 +172,7 @@ function TruckDropZone({offTruckOrders, onTruckOrders, removeFromTruck, carrierL
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', marginRight: '5rem' }}>
-                    {(mode !== '') && (equipmentType !== '')  && (pickDate) && (dropDate) && onTruckOrders.length > 0 &&
+                    {(mode !== '') && (equipmentType !== '')  && (pickDate) && (dropDate) && onTruckOrders.length > 0 && carrier &&
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingRight: '3rem' }}>
                             <Button color='green' radius='md' size='xl' className='tender-btn' onClick={() => createShipment()}>{spotOnOff ? 'Send to Spot Market' : 'Tender Shipment'}</Button>
                         </div>

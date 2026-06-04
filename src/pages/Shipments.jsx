@@ -94,7 +94,7 @@ function Shipments({ auth, user, setAuth }) {
 
     async function getShipments() {
         try {
-            let response = await fetch(`${API_URL}/api/shipper/shipments?status=${['planned', 'routed', 'in_transit', 'delivered'].join(',')}`, {
+            let response = await fetch(`${API_URL}/api/shipper/shipments?status=${['planned', 'routed', 'in_transit', 'delivered', 'tendered'].join(',')}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -104,7 +104,7 @@ function Shipments({ auth, user, setAuth }) {
             if (response.status === 401) {
                 let newToken = refreshToken(setAuth, navigate);
                 if (newToken) {
-                    response = await fetch(`${API_URL}/api/shipper/shipments?status=${['planned', 'routed', 'in_transit', 'delivered'].join(',')}`, {
+                    response = await fetch(`${API_URL}/api/shipper/shipments?status=${['planned', 'routed', 'in_transit', 'delivered' , 'tendered'].join(',')}`, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${newToken}`

@@ -62,7 +62,7 @@ function SignIn({ setAuth, user }) {
         let result = await response.json();
         if (!result.token) return alert(`Error: ${result.error}`);
         setAuth(result.token);
-        navigate(radio === 'shipper' ? '/dashboard' : '/shipment-tracking');
+        navigate('/dashboard');
     } catch (error) {
         alert('Failed to reach backend service. Contact Administrator.')
     }

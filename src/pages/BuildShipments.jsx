@@ -186,7 +186,7 @@ function BuildShipments({ auth, user, setAuth }) {
                     directionCategory: onTruckOrders[0].direction_category,
                     carrier: carrier,
                     equipmentType: equipmentType,
-                    status: spotOnOff ? 'pending_carrier' : 'planned',
+                    status: spotOnOff ? 'pending_carrier' : 'tendered',
                     totalWeight: totalWeight,
                     pickDate: new Date(pickDate).toISOString().split('T')[0],
                     dropDate: new Date(dropDate).toISOString().split('T')[0],
@@ -216,7 +216,7 @@ function BuildShipments({ auth, user, setAuth }) {
                             directionCategory: onTruckOrders[0].direction_category,
                             carrier: carrier,
                             equipmentType: equipmentType,
-                            status: spotOnOff ? 'pending_carrier' : 'planned',
+                            status: spotOnOff ? 'pending_carrier' : 'tendered',
                             totalWeight: totalWeight,
                             pickDate: new Date(pickDate).toISOString().split('T')[0],
                             dropDate: new Date(dropDate).toISOString().split('T')[0],
@@ -352,8 +352,6 @@ function BuildShipments({ auth, user, setAuth }) {
             }
 
             const result = await response.json();
-
-            console.log('Raw backend result:', result.rates); 
 
 
             if (!result.rates) {

@@ -58,3 +58,31 @@
 .m_1b7284a3{
     padding-top: 0rem;
 }
+
+#tender-table-container{
+     background-color: #1a1a1a;
+    border-radius: 6px;
+    border: 1px solid #333 !important;
+    height: 30vH;
+    overflow-y: scroll;
+    box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+    width: 95%;
+    
+}
+
+#tender-table{
+    font-size: .7rem;
+    background-color: #1a1a1a;
+    color: #adadad;
+    width: 100%;
+}
+
+#tender-accept-btn:hover{
+    transform: scale(1.25);
+    transition: all 0.2s ease;
+}
+
+#tender-reject-btn:hover{
+    transform: scale(1.25);
+    transition: all 0.2s ease;
+}

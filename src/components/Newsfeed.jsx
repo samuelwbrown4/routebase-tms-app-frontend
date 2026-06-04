@@ -9,15 +9,18 @@ const variants = {
     exit: { rotateX: 90, opacity: 0 }
 }
 
-function Newsfeed({ newOrders, newShipments, newPickups, newDeliveries, newBids, onRefresh, newsLoading }) {
+function Newsfeed({ newOrders, newShipments, newPickups, newDeliveries, newBids, onRefresh, newsLoading , user , onTimePickupPercentage , onTimeDeliveryPercentage }) {
     const [currentIndex, setCurrentIndex] = useState(0)
 
-    const items = [
+    const items = user?.client === 'shipper' ? [
         { count: newOrders, label: 'New Orders' },
         { count: newShipments, label: 'New Shipments' },
         { count: newPickups, label: 'New Pickups' },
         { count: newDeliveries, label: 'New Deliveries' },
         { count: newBids, label: 'New Spot Bids' }
+    ] : [
+        {count: onTimePickupPercentage, label: 'On Time Pickup'},
+        {count: onTimeDeliveryPercentage, label: 'On Time Delivery'}
     ]
 
     useEffect(() => {

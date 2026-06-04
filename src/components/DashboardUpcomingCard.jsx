@@ -1,7 +1,7 @@
 import { Paper, Text, Title } from '@mantine/core'
 import '../styles/dashboard.css'
 
-function DashboardUpcomingCard({ stat, statValue , user }) {
+function DashboardUpcomingCard({ stat, statValue , user , pickups , deliveries }) {
     return (
         <div style={{ width: '100%' , height: '100%'}}>
             <Paper
@@ -15,8 +15,14 @@ function DashboardUpcomingCard({ stat, statValue , user }) {
                 <Title order={6}>
                     {<div style={{display: 'flex'  , alignItems: 'center' , justifyContent: 'center' , flexDirection: 'column' , borderBottom: '1px solid #333', paddingBottom: '1rem'}}><span style={{color: '#f6bd02' , fontSize: '1.8rem'}}>{statValue.length}</span><span style={{color: '#adadad' }}>{stat}</span></div>}
                 </Title>
-                {statValue?.map(s => 
-                    <Text key={s.id} size="m" c="dimmed" mt="xs" style={{color: 'white' , fontWeight: 'bold' }}>{`${s.order_number || s.shipment_number} - ${new Date(s.requested_ship_date || user?.client === 'shipper' ? s.requested_pickup_date : s.requested_delivery_date).toLocaleDateString()}`}</Text>
+                {user?.client === 'shipper' && statValue?.map(s => 
+                    <Text key={s.id} size="m" c="dimmed" mt="xs" style={{color: 'white' , fontWeight: 'bold' }}>{`${s.order_number || s.shipment_number} - ${new Date(s.requested_ship_date ||  s.requested_pickup_date).toLocaleDateString()}`}</Text>
+                )}
+                {user?.client === 'carrier' && pickups && statValue?.map(s => 
+                    <Text key={s.id} size="m" c="dimmed" mt="xs" style={{color: 'white' , fontWeight: 'bold' }}>{`${s.order_number || s.shipment_number} - ${new Date(s.requested_pickup_date).toLocaleDateString()}`}</Text>
+                )}
+                {user?.client === 'carrier' && deliveries && statValue?.map(s => 
+                    <Text key={s.id} size="m" c="dimmed" mt="xs" style={{color: 'white' , fontWeight: 'bold' }}>{`${s.order_number || s.shipment_number} - ${new Date(s.requested_delivery_date).toLocaleDateString()}`}</Text>
                 )}
             </Paper>
         </div>
