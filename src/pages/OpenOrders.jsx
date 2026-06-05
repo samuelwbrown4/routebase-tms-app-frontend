@@ -211,7 +211,7 @@ function OpenOrders({ auth, user, setAuth }) {
                                     <Fragment key={order.id}>
                                         <Table.Tr className={`row${potentialLoads.some(load => load.id === order.id) ? ' selected-row' : ''}`} value={order} onClick={() => handleAddToQueue(order)} >
                                             <Table.Td>{order.order_number}</Table.Td>
-                                            <Table.Td>{new Date(order.requested_ship_date.split('Z')[0])}</Table.Td>
+                                            <Table.Td>{new Date(order.requested_ship_date.split('Z')[0]).toLocaleDateString()}</Table.Td>
                                             <Table.Td>{order.direction_category === 'outbound' ? order.shipper_location_name : order.supplier_name}</Table.Td>
                                             <Table.Td>{order.direction_category === 'outbound' ? order.shipper_address : order.supplier_address}</Table.Td>
                                             <Table.Td>{order.direction_category === 'outbound' ? order.shipper_city : order.supplier_city}</Table.Td>
