@@ -161,6 +161,27 @@ table th.mantine-datatable-header-cell-resizable {
   transition: all 0.2s ease;
 }
 
+.update-div{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1; 
+  justify-content: center; 
+  background-color: #1b1b1b; 
+  border: 1px solid #333; 
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.25);
+  padding: 2rem;
+  align-items: center;
+}
+
+.text-area-update {
+    width: 87% !important;
+    margin: 0;
+}
+
+
+
 
 
 

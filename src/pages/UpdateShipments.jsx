@@ -5,9 +5,14 @@ import { useNavigate } from 'react-router';
 import { useDisclosure } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
+import ChatModal from '../components/ChatModal';
 import calendarIcon from '../assets/calendar.svg';
 import caretDownIcon from '../assets/caret-down.svg';
 import refreshToken from '../utils/refresh';
+import arrowRight from '../assets/arrow-circle-right.svg';
+import eyeIcon from '../assets/eye.svg';
+import paperclipIcon from '../assets/paperclip.svg';
+import chatIcon from '../assets/chat.svg';
 
 import '../styles/updateShipments.css';
 
@@ -24,6 +29,9 @@ function UpdateShipments({ auth, user, setAuth }) {
     const [pickInput, setPickInput] = useState(false);
     const [deliveryInput, setDeliveryInput] = useState(false);
     const [message, setMessage] = useState(null)
+    const [conversation , setConversation] = useState(null)
+
+    const [visibleModal , setVisibleModal] = useState(false)
 
     const [sortStatus, setSortStatus] = useState({
         columnAccessor: 'requested_pickup_date',
@@ -66,7 +74,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                 resizable: true,
                 draggable: true,
                 sortable: true,
-                render: ({direction_category , shipper_name , shipper_city , shipper_state , supplier_name , supplier_city , supplier_state}) => direction_category === 'outbound' ? `${shipper_name} - ${shipper_city}, ${shipper_state}` : `${supplier_name} - ${supplier_city}, ${supplier_state}`
+                render: ({ direction_category, shipper_name, shipper_city, shipper_state, supplier_name, supplier_city, supplier_state }) => direction_category === 'outbound' ? `${shipper_name} - ${shipper_city}, ${shipper_state}` : `${supplier_name} - ${supplier_city}, ${supplier_state}`
             },
 
             {
@@ -76,7 +84,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                 resizable: true,
                 draggable: true,
                 sortable: true,
-                render: ({direction_category , customer_name , customer_city , customer_state , shipper_name , shipper_city , shipper_state}) => direction_category === 'outbound' ? `${customer_name} - ${customer_city}, ${customer_state}` : `${shipper_name} - ${shipper_city}, ${shipper_state}`
+                render: ({ direction_category, customer_name, customer_city, customer_state, shipper_name, shipper_city, shipper_state }) => direction_category === 'outbound' ? `${customer_name} - ${customer_city}, ${customer_state}` : `${shipper_name} - ${shipper_city}, ${shipper_state}`
             },
 
             {
@@ -105,6 +113,18 @@ function UpdateShipments({ auth, user, setAuth }) {
                 draggable: true,
                 sortable: true,
                 render: ({ status }) => status.toUpperCase().replaceAll('_', ' ')
+            },
+            {
+                accessor: 'actions',
+                title: 'Actions',
+                render: (shipment) =>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <Image id='view-shipment-btn' src={eyeIcon} h={16} w={'auto'} onClick={(e) => { e.stopPropagation(); navigate(`/shipments/details/${shipment.id}`) }} />
+                        <Image id='bol-btn' src={paperclipIcon} h={16} w={'auto'} onClick={(e) => { e.stopPropagation(); handleDocClick(shipment.id) }} />
+                        <Image id='chat-btn' src={chatIcon} h={16} w={'auto'} onClick={(e) => { e.stopPropagation(); getConversation(shipment.id) }} />
+                    </div>,
+                resizable: false,
+                width: 100
             }
         ]
     })
@@ -113,7 +133,7 @@ function UpdateShipments({ auth, user, setAuth }) {
 
     async function fetchCarrierUndelivered() {
         try {
-            let response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit`, {
+            let response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit,delivered`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
@@ -146,20 +166,20 @@ function UpdateShipments({ auth, user, setAuth }) {
     }
 
     //add update logic
-    async function handleUpdateShipment() {
+    async function handleUpdateShipment(eventType) {
         try {
             if (message) {
                 handleSubmitMessage()
             }
             console.log('pu date', pickupDate)
-            if (!pickupDate && !deliveryDate) {
+            if (eventType !== 'routed' && !pickupDate && !deliveryDate) {
                 notifications.show({
                     title: 'No status update made',
                     message: 'Pickup date/Delivery date not provided'
                 })
                 return
             }
-            close();
+
             let response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -167,10 +187,10 @@ function UpdateShipments({ auth, user, setAuth }) {
                     'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
-                    date: pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
-                        : new Date(deliveryDate).toISOString().split('T')[0],
+                    date: eventType === 'routed' ? null : (pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
+                        : new Date(deliveryDate).toISOString().split('T')[0]),
                     userId: user.id,
-                    eventType: pickupDate ? 'picked_up' : 'delivered'
+                    eventType: eventType ? eventType : (pickupDate ? 'picked_up' : 'delivered')
                 })
             });
 
@@ -184,10 +204,10 @@ function UpdateShipments({ auth, user, setAuth }) {
                             'Authorization': `Bearer ${newToken}`
                         },
                         body: JSON.stringify({
-                            date: pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
-                                : new Date(deliveryDate).toISOString().split('T')[0],
+                            date: eventType === 'routed' ? null : (pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
+                                : new Date(deliveryDate).toISOString().split('T')[0]),
                             userId: user.id,
-                            eventType: pickupDate ? 'picked_up' : 'delivered'
+                            eventType: eventType ? eventType : (pickupDate ? 'picked_up' : 'delivered')
                         })
                     });
                 }
@@ -198,7 +218,12 @@ function UpdateShipments({ auth, user, setAuth }) {
             if (result.error) {
                 return alert(result.error)
             }
-
+            if (eventType === 'routed') {
+                return notifications.show({
+                    title: 'Success!',
+                    message: `${selectedShipment?.shipment_number} has been routed`
+                })
+            }
             notifications.show({
                 title: 'Success!',
                 message: pickupDate ? `Successfully saved pickup date of ${new Date(pickupDate).toISOString().split('T')[0]}` : `Successfully saved delivery date of ${new Date(deliveryDate).toISOString().split('T')[0]}`,
@@ -280,16 +305,97 @@ function UpdateShipments({ auth, user, setAuth }) {
         setFilteredShipments(shipmentsList.filter(shipment => shipment.status.toLowerCase().includes(value)));
     }
 
+        async function getConversation(shipmentId) {
+        try {
+            let response = await fetch(`${API_URL}/api/shared/conversations/${shipmentId}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth}`
+                }
+            });
+
+            if (response.status === 401) {
+                let newToken = await refreshToken(setAuth, navigate);
+                if (newToken) {
+                    response = await fetch(`${API_URL}/api/shared/conversations/${shipmentId}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${newToken}`
+                        }
+                    });
+                }
+            }
+
+            let result = await response.json();
+
+            console.log('conversation fetched', result)
+
+            setConversation(result.conversation)
+            setSelectedShipment(filteredShipments.find(s => s.id === shipmentId))
+            setVisibleModal(true)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+        async function handleDocClick(shipmentId) {
+        try {
+            let response = await fetch(`${API_URL}/api/shipper/documents/${shipmentId}/bol`, {
+                headers: {
+                    'Authorization': `Bearer ${auth}`
+                }
+            });
+
+            if (response.status === 401) {
+                let newToken = refreshToken(setAuth, navigate);
+                response = await fetch(`${API_URL}/api/shipper/documents/${shipmentId}/bol`, {
+                    headers: {
+                        'Authorization': `Bearer ${newToken}`
+                    }
+                });
+            }
+
+            let object = await response.blob();
+
+            const objectUrl = URL.createObjectURL(object);
+            window.open(objectUrl, '_blank');
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     //add message logic
     return (
         <div>
-            <Drawer styles={{ body: { backgroundColor: '#2c2c2c' }, content: { backgroundColor: '#2c2c2c', color: 'white' }, header: { backgroundColor: '#2c2c2c' } }} position='top' closeOnClickOutside='true' opened={opened} onClose={close} title={`Update Shipment: #${selectedShipment?.shipment_number} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 CURRENT STATUS: ${selectedShipment?.status.toUpperCase().replaceAll('_', ' ')} \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.shipper_name : selectedShipment?.supplier_name} ➔ ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.customer_name : selectedShipment?.shipper_name}`} width={'100%'}>
-                <div style={{ height: '100%',width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '3rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '3rem' }}>
-                        <span>Requested Pickup Date: {new Date(selectedShipment?.requested_pickup_date).toLocaleDateString()} {!selectedShipment?.actual_pickup_date ?
-                            <div style={{ display: 'flex', gap: '2rem' }}>
-                                <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => setPickInput(true)}>Mark as picked up</Button>
-                                {pickInput && <DateInput
+            <ChatModal conversation={conversation} setVisibleModal={setVisibleModal} visibleModal={visibleModal} user={user} auth={auth} getConversation={getConversation} shipment={selectedShipment} setAuth={setAuth} />
+
+            <Drawer styles={{ body: { backgroundColor: '#1a1a1a' }, content: { backgroundColor: '#1a1a1a', color: '#adadad', paddingLeft: '1rem', paddingRight: '1rem' }, header: { backgroundColor: '#1a1a1a' }, root: { backgroundColor: '#1a1a1a' } }} position='top' closeOnClickOutside='true' opened={opened} onClose={close} title={
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8rem' }}>
+                    <h3>{`Update Shipment: #${selectedShipment?.shipment_number}`}</h3>
+                    <h3>{`${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.shipper_name : selectedShipment?.supplier_name} ➔ ${selectedShipment?.direction_category === 'outbound' ? selectedShipment?.customer_name : selectedShipment?.shipper_name}`}</h3>
+                    <h3>{`CURRENT STATUS: ${selectedShipment?.status.toUpperCase().replaceAll('_', ' ')}`}</h3>
+                </div>
+            }>
+                <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '3rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '3rem', alignItems: 'stretch' }}>
+                        <div className='update-div'>
+                            <span style={{ textAlign: 'center' }}>{selectedShipment?.status === 'planned' ? 'Route Shipment' : 'Shipment Routed'}</span>
+                            {selectedShipment?.status === 'planned' &&
+                                <Button variant='outline' color='#f6bd02' onClick={() => handleUpdateShipment('routed')}>Route</Button>
+                            }
+                        </div>
+                        <div style={{ flex: .5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Image src={arrowRight} h={60} w={'auto'} />
+                        </div>
+                        <div className='update-div'>
+                            <span style={{ textAlign: 'center' }}>Requested Pickup Date: {new Date(selectedShipment?.requested_pickup_date).toLocaleDateString()}</span>
+                            {!selectedShipment?.actual_pickup_date && selectedShipment?.status === 'routed' && !pickInput &&
+                                <div style={{ width: '70%', display: 'flex', justifyContent: 'center' }}>
+                                    <Button variant='outline' color='#f6bd02' onClick={() => setPickInput(true)}>Mark as Picked Up</Button>
+                                </div>
+                            }
+                            {!selectedShipment?.actual_pickup_date && pickInput &&
+                                <DateInput
                                     rightSection={<Image src={calendarIcon} />}
                                     value={pickupDate}
                                     onChange={setPickupDate}
@@ -313,60 +419,69 @@ function UpdateShipments({ auth, user, setAuth }) {
                                             height: '100%'
                                         }
                                     }}
-
-                                />}
-
-                            </div> :
-                            <div style={{ display: 'flex', gap: '2rem' }}>
-                                <span>Actual Pickup Date: {`${new Date(selectedShipment?.actual_pickup_date).toLocaleDateString()}`}</span>
-                                <Button style={{ backgroundColor: "#f6bd02", color: 'black' }}>Edit</Button>
-                            </div>}
-                        </span>
-                        {selectedShipment?.actual_pickup_date &&
-                            <span>Requested Delivery Date: {new Date(selectedShipment?.requested_delivery_date).toLocaleDateString()} {!selectedShipment?.actual_delivery_date ?
-                                <div style={{ display: 'flex', gap: '2rem' }}>
-                                    <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => setDeliveryInput(!deliveryInput)}>{deliveryInput ? 'Hide' : 'Mark as delivered'}</Button>
-                                    {deliveryInput && <DateInput
-                                        rightSection={<Image src={calendarIcon} />}
-                                        value={deliveryDate}
-                                        onChange={setDeliveryDate}
-                                        fullWidth='false'
-                                        size='xs'
-                                        w={200}
-                                        popoverProps={{ width: 250, height: 250 }}
-                                        styles={{
-                                            calendarHeaderControl: {
-                                                width: 40,
-                                                height: 40,
-                                            },
-                                            calendarHeaderControlIcon: {
-                                                width: 24,
-                                                height: 24,
-                                            },
-                                            input: {
-                                                backgroundColor: '#3d3d3d', borderColor: '#555', height: '100%'
-                                            },
-                                            wrapper: {
-                                                height: '100%'
-                                            }
-                                        }}
-
-                                    />}
-
-                                </div> :
-                                <div style={{ display: 'flex', gap: '2rem' }}>
-                                    <span>Actual delivery date: {`${selectedShipment?.actual_delivery_date}`}</span>
-                                    <Button style={{ backgroundColor: "#f6bd02", color: 'black' }}>Edit</Button>
+                                />
+                            }
+                            {selectedShipment?.actual_pickup_date &&
+                                <span>Actual Pickup Date: {new Date(selectedShipment?.actual_pickup_date).toLocaleDateString()}</span>
+                            }
+                        </div>
+                        <div style={{ flex: .5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Image src={arrowRight} h={60} w={'auto'} />
+                        </div>
+                        <div className='update-div'>
+                            <span style={{ textAlign: 'center' }}>Requested Delivery Date: {new Date(selectedShipment?.requested_delivery_date).toLocaleDateString()}</span>
+                            {!selectedShipment?.actual_delivery_date && selectedShipment?.status === 'in_transit' && !deliveryInput &&
+                                <div style={{ width: '70%', display: 'flex', justifyContent: 'center' }}>
+                                    <Button variant='outline' color='#f6bd02' onClick={() => setDeliveryInput(!deliveryInput)}>Mark as Delivered</Button>
                                 </div>
                             }
-                            </span>}
+                            {!selectedShipment?.actual_delivery_date && deliveryInput &&
+                                <DateInput
+                                    rightSection={<Image src={calendarIcon} />}
+                                    value={deliveryDate}
+                                    onChange={setDeliveryDate}
+                                    fullWidth='false'
+                                    size='xs'
+                                    w={200}
+                                    popoverProps={{ width: 250, height: 250 }}
+                                    styles={{
+                                        calendarHeaderControl: {
+                                            width: 40,
+                                            height: 40,
+                                        },
+                                        calendarHeaderControlIcon: {
+                                            width: 24,
+                                            height: 24,
+                                        },
+                                        input: {
+                                            backgroundColor: '#3d3d3d', borderColor: '#555', height: '100%'
+                                        },
+                                        wrapper: {
+                                            height: '100%'
+                                        }
+                                    }}
+                                />
+                            }
+                            {selectedShipment?.actual_delivery_date &&
+                                <span>Actual Delivery Date: {new Date(selectedShipment?.actual_delivery_date).toLocaleDateString()}</span>
+                            }
+                        </div>
                     </div>
-                    <div style={{display: 'flex' , justifyContent: 'center', width: '100%'}}>
-                        <Textarea styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555', color: 'white', width: '100%' }, wrapper: {width: '100%'} }} label="Add comment" description="(optional)" value={message} onChange={(e) => setMessage(e.target.value)} />
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'right' }}>
-                        <Button style={{ backgroundColor: "#f6bd02", color: 'black' }} onClick={() => handleUpdateShipment()}>Confirm</Button>
-                    </div>
+                    {selectedShipment?.actual_delivery_date ?
+
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <h2 style={{ color: '#40c057' }}>Shipment has been delivered.</h2>
+                        </div>
+                        :
+                        <div style={{ display: 'flex', width: '100%', height: '10%', alignItems: 'center', gap: '3rem' }}>
+                            <div style={{ width: '100%', flex: 1.5 }}>
+                                <Textarea className='text-area-update' styles={{ input: { backgroundColor: '#3d3d3d', borderColor: '#555', color: 'white' } }} placeholder='Add comment (optional)' style={{ width: '70%', margin: 0 }} value={message} onChange={(e) => setMessage(e.target.value)} />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%', flex: .5 }}>
+                                <Button size='l' variant='outline' color='green' onClick={() => handleUpdateShipment()}>Confirm</Button>
+                            </div>
+                        </div>}
+
 
                 </div>
             </Drawer>
@@ -378,8 +493,8 @@ function UpdateShipments({ auth, user, setAuth }) {
                         <span style={{ display: 'block', color: 'white' }}><b>Status: </b></span>
                         <Select
                             rightSection={<Image h={20} w={'auto'} src={caretDownIcon} />}
-                            styles={{ input: { backgroundColor: 'black', color: 'white', borderColor: "white" }, wrapper: {borderColor: '#f6bd02'} }}
-                            data={[{ label: 'All', value: '' }, { label: 'Planned', value: 'planned' }, { label: 'In transit', value: 'in_transit' }]}
+                            styles={{ input: { backgroundColor: 'black', color: 'white', borderColor: "white" }, wrapper: { borderColor: '#f6bd02' } }}
+                            data={[{ label: 'All', value: '' }, { label: 'Planned', value: 'planned' }, { label: 'In Transit', value: 'in_transit' }, { label: 'Routed', value: 'routed' }, { label: 'Delivered', value: 'delivered' }]}
                             defaultValue=''
                             onChange={(_value, option) => handleStatusFilter(_value)} />
                     </div>
@@ -391,18 +506,18 @@ function UpdateShipments({ auth, user, setAuth }) {
             <div id='update-table-container'>
                 <DataTable id="data-table"
 
-                highlightOnHover
-                storeColumnsKey={key}
-                columns={effectiveColumns}
-                resizableColumns
-                records={sortedShipments}
-                sortStatus={sortStatus}
-                onSortStatusChange={setSortStatus}
-                onRowClick={({ record }) => selectedShipment?.id === record.id ? setSelectedShipment(null) : setSelectedShipment(record)}
-                rowClassName={(record) => record.id === selectedShipment?.id ? 'selected-shipment-row' : ''}
-            />
+                    highlightOnHover
+                    storeColumnsKey={key}
+                    columns={effectiveColumns}
+                    resizableColumns
+                    records={sortedShipments}
+                    sortStatus={sortStatus}
+                    onSortStatusChange={setSortStatus}
+                    onRowClick={({ record }) => selectedShipment?.id === record.id ? setSelectedShipment(null) : setSelectedShipment(record)}
+                    rowClassName={(record) => record.id === selectedShipment?.id ? 'selected-shipment-row' : ''}
+                />
             </div>
-            
+
         </div>
 
     )

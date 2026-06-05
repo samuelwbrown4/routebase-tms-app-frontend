@@ -246,14 +246,11 @@ function ManageRatePkgs({ auth, user, setAuth }) {
         }
     }
 
-    {/* add edit and build package features*/ }
-    {/*add contract proposal functionality*/ }
-
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', color: 'white', gap: '2rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', color: '#adadad', gap: '2rem' }}>
             <Modal opened={openedContract} size='l' onClose={closeContract} title="Propose New Contract" styles={{
-                content: { backgroundColor: '#2c2c2c', color: 'white' },
-                header: { backgroundColor: '#2c2c2c', color: 'white' },
+                content: { backgroundColor: '#1a1a1a', color: '#adadad' },
+                header: { backgroundColor: '#1a1a1a', color: '#adadad' },
             }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
                     <div style={{ display: 'flex', gap: '1rem', width: '100%', justifyContent: 'center' }}>
@@ -264,6 +261,7 @@ function ManageRatePkgs({ auth, user, setAuth }) {
                         <DateInput
                             value={contractStartDate}
                             onChange={setContractStartDate}
+                            placeholder='Contract Start Date'
                             fullWidth='false'
                             size='xs'
                             w={200}
@@ -283,6 +281,7 @@ function ManageRatePkgs({ auth, user, setAuth }) {
                         <DateInput
                             value={contractEndDate}
                             onChange={setContractEndDate}
+                            placeholder='Contract End Date'
                             fullWidth='false'
                             size='xs'
                             w={200}
@@ -301,31 +300,31 @@ function ManageRatePkgs({ auth, user, setAuth }) {
                         />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button onClick={createContract}>Propose Contract</Button>
+                        <Button variant='outline' color='green' onClick={createContract}>Propose Contract</Button>
                     </div>
                 </div>
             </Modal>
             <Modal opened={opened} onClose={close} title="Create Rate Package" styles={{
-                content: { backgroundColor: '#2c2c2c', color: 'white' },
-                header: { backgroundColor: '#2c2c2c', color: 'white' },
+                content: { backgroundColor: '#1a1a1a', color: '#adadad' },
+                header: { backgroundColor: '#1a1a1a', color: '#adadad' },
             }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <label>Package Name</label>
-                    <Input value={pkgName} onChange={(e) => setPkgName(e.target.value)} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                    <Input value={pkgName} onChange={(e) => setPkgName(e.target.value)} styles={{ input: { backgroundColor: '#1a1a1a', color: '#adadad', borderColor: '#333' } }} />
                     <div style={{ borderBottom: '1px solid gray', paddingBottom: '2rem' }}>
                         <h5>0 - 499.99 miles</h5>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Flat Rate</label>
-                                <Input value={flatRate1} onChange={(e) => setFlatRate1(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={flatRate1} onChange={(e) => setFlatRate1(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Per Mile Rate</label>
-                                <Input value={perMileRate1} onChange={(e) => setPerMileRate1(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={perMileRate1} onChange={(e) => setPerMileRate1(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Fuel Surcharge Percentage</label>
-                                <Input value={fuelSurcharge1} onChange={(e) => setFuelSurcharge1(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={fuelSurcharge1} onChange={(e) => setFuelSurcharge1(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
 
                         </div>
@@ -335,15 +334,15 @@ function ManageRatePkgs({ auth, user, setAuth }) {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Flat Rate</label>
-                                <Input value={flatRate2} onChange={(e) => setFlatRate2(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={flatRate2} onChange={(e) => setFlatRate2(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Per Mile Rate</label>
-                                <Input value={perMileRate2} onChange={(e) => setPerMileRate2(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={perMileRate2} onChange={(e) => setPerMileRate2(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Fuel Surcharge Percentage</label>
-                                <Input value={fuelSurcharge2} onChange={(e) => setFuelSurcharge2(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={fuelSurcharge2} onChange={(e) => setFuelSurcharge2(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                         </div>
                     </div>
@@ -352,15 +351,15 @@ function ManageRatePkgs({ auth, user, setAuth }) {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Flat Rate</label>
-                                <Input value={flatRate3} onChange={(e) => setFlatRate3(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={flatRate3} onChange={(e) => setFlatRate3(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Per Mile Rate</label>
-                                <Input value={perMileRate3} onChange={(e) => setPerMileRate3(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={perMileRate3} onChange={(e) => setPerMileRate3(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Fuel Surcharge Percentage</label>
-                                <Input value={fuelSurcharge3} onChange={(e) => setFuelSurcharge3(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={fuelSurcharge3} onChange={(e) => setFuelSurcharge3(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                         </div>
                     </div>
@@ -369,35 +368,37 @@ function ManageRatePkgs({ auth, user, setAuth }) {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Flat Rate</label>
-                                <Input value={flatRate4} onChange={(e) => setFlatRate4(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={flatRate4} onChange={(e) => setFlatRate4(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Per Mile Rate</label>
-                                <Input value={perMileRate4} onChange={(e) => setPerMileRate4(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={perMileRate4} onChange={(e) => setPerMileRate4(e.target.value)} w={'25%'} leftSection={'$'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <label>Fuel Surcharge Percentage</label>
-                                <Input value={fuelSurcharge4} onChange={(e) => setFuelSurcharge4(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: 'white', borderColor: '#555' } }} />
+                                <Input value={fuelSurcharge4} onChange={(e) => setFuelSurcharge4(e.target.value)} w={'25%'} rightSection={'%'} styles={{ input: { backgroundColor: '#3d3d3d', color: '#adadad', borderColor: '#333' } }} />
                             </div>
                         </div>
                     </div>
                     <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
-                        <Button onClick={createRatePackage}>Submit</Button>
+                        <Button variant='outline' color='green' onClick={createRatePackage}>Submit</Button>
                     </div>
                 </div>
             </Modal>
 
             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginLeft: '3rem', marginRight: '3rem' }}>
-                <h1>Rate Packages</h1>
-                <Button onClick={open} w={30} h={30} style={{ padding: '0px', backgroundColor: 'transparent' }}><Image src={plusIcon} h={30} width='auto' /></Button>
-                <Button onClick={openContract} w={30} h={30} style={{ padding: '0px', backgroundColor: 'transparent' }}><Image src={scrollIcon} h={30} width='auto' /></Button>
+                <h1 style={{color: 'white'}}>Rate Packages</h1>
+                <div style={{display: 'flex' , gap: '2rem'}}>
+                    <Button variant='outline' color='#f6bd02' onClick={open}>Create Rate Package</Button>
+                <Button variant='outline' color='#f6bd02' onClick={openContract}>Propose New Contract</Button>
+                </div>
             </div>
 
             <div className='package-card-div'>
                 {packages.map(p => (
                     <Card className='package-card' key={p.pkgid}>
                         <h2>{p.pkgname}</h2>
-                        <Spoiler styles={{ control: { display: 'block', width: '100%', margin: '0 auto', justifyContent: 'center', textDecoration: 'none', color: 'white' } }} maxHeight={0} showLabel={<span>▼</span>} hideLabel={<span>▲</span>} >
+                        <Spoiler styles={{ control: { display: 'block', width: '100%', margin: '0 auto', justifyContent: 'center', textDecoration: 'none', color: '#adadad' } }} maxHeight={0} showLabel={<span>▼</span>} hideLabel={<span>▲</span>} >
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {p.rates.map(r => (
                                     <div key={r.rateId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

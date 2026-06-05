@@ -164,6 +164,7 @@ function TruckDropZone({offTruckOrders, onTruckOrders, removeFromTruck, carrierL
                         {onTruckOrders.map(order => (
                             <div key={order.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderBottom: '1px solid #333', color: 'white' }}>
                                 <span>{order.order_number}</span>
+                                <span>{`Requested Ship Date: ${new Date(order.requested_ship_date).toLocaleDateString()}`}</span>
                                 <CloseButton onClick={() => removeFromTruck(order.id)} />
                             </div>
                         ))}
@@ -172,7 +173,7 @@ function TruckDropZone({offTruckOrders, onTruckOrders, removeFromTruck, carrierL
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', marginRight: '5rem' }}>
-                    {(mode !== '') && (equipmentType !== '')  && (pickDate) && (dropDate) && onTruckOrders.length > 0 && carrier &&
+                    {(mode !== '') && (equipmentType !== '')  && (pickDate) && (dropDate) && onTruckOrders.length > 0 && 
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingRight: '3rem' }}>
                             <Button color='green' radius='md' size='xl' className='tender-btn' onClick={() => createShipment()}>{spotOnOff ? 'Send to Spot Market' : 'Tender Shipment'}</Button>
                         </div>
