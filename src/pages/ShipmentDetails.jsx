@@ -143,7 +143,7 @@ function ShipmentDetails({ auth, user, setAuth }) {
                                 <div className='sub-details'><span style={{color: 'white'}}><b>Carrier Name:</b></span><span>{shipment?.carrier_name}</span></div>
                                 <div className='sub-details'><span style={{color: 'white'}}><b>SCAC:</b></span><span>{shipment?.carrier_scac}</span></div>
                                 <div className='sub-details'><span style={{color: 'white'}}><b>Freight Cost:</b></span><span>${shipment?.rate}</span><Badge>{shipment?.shipment_type?.toUpperCase()}</Badge></div>
-                                {shipment?.shipment_type === 'contract' && <Spoiler style={{ color: 'white', display: 'inline' }}
+                                {shipment?.shipment_type === 'contract' && user.client === 'shipper' && <Spoiler style={{ color: 'white', display: 'inline' }}
                                     maxHeight={0}
                                     showLabel="Show breakdown"
                                     hideLabel="Hide breakdown" expanded={visibleBreakdown} onExpandedChange={() => setVisibleBreakdown(!visibleBreakdown)}>

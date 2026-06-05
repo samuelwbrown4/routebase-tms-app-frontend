@@ -39,6 +39,11 @@ function BuildShipments({ auth, user, setAuth }) {
 
     const navigate = useNavigate();
 
+    const formatDate = (d) => {
+    const date = new Date(d);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
 
     useEffect(() => {
         fetchCarrierList()
@@ -188,8 +193,8 @@ function BuildShipments({ auth, user, setAuth }) {
                     equipmentType: equipmentType,
                     status: spotOnOff ? 'pending_carrier' : 'tendered',
                     totalWeight: totalWeight,
-                    pickDate: new Date(pickDate).toISOString().split('T')[0],
-                    dropDate: new Date(dropDate).toISOString().split('T')[0],
+                    pickDate: formatDate(pickDate),
+                    dropDate: formatDate(dropDate),
                     userId: user.id,
                     orders: onTruckOrders.map(order => order.id),
                     distance: distance,
@@ -218,8 +223,8 @@ function BuildShipments({ auth, user, setAuth }) {
                             equipmentType: equipmentType,
                             status: spotOnOff ? 'pending_carrier' : 'tendered',
                             totalWeight: totalWeight,
-                            pickDate: new Date(pickDate).toISOString().split('T')[0],
-                            dropDate: new Date(dropDate).toISOString().split('T')[0],
+                            pickDate: formatDate(pickDate),
+                            dropDate: formatDate(dropDate),
                             userId: user.id,
                             orders: onTruckOrders.map(order => order.id),
                             distance: distance,
