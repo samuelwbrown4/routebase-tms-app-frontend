@@ -40,9 +40,9 @@ function BuildShipments({ auth, user, setAuth }) {
     const navigate = useNavigate();
 
     const formatDate = (d) => {
-    const date = new Date(d);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
+        const date = new Date(d);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
 
 
     useEffect(() => {
@@ -187,7 +187,7 @@ function BuildShipments({ auth, user, setAuth }) {
                 body: JSON.stringify({
                     originId: onTruckOrders[0].origin_id,
                     destinationId: onTruckOrders[0].destination_id,
-                    companyId : onTruckOrders[0].company_id,
+                    companyId: onTruckOrders[0].company_id,
                     directionCategory: onTruckOrders[0].direction_category,
                     carrier: carrier,
                     equipmentType: equipmentType,
@@ -438,7 +438,7 @@ function BuildShipments({ auth, user, setAuth }) {
                     <span style={{ display: 'block', fontWeight: '750' }}>Total Weight: </span>
                     <span style={{ display: 'block', color: 'white' }}>{`${totalWeight} lbs.`}</span>
                 </div>
-                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: spotOnOff ? '' :'3px solid gray', flex: .5, justifyContent: 'center', fontSize: '.8rem' }}>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', borderRight: spotOnOff ? '' : '3px solid gray', flex: .5, justifyContent: 'center', fontSize: '.8rem' }}>
                     <span style={{ display: 'block', fontWeight: '750' }}>Distance: </span>
                     {distanceLoading && <Loader type='dots' color='yellow' />}
                     <span style={{ display: 'block', color: 'white' }}>{distance > 0 ? `${distance} mi.` : ''}</span>

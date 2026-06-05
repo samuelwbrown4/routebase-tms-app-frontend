@@ -115,11 +115,11 @@ function ShipmentDetails({ auth, user, setAuth }) {
                                 </div>
                                 <div className='sub-details'>
                                     <span style={{color: 'white'}}><b>Requested Ship Date:</b></span>
-                                    <span>{new Date(shipment?.requested_pickup_date).toLocaleDateString()}</span>
+                                    <span>{new Date(shipment?.requested_pickup_date.split('Z')[0]).toLocaleDateString()}</span>
                                 </div>
                                 <div className='sub-details'>
                                     <span style={{color: 'white'}}><b>Actual Ship Date:</b></span>
-                                    <span>{shipment?.actual_pickup_date ? new Date(shipment?.actual_pickup_date).toLocaleDateString() : 'TBD'}</span>
+                                    <span>{shipment?.actual_pickup_date ? new Date(shipment?.actual_pickup_date.split('Z')[0]).toLocaleDateString() : 'TBD'}</span>
                                     <Badge color={(shipment?.actual_pickup_date ? new Date(shipment?.actual_pickup_date) : new Date() )> new Date(shipment?.requested_pickup_date) ? 'red' : 'green'}>{(shipment?.actual_pickup_date ? new Date(shipment?.actual_pickup_date) : new Date() )> new Date(shipment?.requested_pickup_date) ? 'Late' : 'On Time'}</Badge>
                                 </div>
                             </Card>
@@ -130,11 +130,11 @@ function ShipmentDetails({ auth, user, setAuth }) {
                                 <div className='sub-details' style={{borderBottom: '1px solid #333' , paddingBottom: '1rem'}}><span style={{color: 'white'}}><b>City, State ZIP:</b></span><span>{shipment?.direction_category === 'outbound' ? shipment?.customer_city : shipment?.shipper_city}, {shipment?.direction_category === 'outbound' ? shipment?.customer_state : shipment?.shipper_state} {shipment?.direction_category === 'outbound' ? shipment?.customer_zip : shipment?.shipper_zip}</span></div>
                                 <div className='sub-details'>
                                     <span style={{color: 'white'}}><b>Requested Delivery Date:</b></span>
-                                    <span>{new Date(shipment?.requested_delivery_date).toLocaleDateString()}</span>
+                                    <span>{new Date(shipment?.requested_delivery_date.split('Z')[0]).toLocaleDateString()}</span>
                                 </div>
                                 <div className='sub-details'>
                                     <span style={{color: 'white'}}><b>Actual Delivery Date:</b></span>
-                                    <span>{shipment?.actual_delivery_date ? new Date(shipment?.actual_delivery_date).toLocaleDateString() : 'TBD'}</span>
+                                    <span>{shipment?.actual_delivery_date ? new Date(shipment?.actual_delivery_date.split('Z')[0]).toLocaleDateString() : 'TBD'}</span>
                                     <Badge color={(shipment?.actual_delivery_date ? new Date(shipment?.actual_delivery_date) : new Date() )> new Date(shipment?.requested_delivery_date) ? 'red' : 'green'}>{(shipment?.actual_delivery_date ? new Date(shipment?.actual_delivery_date) : new Date() )> new Date(shipment?.requested_delivery_date) ? 'Late' : 'On Time'}</Badge>
                                 </div>
                             </Card>

@@ -62,7 +62,7 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
                 resizable: true,
                 draggable: true,
                 sortable: true,
-                render: ({ requested_pickup_date }) => new Date(requested_pickup_date).toLocaleDateString()
+                render: ({ requested_pickup_date }) => new Date(requested_pickup_date.split('Z')[0]).toLocaleDateString()
             },
             {
                 accessor: 'requested_delivery_date',
@@ -71,7 +71,7 @@ function ShipmentsTable({ sortStatus , setSortStatus , filteredShipments , selec
                 resizable: true,
                 draggable: true,
                 sortable: true,
-                render: ({ requested_delivery_date }) => new Date(requested_delivery_date).toLocaleDateString()
+                render: ({ requested_delivery_date }) => new Date(requested_delivery_date.split('Z')[0]).toLocaleDateString()
             },
             {
                 accessor: 'status',

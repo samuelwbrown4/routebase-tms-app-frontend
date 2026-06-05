@@ -38,6 +38,11 @@ function UpdateShipments({ auth, user, setAuth }) {
         direction: 'asc'
     })
 
+    const formatDate = (d) => {
+        const date = new Date(d);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
 
     useEffect(() => {
         fetchCarrierUndelivered();
@@ -94,7 +99,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                 resizable: true,
                 draggable: true,
                 sortable: true,
-                render: ({ requested_pickup_date }) => new Date(requested_pickup_date).toLocaleDateString()
+                render: ({ requested_pickup_date }) => new Date(requested_pickup_date.split('Z')[0]).toLocaleDateString()
             },
             {
                 accessor: 'requested_delivery_date',
@@ -103,7 +108,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                 resizable: true,
                 draggable: true,
                 sortable: true,
-                render: ({ requested_delivery_date }) => new Date(requested_delivery_date).toLocaleDateString()
+                render: ({ requested_delivery_date }) => new Date(requested_delivery_date.split('Z')[0]).toLocaleDateString()
             },
             {
                 accessor: 'status',
@@ -187,8 +192,8 @@ function UpdateShipments({ auth, user, setAuth }) {
                     'Authorization': `Bearer ${auth}`
                 },
                 body: JSON.stringify({
-                    date: eventType === 'routed' ? null : (pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
-                        : new Date(deliveryDate).toISOString().split('T')[0]),
+                    date: eventType === 'routed' ? null : (pickupDate ? formatDate(pickupDate)
+                        : formatDate(deliveryDate)),
                     userId: user.id,
                     eventType: eventType ? eventType : (pickupDate ? 'picked_up' : 'delivered')
                 })
@@ -204,8 +209,8 @@ function UpdateShipments({ auth, user, setAuth }) {
                             'Authorization': `Bearer ${newToken}`
                         },
                         body: JSON.stringify({
-                            date: eventType === 'routed' ? null : (pickupDate ? new Date(pickupDate).toISOString().split('T')[0]
-                                : new Date(deliveryDate).toISOString().split('T')[0]),
+                            date: eventType === 'routed' ? null : (pickupDate ? formatDate(pickupDate)
+                                : formatDate(deliveryDate)),
                             userId: user.id,
                             eventType: eventType ? eventType : (pickupDate ? 'picked_up' : 'delivered')
                         })
@@ -388,7 +393,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                             <Image src={arrowRight} h={60} w={'auto'} />
                         </div>
                         <div className='update-div'>
-                            <span style={{ textAlign: 'center' }}>Requested Pickup Date: {new Date(selectedShipment?.requested_pickup_date).toLocaleDateString()}</span>
+                            <span style={{ textAlign: 'center' }}>Requested Pickup Date: {new Date(selectedShipment?.requested_pickup_date.split('Z')[0]).toLocaleDateString()}</span>
                             {!selectedShipment?.actual_pickup_date && selectedShipment?.status === 'routed' && !pickInput &&
                                 <div style={{ width: '70%', display: 'flex', justifyContent: 'center' }}>
                                     <Button variant='outline' color='#f6bd02' onClick={() => setPickInput(true)}>Mark as Picked Up</Button>
@@ -422,14 +427,14 @@ function UpdateShipments({ auth, user, setAuth }) {
                                 />
                             }
                             {selectedShipment?.actual_pickup_date &&
-                                <span>Actual Pickup Date: {new Date(selectedShipment?.actual_pickup_date).toLocaleDateString()}</span>
+                                <span>Actual Pickup Date: {new Date(selectedShipment?.actual_pickup_date.split('Z')[0]).toLocaleDateString()}</span>
                             }
                         </div>
                         <div style={{ flex: .5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <Image src={arrowRight} h={60} w={'auto'} />
                         </div>
                         <div className='update-div'>
-                            <span style={{ textAlign: 'center' }}>Requested Delivery Date: {new Date(selectedShipment?.requested_delivery_date).toLocaleDateString()}</span>
+                            <span style={{ textAlign: 'center' }}>Requested Delivery Date: {new Date(selectedShipment?.requested_delivery_date.split('Z')[0]).toLocaleDateString()}</span>
                             {!selectedShipment?.actual_delivery_date && selectedShipment?.status === 'in_transit' && !deliveryInput &&
                                 <div style={{ width: '70%', display: 'flex', justifyContent: 'center' }}>
                                     <Button variant='outline' color='#f6bd02' onClick={() => setDeliveryInput(!deliveryInput)}>Mark as Delivered</Button>
@@ -463,7 +468,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                                 />
                             }
                             {selectedShipment?.actual_delivery_date &&
-                                <span>Actual Delivery Date: {new Date(selectedShipment?.actual_delivery_date).toLocaleDateString()}</span>
+                                <span>Actual Delivery Date: {new Date(selectedShipment?.actual_delivery_date.split('Z')[0]).toLocaleDateString()}</span>
                             }
                         </div>
                     </div>
