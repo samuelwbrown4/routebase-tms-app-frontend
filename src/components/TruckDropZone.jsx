@@ -165,7 +165,7 @@ function TruckDropZone({offTruckOrders, onTruckOrders, removeFromTruck, carrierL
                         {onTruckOrders.map(order => (
                             <div key={order.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderBottom: '1px solid #333', color: 'white' }}>
                                 <span>{order.order_number}</span>
-                                <span>{`Requested Ship Date: ${new Date(order.requested_ship_date + 'T00:00:00').toLocaleDateString()}`}</span>
+                                <span>{`Requested Ship Date: ${new Date(order.requested_ship_date.split('Z')[0]).toLocaleDateString()}`}</span>
                                { console.log('order req ship date' , order.requested_ship_date)}
                                 <CloseButton onClick={() => removeFromTruck(order.id)} />
                             </div>
