@@ -453,8 +453,8 @@ function Dashboard({ auth, user, setAuth }) {
                 <div style={{ display: 'flex', color: 'white', width: '100%', height: '50%', flex: 1, justifyContent: 'space-around' }}>
                     <div className='dashboard-card' onClick={() => navigate('/shipment-tracking')}><DashboardCard statValue={user.client === 'shipper' ? undeliveredShipments : carrierShipments.filter(s => s.status === 'in_transit').length} stat={'In Transit Shipments'} user={user} /></div>
                     <div className='dashboard-card' onClick={() => navigate('/spot-market')}><DashboardCard statValue={user.client === 'shipper' ? pendingCarrier : carrierLatePickups} stat={user.client === 'shipper' ? 'Pending Carrier' : 'Late Pickups'} user={user} /></div>
-                    <div className='dashboard-card' onClick={() => navigate('/open-orders')}><DashboardCard statValue={user.client === 'shipper' ? unplannedOrders.length : carrierLateDeliveries} stat={user.client === 'shipper' ? 'Unplanned Orders' : 'Late Deliveries'} /></div>
-                    <div className='dashboard-card' onClick={() => navigate('/open-orders')}><DashboardCard statValue={user.client === 'shipper' ? unplannedLateOrders.length : outToBid} stat={user.client === 'shipper' ? 'Late Orders' : 'Active Spot Loads'} /></div>
+                    <div className='dashboard-card' onClick={user.client === 'shipper' ? () => navigate('/open-orders') : ()=>navigate('/update-shipments')}><DashboardCard statValue={user.client === 'shipper' ? unplannedOrders.length : carrierLateDeliveries} stat={user.client === 'shipper' ? 'Unplanned Orders' : 'Late Deliveries'} /></div>
+                    <div className='dashboard-card' onClick={user.client === 'shipper' ? () => navigate('/open-orders') : ()=>navigate('/spot-market')}><DashboardCard statValue={user.client === 'shipper' ? unplannedLateOrders.length : outToBid} stat={user.client === 'shipper' ? 'Late Orders' : 'Active Spot Loads'} /></div>
                 </div>
 
                 <div id='tender-table-container'>
