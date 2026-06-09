@@ -70,6 +70,18 @@
     
 }
 
+#tender-table-container::-webkit-scrollbar {
+  display: none;
+}
+
+.dashboard-upcoming-card{
+    overflow-y: scroll;
+}
+
+.dashboard-upcoming-card::-webkit-scrollbar {
+  display: none;
+}
+
 #tender-table{
     font-size: .7rem;
     background-color: #1a1a1a;

@@ -76,6 +76,10 @@
     box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
 }
 
+#update-table-container::-webkit-scrollbar{
+    display: none;
+}
+
 .mantine-ScrollArea-viewport{
   background-color: #1a1a1a;
 }

@@ -18,6 +18,10 @@
 
 }
 
+.table-container::-webkit-scrollbar{
+    display: none;
+}
+
 Th{
     background-color: #1a1a1a;
     cursor: pointer;

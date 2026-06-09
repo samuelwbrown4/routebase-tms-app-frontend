@@ -5,11 +5,12 @@ function DashboardUpcomingCard({ stat, statValue , user , pickups , deliveries }
     return (
         <div style={{ width: '100%' , height: '100%'}}>
             <Paper
+                className='dashboard-upcoming-card'
                 p="xl"
                 radius="md"
                 style={{
                     backgroundColor: '#1a1a1a', textAlign: 'center', width: '100%', height: 160, alignContent: 'center', boxShadow: '5px 5px 16px rgba(255, 255, 255, 0.25)',
-                    border: '.1px solid #333', overflowY: 'scroll', paddingTop: '0rem'
+                    border: '.1px solid #333', paddingTop: '0rem'
                 }}
             >
                 <Title order={6}>
