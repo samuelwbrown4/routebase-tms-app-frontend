@@ -146,7 +146,7 @@ function UpdateShipments({ auth, user, setAuth }) {
             });
 
             if (response.status === 401) {
-                let newToken = refreshToken(setAuth, navigate);
+                let newToken = await refreshToken(setAuth, navigate);
                 if (newToken) {
                     response = await fetch(`${API_URL}/api/carrier/shipments?status=planned,routed,in_transit`, {
                         headers: {
@@ -352,7 +352,7 @@ function UpdateShipments({ auth, user, setAuth }) {
             });
 
             if (response.status === 401) {
-                let newToken = refreshToken(setAuth, navigate);
+                let newToken = await refreshToken(setAuth, navigate);
                 response = await fetch(`${API_URL}/api/shipper/documents/${shipmentId}/bol`, {
                     headers: {
                         'Authorization': `Bearer ${newToken}`

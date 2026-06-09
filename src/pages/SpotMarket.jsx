@@ -37,7 +37,7 @@ function SpotMarket({ auth, user, setAuth }) {
             });
 
             if (response.status === 401) {
-                let newToken = refreshToken(setAuth, navigate)
+                let newToken = await refreshToken(setAuth, navigate)
                 if (newToken) {
                     response = await fetch(`${API_URL}/api/shipper/shipments?status=pending_carrier`, {
                         headers: {
@@ -72,7 +72,7 @@ function SpotMarket({ auth, user, setAuth }) {
             });
 
             if (response.status == 401) {
-                let newToken = refreshToken(setAuth, navigate)
+                let newToken = await refreshToken(setAuth, navigate)
                 if (newToken) {
                     response = fetch(`${API_URL}/api/carrier/spot-bids/${selectedShipment.id}`, {
                         method: 'POST',
@@ -118,7 +118,7 @@ function SpotMarket({ auth, user, setAuth }) {
             });
 
             if (response.status === 401) {
-                let newToken = refreshToken(setAuth, navigate)
+                let newToken = await refreshToken(setAuth, navigate)
                 if (newToken) {
                     response = await fetch(`${API_URL}/api/shipper/spot-bids/$${selectedShipment?.id}/${selectedOffer?.offer_id}`, {
                         method: 'PATCH',
@@ -159,7 +159,7 @@ function SpotMarket({ auth, user, setAuth }) {
             });
 
             if (response.status === 401) {
-                let newToken = refreshToken(setAuth, navigate);
+                let newToken = await refreshToken(setAuth, navigate);
                 if (newToken) {
                     response = await fetch(`${API_URL}/api/shipper/shipments/bid-deadline/${shipmentId}`, {
                         method: 'PATCH',
