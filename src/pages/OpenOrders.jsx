@@ -52,7 +52,7 @@ function OpenOrders({ auth, user, setAuth }) {
 
 
     const filteredOrders = orders.filter(order =>
-        order.order_number.toLowerCase().includes(searchValue.toLowerCase()) || order.destination.toLowerCase().includes(searchValue.toLowerCase())
+        order.order_number.toLowerCase().includes(searchValue.toLowerCase()) || (order.direction_category === 'outbound' ?order.customer_location_name.toLowerCase().includes(searchValue.toLowerCase()) : order.shipper_location_name.toLowerCase().includes(searchValue.toLowerCase()))
     )
 
     const sortedOrders = [...filteredOrders].sort((a, b) => {
