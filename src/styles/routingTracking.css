@@ -8,7 +8,7 @@
     border: 1px solid #333;
 }
 
-.routed-shipment:hover{
+.routed-shipment:hover {
     background-color: #2e303a;
     color: white;
     transform: scale(1.05);
@@ -28,46 +28,50 @@
 }
 
 .leaflet-container {
-    
+
     border-radius: 8px;
     box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
     border: .1px solid #333 !important;
 }
 
-#routed-list-div{
+#routed-list-div {
     border: 1px solid #333;
     border-radius: 8px;
     background-color: #1a1a1a;
     color: #adadad;
     box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25);
     overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.routed-list-div::-webkit-scrollbar{
+#routed-list-div::-webkit-scrollbar {
     display: none;
 }
 
-#routable-table{
+#routable-table {
     font-size: .7rem;
     background-color: #1a1a1a;
     color: #adadad;
     width: 100%;
 }
 
-#routable-table-container{
+#routable-table-container {
     background-color: #1a1a1a;
     border-radius: 6px;
     border: 1px solid #333 !important;
     height: 20vH;
     overflow-y: scroll;
     box-shadow: 5px 5px 16px rgba(255, 255, 255, 0.25) !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-#routable-table-container::-webkit-scrollbar{
+#routable-table-container::-webkit-scrollbar {
     display: none;
 }
 
-.route-btn:hover{
+.route-btn:hover {
     transform: scale(1.1);
     transition: all 0.2s ease;
     box-shadow: 0px 0px 10px #f6bd02;

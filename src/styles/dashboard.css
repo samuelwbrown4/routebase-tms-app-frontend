@@ -70,16 +70,21 @@
     
 }
 
-#tender-table-container::-webkit-scrollbar {
-  display: none;
-}
 
 .dashboard-upcoming-card{
     overflow-y: scroll;
 }
 
+
+#tender-table-container::-webkit-scrollbar,
 .dashboard-upcoming-card::-webkit-scrollbar {
-  display: none;
+    display: none;
+}
+
+#tender-table-container,
+.dashboard-upcoming-card {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;     
 }
 
 #tender-table{
