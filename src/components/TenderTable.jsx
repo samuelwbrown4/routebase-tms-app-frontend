@@ -35,8 +35,8 @@ function TenderTable({shipments , acceptRejectTender , user , setOpenRetender , 
                         <Table.Td>{`${s.direction_category === 'outbound' ? s.shipper_city : s.supplier_city}, ${s.direction_category === 'outbound' ? s.shipper_state : s.supplier_state}`}</Table.Td>
                         <Table.Td>{s.direction_category === 'outbound' ? s.customer_name : s.shipper_name}</Table.Td>
                         <Table.Td>{`${s.direction_category === 'outbound' ? s.customer_city : s.shipper_city}, ${s.direction_category === 'outbound' ? s.customer_state : s.shipper_state}`}</Table.Td>
-                        <Table.Td>{new Date(s.requested_pickup_date).toLocaleDateString()}</Table.Td>
-                        <Table.Td>{new Date(s.requested_delivery_date).toLocaleDateString()}</Table.Td>
+                        <Table.Td>{new Date(s.requested_pickup_date.split('Z')[0]).toLocaleDateString()}</Table.Td>
+                        <Table.Td>{new Date(s.requested_delivery_date.split('Z')[0]).toLocaleDateString()}</Table.Td>
                         {user.client === 'carrier' && <Table.Td>{`$${s.rate}`}</Table.Td>}
                         <Table.Td>
                             {user?.client === 'carrier' && <div style={{display: 'flex' , gap: '.5rem'}}>
