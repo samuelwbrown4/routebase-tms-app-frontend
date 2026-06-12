@@ -29,9 +29,10 @@ function UpdateShipments({ auth, user, setAuth }) {
     const [pickInput, setPickInput] = useState(false);
     const [deliveryInput, setDeliveryInput] = useState(false);
     const [message, setMessage] = useState(null)
-    const [conversation , setConversation] = useState(null)
+    const [conversation, setConversation] = useState(null)
 
-    const [visibleModal , setVisibleModal] = useState(false)
+    const [visibleModal, setVisibleModal] = useState(false)
+    const [routingLoading , setRoutingLoading] = useState(false)
 
     const [sortStatus, setSortStatus] = useState({
         columnAccessor: 'requested_pickup_date',
@@ -39,8 +40,9 @@ function UpdateShipments({ auth, user, setAuth }) {
     })
 
     const formatDate = (d) => {
-        const date = new Date(d);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        if (!d) return ''
+        const [year, month, day] = d.split('T')[0].split('-')
+        return `${year}-${month}-${day}`
     }
 
 
@@ -177,14 +179,18 @@ function UpdateShipments({ auth, user, setAuth }) {
                 handleSubmitMessage()
             }
             console.log('pu date', pickupDate)
+            console.log('del date', deliveryDate)
             if (eventType !== 'routed' && !pickupDate && !deliveryDate) {
                 notifications.show({
                     title: 'No status update made',
                     message: 'Pickup date/Delivery date not provided'
                 })
+
                 return
             }
-
+            if(eventType === 'routed'){
+                setRoutingLoading(true)
+            }
             let response = await fetch(`${API_URL}/api/carrier/shipments/${selectedShipment.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -224,16 +230,25 @@ function UpdateShipments({ auth, user, setAuth }) {
                 return alert(result.error)
             }
             if (eventType === 'routed') {
-                return notifications.show({
+                notifications.show({
                     title: 'Success!',
                     message: `${selectedShipment?.shipment_number} has been routed`
                 })
+                fetchCarrierUndelivered()
+                setSelectedShipment(null)
+                setRoutingLoading(false)
+                return close()
             }
             notifications.show({
                 title: 'Success!',
                 message: pickupDate ? `Successfully saved pickup date of ${new Date(pickupDate).toISOString().split('T')[0]}` : `Successfully saved delivery date of ${new Date(deliveryDate).toISOString().split('T')[0]}`,
                 position: 'top-center'
             })
+
+            setPickupDate(undefined)
+            setDeliveryDate(undefined)
+            setSelectedShipment(null)
+            close()
 
 
             fetchCarrierUndelivered()
@@ -310,7 +325,7 @@ function UpdateShipments({ auth, user, setAuth }) {
         setFilteredShipments(shipmentsList.filter(shipment => shipment.status.toLowerCase().includes(value)));
     }
 
-        async function getConversation(shipmentId) {
+    async function getConversation(shipmentId) {
         try {
             let response = await fetch(`${API_URL}/api/shared/conversations/${shipmentId}`, {
                 headers: {
@@ -343,7 +358,7 @@ function UpdateShipments({ auth, user, setAuth }) {
         }
     }
 
-        async function handleDocClick(shipmentId) {
+    async function handleDocClick(shipmentId) {
         try {
             let response = await fetch(`${API_URL}/api/shipper/documents/${shipmentId}/bol`, {
                 headers: {
@@ -386,7 +401,7 @@ function UpdateShipments({ auth, user, setAuth }) {
                         <div className='update-div'>
                             <span style={{ textAlign: 'center' }}>{selectedShipment?.status === 'planned' ? 'Route Shipment' : 'Shipment Routed'}</span>
                             {selectedShipment?.status === 'planned' &&
-                                <Button variant='outline' color='#f6bd02' onClick={() => handleUpdateShipment('routed')}>Route</Button>
+                                <Button variant='outline' color='#f6bd02' loading={routingLoading} loaderProps={{ type: 'dots', color: '#f6bd02' }} onClick={() => handleUpdateShipment('routed')}>Route</Button>
                             }
                         </div>
                         <div style={{ flex: .5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

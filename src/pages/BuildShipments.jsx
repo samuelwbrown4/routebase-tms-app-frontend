@@ -40,8 +40,9 @@ function BuildShipments({ auth, user, setAuth }) {
     const navigate = useNavigate();
 
     const formatDate = (d) => {
-        const date = new Date(d);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        if (!d) return ''
+        const [year, month, day] = d.split('T')[0].split('-')
+        return `${year}-${month}-${day}`
     }
 
 
