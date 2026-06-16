@@ -46,7 +46,10 @@ function Newsfeed({ newOrders, newShipments, newPickups, newDeliveries, newBids,
                     style={{ height: '100%', width: '100%', display: 'flex' }}
                 >
                     <Card className='newsfeed-card'>
-                        <div style={{ display: 'flex', flexDirection: 'column' , paddingLeft: '6rem' }}>
+                        <div style={{flex: 1}}>
+
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column' ,flex: 1 }}>
                             <h1 style={{ margin: '0', color: '#f6bd02', borderBottom: '0.5px solid #333' }}>
                                 {items[currentIndex]?.count}
                             </h1>
@@ -55,7 +58,7 @@ function Newsfeed({ newOrders, newShipments, newPickups, newDeliveries, newBids,
                             </h3>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', height: 130, gap: '1rem', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', height: 130, gap: '1rem', justifyContent: 'space-between' , flex: 1 }}>
                             {items.map((item, idx) => <div onClick={() => setCurrentIndex(idx)} className={idx === currentIndex ? 'current-news news-indicator ' : 'news-indicator'} key={idx} style={{ width: '10px', height: '10px', border: '1px solid #f6bd02', borderRadius: '15px' }}></div>)}
                         </div>
                     </Card>

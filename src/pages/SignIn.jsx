@@ -1,4 +1,4 @@
-import { AppShell, Input, Image, Button, Radio, Group } from '@mantine/core';
+import { AppShell, Input, Image, Button, Radio, Group , AspectRatio } from '@mantine/core';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import atIcon from '../assets/at.svg'
@@ -74,9 +74,9 @@ function SignIn({ setAuth, user }) {
             header={{ height: 60 }}>
 
             <div style={{ backgroundImage: 'url(/tms_sign_in_graphic.png)', backgroundSize: 'cover', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0b1f3ada', gap: '1rem', alignItems: 'center', boxShadow: '0 0 8px 2px #f6a802', color: '#dff4f7', width: '35%',  borderRadius: '6px' }}>
-                    <h1 id="sign-in-header">Welcome Back!</h1>
-                    <h4>Sign in to Routebase</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0b1f3ada', gap: '1rem', alignItems: 'center', boxShadow: '0 0 8px 2px #f6a802', color: '#dff4f7', width: '35%',  borderRadius: '6px' , maxHeight: '90%'  }}>
+                    <h2 id="sign-in-header">Welcome Back!</h2>
+                    <h4 style={{margin: '0px'}}>Sign in to Routebase</h4>
                     <form id="sign-in-form" onSubmit={signIn}>
 
                         <Radio.Group value={radio} onChange={setRadio}>
@@ -88,13 +88,16 @@ function SignIn({ setAuth, user }) {
 
                         <Input placeholder='email' leftSection={<Image h={16} w={16} src={atIcon} />} classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={email} onChange={(e) => setEmail(e.target.value)} />
                         <Input styles={{input: {backgroundColor: '#4061a4c4'}}} type='password' placeholder='password' leftSection={<Image h={16} w={16} src={passwordIcon} />} classNames={{ input: 'sign-in-input', wrapper: 'sign-in-input-wrapper' }} value={pass} onChange={(e) => setPass(e.target.value)} />
-                        <div style={{ display: 'flex' , gap: '2rem' , justifyContent: 'center'}}>
+                        <div style={{ display: 'flex' , gap: '2rem' , justifyContent: 'center' , width: '100%' , paddingLeft: '1rem' , paddingRight: '1rem'}}>
                             <Button type='submit'>User Sign In</Button>
                             <Button onClick={() => fillDemoCreds()}>Demo Sign In</Button>
                         </div>
                     </form>
-                    <span>Don't have an account? Request one from an administrator <Link id='here-link'>here.</Link></span>
-                    <Image src='/routebase-logo-white.png' alt='routebase-logo-notext' h={100} fit='contain' />
+                    <span style={{textAlign: 'center'}}>Don't have an account? Request one from an administrator <Link id='here-link'>here.</Link></span>
+                    <div style={{display: 'flex' , justifyContent: 'center' , padding: '1rem'}}>
+                        <Image src='/routebase-logo-white.png' alt='routebase-logo-notext' mah={80} fit='contain' />
+                    </div>
+                    
                 </div>
             </div>
 
