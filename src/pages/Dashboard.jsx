@@ -326,7 +326,7 @@ function Dashboard({ auth, user, setAuth }) {
             });
 
             if (response.status === 401) {
-                let newToken = await Token(setAuth, navigate)
+                let newToken = await refreshToken(setAuth, navigate)
                 if (newToken) {
                     response = await fetch(`${API_URL}/api/shipper/orders/upcoming`, {
                         headers: {
