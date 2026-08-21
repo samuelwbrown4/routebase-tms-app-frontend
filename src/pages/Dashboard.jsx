@@ -63,7 +63,7 @@ function Dashboard({ auth, user, setAuth }) {
             fetchUpcomingShipments()
         }
 
-        getShipmentsByStatus(['in_transit', 'planned', 'routed'])
+        getShipmentsByStatus(['in_transit', 'planned', 'routed' , 'delivered'])
         getShipmentsByStatus(['pending_carrier'])
         getShipmentsByStatus(['tendered'])
 
@@ -95,12 +95,12 @@ function Dashboard({ auth, user, setAuth }) {
         let totalDelivered = carrierShipments.filter(s => s.actual_delivery_date).length
         let deliveredOnTimeShipments = carrierShipments.filter(s => (new Date(s.requested_delivery_date) >= new Date(s.actual_delivery_date)) && s.actual_delivery_date).length
 
-        let onTimeDeliveryPercentage = (deliveredOnTimeShipments / totalDelivered) * 100
+        let onTimeDeliveryPercentage = Math.floor((deliveredOnTimeShipments / totalDelivered) * 100)
 
         let totalPickedUp = carrierShipments.filter(s => s.actual_pickup_date).length
         let pickedUpOnTimeShipments = carrierShipments.filter(s => (new Date(s.requested_pickup_date) >= new Date(s.actual_pickup_date)) && s.actual_pickup_date).length
 
-        let onTimePickupPercentage = (pickedUpOnTimeShipments / totalPickedUp) * 100
+        let onTimePickupPercentage = Math.floor((pickedUpOnTimeShipments / totalPickedUp) * 100)
 
         setCarrierLatePickups(latePickups)
         setCarrierLateDeliveries(lateDeliveries)
